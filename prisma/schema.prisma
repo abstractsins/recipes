@@ -19,6 +19,7 @@ model User {
   email     String   @unique
   password  String
   nickname  String?
+  username  String?
   lastLogin DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
