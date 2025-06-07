@@ -1,5 +1,8 @@
 export default function Home() {
+
   return (
-    <h1>DEV</h1>
+    <div className="body">
+      <h1>Recipe Database</h1>
+    </div>
   );
 }

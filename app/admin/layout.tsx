@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import PrimeHeader from "@/components/prime/PrimeHeader";
 
 const geistSans = Geist({
@@ -26,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <PrimeHeader />
         {children}
       </body>
     </html>
