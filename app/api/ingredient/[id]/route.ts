@@ -5,24 +5,24 @@ const prisma = new PrismaClient();
 
 export async function GET(
     req: NextRequest,
-    { params }: any  
+    { params }: any 
 ) {
     // await the promise exactly once
     const { id } = await params
     const numericId = Number(id)
     if (Number.isNaN(id)) {
-        return new NextResponse('Invalid recipe ID; must be a number.', { status: 400 });
+        return new NextResponse('Invalid ingredient ID; must be a number.', { status: 400 });
     }
 
     try {
-        const recipe = await prisma.recipe.findUnique({ where: { id } });
-        if (!recipe) {
+        const ingredient = await prisma.ingredient.findUnique({ where: { id } });
+        if (!ingredient) {
             return new NextResponse('Ingredient not found.', { status: 404 });
         }
 
-        return NextResponse.json(recipe);
+        return NextResponse.json(ingredient);
     } catch (err) {
-        console.error('Error fetching recipe:', err);
+        console.error('Error fetching ingredient:', err);
         return new NextResponse('Server error.', { status: 500 });
     }
 }

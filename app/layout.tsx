@@ -1,7 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import PrimeHeader from "@/components/prime/PrimeHeader";
+
+import {
+  Geist,
+  Geist_Mono,
+  Parkinsans,
+  Alatsi
+} from "next/font/google";
+
+const parkinsans = Parkinsans({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-parkinsans',
+});
+
+const alatsi = Alatsi({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-alatsi',
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +42,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`
+        ${parkinsans.variable} 
+        ${geistSans.variable} 
+        ${geistMono.variable}
+        ${alatsi}
+      `}>
         {children}
       </body>
     </html>

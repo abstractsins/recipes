@@ -1,5 +1,4 @@
-import LoginForm from "@/components/LoginForm"; 
-
+import LoginForm from "@/components/LoginForm";
 
 export default function Home() {
 
@@ -9,9 +8,9 @@ export default function Home() {
       {/* <h1>Recipe Database</h1> */}
 
       <div className="login-container">
+        <LoginForm />
       </div>
 
     </div>
   );
 }
-

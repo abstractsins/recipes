@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { RiCloseFill } from "react-icons/ri";
 
-import Users from "@/components/admin/Users";
+import Users from "./Users";
+import CloseButton from "./CloseButton";
 
 import { User, AdminModule } from "@/types/types";
 
@@ -48,7 +48,7 @@ export default function UsersModule({ className, onClick: activate, active, clos
                         }
                     </div>
 
-                    <div className="close-btn" onClick={close}><RiCloseFill /></div>
+                    <CloseButton onClick={close} />
                 </>
                 )}
         </div>

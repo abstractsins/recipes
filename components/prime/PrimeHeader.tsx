@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from "react";
+import LogoutButton from "../LogoutButton";
 
 export default function PrimeHeader() {
 
@@ -11,9 +12,15 @@ export default function PrimeHeader() {
 
     return (
         <header className="prime-header">
-            <p>
+
+            <div>
                 <span className="label">environment:</span> <span className="env">{env}</span>
-            </p>
+            </div>
+
+            <div className="header-buttons">
+                <LogoutButton />
+            </div>
+
         </header>
     )
 }

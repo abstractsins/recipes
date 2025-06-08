@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
 
-        const { email, password, nickname, username } = body;
+        const { email, password, nickname, username, role } = body;
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
                 password: hashedPassword,
                 nickname,
                 username,
+                role,
                 lastLogin: new Date(),
             },
         }); 

@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { RiCloseFill } from "react-icons/ri";
-
-import { Recipe, AdminModule } from "@/types/types";
 
 import Recipes from "./Recipes";
+import CloseButton from "./CloseButton";
+import { Recipe, AdminModule } from "@/types/types";
 
 export default function RecipesModule({ className, onClick: activate, active, close }: AdminModule) {
 
@@ -48,7 +47,7 @@ export default function RecipesModule({ className, onClick: activate, active, cl
                         }
                     </div>
 
-                    <div className="close-btn" onClick={close}><RiCloseFill /></div>
+                    <CloseButton onClick={close} />
                 </>
                 )}
         </div>

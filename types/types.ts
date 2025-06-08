@@ -13,6 +13,16 @@ export interface Recipe {
     name: string
 }
 
+export interface Ingredient {
+    id: number,
+    name: string
+    main?: string,
+    variety?: string,
+    seasons?: string[],
+    recipes?: Recipe[],
+    notes?: string
+
+}
 
 export interface AdminModule {
     className: string;
