@@ -24,9 +24,9 @@ export function middleware(req: NextRequest) {
         };
 
         // 🛡️ Block non-admins from /admin routes
-        if (req.nextUrl.pathname.startsWith('/admin') && decoded.role !== 'admin') {
-            return NextResponse.redirect(new URL('/unauthorized', req.url));
-        }
+        // if (req.nextUrl.pathname.startsWith('/admin') && decoded.role !== 'admin') {
+        //     return NextResponse.redirect(new URL('/unauthorized', req.url));
+        // }
 
         // ✅ Token is valid, let request continue
         return NextResponse.next();
@@ -38,5 +38,5 @@ export function middleware(req: NextRequest) {
 
 
 export const config = {
-    // matcher: ['/admin/:path*'],
+    matcher: ['/admin/:path*'],
 };
