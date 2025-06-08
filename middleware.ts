@@ -13,27 +13,27 @@ export function middleware(req: NextRequest) {
 
     const token = req.cookies.get('token')?.value;
 
-    if (!token) {
-        return NextResponse.redirect(new URL('/login', req.url));
-    }
+    // if (!token) {
+    //     return NextResponse.redirect(new URL('/login', req.url));
+    // }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-            userId: string;
-            role: string;
-        };
+    // try {
+    //     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+    //         userId: string;
+    //         role: string;
+    //     };
 
-        // 🛡️ Block non-admins from /admin routes
-        // if (req.nextUrl.pathname.startsWith('/admin') && decoded.role !== 'admin') {
-        //     return NextResponse.redirect(new URL('/unauthorized', req.url));
-        // }
+    //     // 🛡️ Block non-admins from /admin routes
+    //     // if (req.nextUrl.pathname.startsWith('/admin') && decoded.role !== 'admin') {
+    //     //     return NextResponse.redirect(new URL('/unauthorized', req.url));
+    //     // }
 
-        // ✅ Token is valid, let request continue
-        return NextResponse.next();
-    } catch (err) {
-        // 🔒 Token is invalid
-        return NextResponse.redirect(new URL('/login', req.url));
-    }
+    //     // ✅ Token is valid, let request continue
+    //     return NextResponse.next();
+    // } catch (err) {
+    //     // 🔒 Token is invalid
+    //     return NextResponse.redirect(new URL('/login', req.url));
+    // }
 }
 
 
