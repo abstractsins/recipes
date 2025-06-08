@@ -10,7 +10,7 @@ export async function GET(
     // await the promise exactly once
     const { id } = await params
     const numericId = Number(id)
-    if (Number.isNaN(id)) {
+    if (Number.isNaN(numericId)) {
         return new NextResponse('Invalid recipe ID; must be a number.', { status: 400 });
     }
 
