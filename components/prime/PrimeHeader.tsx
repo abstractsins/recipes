@@ -3,7 +3,9 @@
 import { useEffect } from "react";
 import LogoutButton from "../LogoutButton";
 
-export default function PrimeHeader() {
+interface Props { nickname: string }
+
+export default function PrimeHeader({nickname}: Props) {
 
     const env = process.env.NEXT_PUBLIC_ENV;
     useEffect(() => {
@@ -13,8 +15,12 @@ export default function PrimeHeader() {
     return (
         <header className="prime-header">
 
-            <div>
+            <div className="env-container">
                 <span className="label">environment:</span> <span className="env">{env}</span>
+            </div>
+
+            <div className="greeting-container">
+                <span>Hello, {nickname}</span>
             </div>
 
             <div className="header-buttons">

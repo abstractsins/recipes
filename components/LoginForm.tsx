@@ -1,17 +1,25 @@
+// TODO
+//* error handling
+
 'use client';
 
 import Link from "next/link";
+
+import { FormEvent } from 'react'
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import RegisterLink from "./RegisterLink";
 
 import Loader from "./Loader";
 
 export default function LoginForm() {
 
-    const [isFormValid, setFormValid] = useState(false);
+    // const [isFormValid, setFormValid] = useState(false);
     const [isWaiting, setIsWaiting] = useState(false);
-    const [usernameValue, setUsernameValue] = useState('');
-    const [passwordValue, setPasswordValue] = useState('');
+    // const [usernameValue, setUsernameValue] = useState('');
+    // const [passwordValue, setPasswordValue] = useState('');
+    // const [formData, setFormData] = useState();
 
     const router = useRouter();
 
@@ -19,54 +27,61 @@ export default function LoginForm() {
     const maxPasswordLength = 32;
 
 
-    useEffect(() => {
-        console.log('usernameInput: ' + usernameValue);
-        console.log('passwordInput: ' + passwordValue);
-        usernameValue.length >= 3 && passwordValue.length >= 3 ? setFormValid(true) : setFormValid(false);
-    }, [usernameValue, passwordValue]);
+    // useEffect(() => {
+    //     console.log('usernameInput: ' + usernameValue);
+    //     console.log('passwordInput: ' + passwordValue);
+    //     usernameValue.length >= 3 && passwordValue.length >= 3 ? setFormValid(true) : setFormValid(false);
+    // }, [usernameValue, passwordValue]);
 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log(e);
         setIsWaiting(true);
+        const fd = new FormData(e.currentTarget)
+
+        console.log([...fd.entries()]);
+
         const res = await fetch('/api/auth/login', {
             method: 'POST',
-            body: JSON.stringify({ email: usernameValue, password: passwordValue }),
-            headers: { 'Content-Type': 'application/json' },
+            body: fd,
+            credentials: 'include'
         });
         console.log(res);
-        if (res.ok) router.push('/admin');
-        else {
+        if (res.ok) {
+            console.log('LOGIN OK!');
+            await res.json();
+            router.push('/admin');
+        } else {
             alert('Login failed');
             setIsWaiting(false);
         }
     }
 
-    const inputHandling = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        const allowedKeyPresses = ['Backspace', 'Enter', 'Tab', 'Delete'];
-        const forbiddenChars: Record<string, string[]> = {
-            text: ' /\\+=()[]{}:;\'"'.split(''),
-            password: ' '.split(''),
-        };
+    // const inputHandling = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    //     const allowedKeyPresses = ['Backspace', 'Enter', 'Tab', 'Delete'];
+    //     const forbiddenChars: Record<string, string[]> = {
+    //         text: ' /\\+=()[]{}:;\'"'.split(''),
+    //         password: ' '.split(''),
+    //     };
 
-        const fieldType = e.currentTarget.type;
-        const key = e.key;
+    //     const fieldType = e.currentTarget.type;
+    //     const key = e.key;
 
-        // Block multi-key (e.g., Alt+Key) unless in allowed list and forbidden characters
-        if (
-            (key.length > 1 && !allowedKeyPresses.includes(key))
-            || forbiddenChars[fieldType]?.includes(key)
-        ) {
-            e.preventDefault();
-            return;
-        }
+    //     // Block multi-key (e.g., Alt+Key) unless in allowed list and forbidden characters
+    //     if (
+    //         (key.length > 1 && !allowedKeyPresses.includes(key))
+    //         || forbiddenChars[fieldType]?.includes(key)
+    //     ) {
+    //         e.preventDefault();
+    //         return;
+    //     }
 
-        // Update state
-        const value = e.currentTarget.value + (allowedKeyPresses.includes(key) ? '' : key);
-        if (fieldType === 'text') setUsernameValue(value);
-        else if (fieldType === 'password') setPasswordValue(value);
-    };
+    //     // Update state
+    //     const value = e.currentTarget.value + (allowedKeyPresses.includes(key) ? '' : key);
+    //     if (fieldType === 'text') setUsernameValue(value);
+    //     else if (fieldType === 'password') setPasswordValue(value);
+    // };
 
 
     return (
@@ -92,7 +107,9 @@ export default function LoginForm() {
                                 <span>username:</span>
                             </div>
                             <div className="field-container" id="username-field-container">
-                                <input className="login-page-field" type="text" maxLength={maxUserLength} onKeyDown={inputHandling} autoFocus={true} />
+                                <input className="login-page-field" type="text" name="email" maxLength={maxUserLength}
+                                    // onKeyDown={inputHandling} 
+                                    autoFocus={true} />
                             </div>
                         </div>
 
@@ -102,7 +119,9 @@ export default function LoginForm() {
                                 <span>password:</span>
                             </div>
                             <div className="field-container" id="password-field-container">
-                                <input required className="login-page-field" type="password" maxLength={maxPasswordLength} onKeyDown={inputHandling} />
+                                <input required className="login-page-field" name="password" type="password" maxLength={maxPasswordLength}
+                                // onKeyDown={inputHandling}
+                                />
                             </div>
                         </div>
                     </div>
@@ -114,7 +133,7 @@ export default function LoginForm() {
                             required
                             className={`
                                 login-module-button 
-                                ${isFormValid && !isWaiting ? 'active' : 'inactive'} 
+                                ${!isWaiting ? 'active' : 'inactive'} 
                                 ${isWaiting ? 'disabled waiting' : ''}
                             `}
                             disabled={isWaiting}
@@ -124,11 +143,7 @@ export default function LoginForm() {
                     </div>
                 </form>
 
-                <div className="register-container">
-                    <div>
-                        <span>New to the site? <Link className="link" href="./register">Register here.</Link></span>
-                    </div>
-                </div>
+                <RegisterLink />
 
             </div>
         </>

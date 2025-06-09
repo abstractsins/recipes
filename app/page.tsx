@@ -1,14 +1,24 @@
-import LoginForm from "@/components/LoginForm"; 
-
+import { PiChefHat } from "react-icons/pi";
+import Link from "next/link";
+import RegisterLink from "@/components/RegisterLink";
 
 export default function Home() {
 
   return (
-    <div className="body" id="login-page">
+    <div className="body" id="splash-page">
 
-      {/* <h1>Recipe Database</h1> */}
+      <header>
+        <h1>Recipe Database</h1>
+      </header>
 
-      <div className="login-container">
+      <div className="splash-body">
+
+        <div className="login-container">
+          <Link href="./login"><span> <PiChefHat /> Login</span></Link>
+        </div>
+
+        <RegisterLink />
+        
       </div>
 
     </div>

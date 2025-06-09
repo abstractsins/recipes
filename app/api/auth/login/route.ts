@@ -7,29 +7,37 @@ export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
 
-  const { email, password } = await req.json();
+  const fd = await req.formData();
+  const email = fd.get('email');
+  const password = fd.get('password');
 
-  console.log(email, password);
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    return new NextResponse('Missing credentials', { status: 400 })
+  }
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET not set')
+  }
 
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    console.log(user);
+    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
   }
 
   const token = jwt.sign(
-    { userId: user.id, role: user.role },
-    process.env.JWT_SECRET!,
+    { userId: user.id, role: user.role, nickname: user.nickname },
+    process.env.JWT_SECRET,
     { expiresIn: '1h' }
-  );
+  )
 
-  const res = NextResponse.json({ message: 'Logged in' });
+  const res = NextResponse.json({ user })
   res.cookies.set('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 3600,
-    path: '/',
-  });
-
-  return res;
+    sameSite: 'lax',
+    maxAge: 60 * 60,
+    path: '/'
+  })
+  return res
 }

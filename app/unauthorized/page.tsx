@@ -1,5 +1,11 @@
+import LogoutButton from "@/components/LogoutButton";
+
 export default function Unauthorized() {
+
     return (
-        <h1>Who tf are you?</h1>
+        <div id="unauthorized-page">
+            <h1>Who tf are you? Non admin.</h1>
+            <LogoutButton />
+        </div>
     );
 }

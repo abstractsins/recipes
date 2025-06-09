@@ -1,33 +1,27 @@
+import { redirect } from 'next/navigation'
+import { getUser } from '@/lib/auth'
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import PrimeHeader from "@/components/prime/PrimeHeader";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "Recipes",
   description: "Recipe database",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+
+  const user = await getUser();
+  if (!user) redirect('/login');
+  if (user.role !== 'admin') redirect('/unauthorized');
+  const nickname = user.nickname;
+
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <PrimeHeader />
-        {children}
-      </body>
-    </html>
+    <>
+      <PrimeHeader nickname={nickname} />
+      {children}
+    </>
   );
 }
