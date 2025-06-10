@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// https://pris.ly/d/prisma-schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
@@ -19,12 +18,13 @@ model User {
   password    String
   nickname    String?
   username    String?
+  recipes     Recipe[]
+  ingredients Ingredient[]
+  tags        Tag[]
+  role        Role         @default(user)
   lastLogin   DateTime?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
-  recipes     Recipe[]
-  ingredients Ingredient[]
-  role        Role       @default(user)
 }
 
 enum Role {
@@ -35,28 +35,50 @@ enum Role {
 model Recipe {
   id          Int          @id @default(autoincrement())
   name        String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now()) @updatedAt
   userId      Int
   user        User         @relation(fields: [userId], references: [id])
   ingredients Ingredient[]
+  tags        Tag[]        @relation("RecipeTags")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
 
   @@unique([userId, name]) // Unique per user
 }
 
 model Ingredient {
-  id        Int      @id @default(autoincrement())
-  name      String // freeform label
-  main      String? // optional structured base
-  variety   String? // optional variety
-  category  String? // e.g. "vegetable", "spice"
-  seasons   String[]
-  notes     String? // freeform notes
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  recipes   Recipe[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String // freeform label
+  main        String? // optional structured base
+  variety     String? // optional variety
+  category    String? // e.g. "vegetable", "spice", "meat"
+  subcategory String? // e.g. "starch", ""
+  seasons     String[]
+  notes       String? // freeform notes
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  recipes     Recipe[]
+  tags        Tag[]    @relation("IngredientTags")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
   @@unique([userId, name])
+}
+
+model Tag {
+  id            Int          @id @default(autoincrement())
+  name          String
+  type          TagType
+  ingredients   Ingredient[] @relation("IngredientTags")
+  recipes       Recipe[]     @relation("RecipeTags")
+  createdBy     Int? // null = system tag, otherwise user-specific
+  createdByUser User?        @relation(fields: [createdBy], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
+
+  @@unique([name, type, createdBy]) // ✅ unique per user (or globally if createdBy is null)
+}
+
+enum TagType {
+  recipe
+  ingredient
 }

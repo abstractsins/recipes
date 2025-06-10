@@ -21,6 +21,7 @@ body {
 
 body {
   background-color: var(--black);
+  color: white;
   font-family: var(--font-geist-sans), Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -59,7 +60,7 @@ div.loader {
 }
 
 span.load-text {
-  font-family: var(--font-parkinsans);
+  font-family: var(--font-parkinsans), sans-serif;
   font-size: 20pt;
   color: var(--black);
   font-weight: 600;
@@ -118,6 +119,7 @@ header.prime-header {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  min-height: 75px;
   padding: 15px;
   padding-right: 100px;
   color: white;
@@ -139,15 +141,9 @@ header.prime-header {
   align-items: center;
 }
 
-.prime-header .greeting-container {
+.greeting-container {
   display: flex;
   align-items: center;
-}
-
-span.logout:hover {
-  cursor: pointer;
-  text-decoration: underline;
-  color: lightblue;
 }
 
 span.logout {
@@ -155,6 +151,11 @@ span.logout {
   gap: 10px;
   align-items: center;
   color: white;
+}
+
+span.logout:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 /** DASHBOARD  */
@@ -179,9 +180,8 @@ div.admin-dashboard header {
 }
 
 .module.active {
-  /* background-color: var(--grey); */
   background-color: var(--black);
-
+  border-color: silver;
 }
 
 .module.active h2 {
@@ -355,7 +355,7 @@ div.body#login-page {
 }
 
 #login-page div.login header h2 {
-  font-family: var(--font-parkinsans);
+  font-family: var(--font-parkinsans), sans-serif;
   font-size: 24pt;
   color: rgb(247, 134, 89);
 }
@@ -510,4 +510,40 @@ input.disabled[type="submit"] {
 
 #unauthorized-page h1 {
   color: white;
+}
+
+
+/* **************** */
+/** PROFILE         */
+/* **************** */
+
+#profile-layout header {
+  display: flex;
+  padding: 20px 100px 20px 20px;
+  min-height: 75px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+#profile-layout .admin-portal span {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  gap: 10px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 50px;
+}
+
+.header-buttons span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+a {
+  display: flex;
+  align-items: center;
 }

@@ -47,15 +47,18 @@ export default function LoginForm() {
             body: fd,
             credentials: 'include'
         });
+
         console.log(res);
+
         if (res.ok) {
             console.log('LOGIN OK!');
             await res.json();
-            router.push('/admin');
+            router.push('/profile');
         } else {
             alert('Login failed');
             setIsWaiting(false);
         }
+
     }
 
     // const inputHandling = (e: React.KeyboardEvent<HTMLInputElement>) => {

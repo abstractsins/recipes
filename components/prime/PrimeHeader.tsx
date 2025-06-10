@@ -1,32 +1,19 @@
-'use client';
+import Environment from "../admin/Environment";
+import Greeting from "../Greeting";
+import HeaderButtons from "../HeaderButtons";
 
-import { useEffect } from "react";
-import LogoutButton from "../LogoutButton";
+interface Props {
+    nickname: string | undefined;
+    role: string | undefined;
+}
 
-interface Props { nickname: string }
-
-export default function PrimeHeader({nickname}: Props) {
-
-    const env = process.env.NEXT_PUBLIC_ENV;
-    useEffect(() => {
-        console.log('Environment: ' + env);
-    }, [])
+export default function PrimeHeader({ nickname, role }: Props) {
 
     return (
         <header className="prime-header">
-
-            <div className="env-container">
-                <span className="label">environment:</span> <span className="env">{env}</span>
-            </div>
-
-            <div className="greeting-container">
-                <span>Hello, {nickname}</span>
-            </div>
-
-            <div className="header-buttons">
-                <LogoutButton />
-            </div>
-
+            <Environment />
+            <Greeting nickname={nickname} />
+            <HeaderButtons role={role} profileView={false} />
         </header>
     )
 }

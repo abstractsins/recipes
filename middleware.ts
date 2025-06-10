@@ -10,6 +10,7 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl
 
+    // do not enforce auth
     if (pathname.startsWith('/login') || pathname.startsWith('/register') || pathname === '/') {
         return NextResponse.next()
     }

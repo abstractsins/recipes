@@ -12,5 +12,7 @@ export default function LogoutButton() {
     router.push('/login');
   }
 
-  return <span className="logout" onClick={handleLogout}>Logout <MdLogout /></span>;
+  return (
+    <span className="link logout" onClick={handleLogout}>Logout <MdLogout /></span>
+  );
 }

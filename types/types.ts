@@ -24,6 +24,12 @@ export interface Ingredient {
 
 }
 
+export interface Tag {
+    id: number,
+    name: string,
+    type: string
+}
+
 export interface AdminModule {
     className: string;
     active: boolean;
