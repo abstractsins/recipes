@@ -20,7 +20,7 @@ export default function RecipeTags({ data }: Props) {
             <ul>
                 {
                     data.map((tag) => {
-                        const user : User | string = tag.createdByUser || 'Default';
+                        const user : User | {username: string} = tag.createdByUser || {username: 'Default'};
                         return (
                             <li key={tag.id}>
                                 <span className="tag-name">{tag.name}</span> --
