@@ -18,7 +18,7 @@ export default function Users({ data }: Props) {
     return (
         <>
             <ul>
-                {data.map((user) => <li key={user.id}>{user.nickname}</li>)}
+                {data.map((user) => <li key={user.id}>{user.nickname} --<span className="user-creator">{user.username}</span></li>)}
             </ul>
             {showDetails
                 ? (<>

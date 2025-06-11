@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 
 export async function GET() {
     try {
-        const recipes = await prisma.tag.findMany();
-        return NextResponse.json(recipes);
+        const tags = await prisma.tag.findMany();
+        return NextResponse.json(tags);
     } catch (err) {
-        console.error('Error fetching recipes:', err);
-        return new NextResponse('Server error getting recipes', { status: 500 });
+        console.error('Error fetching tags:', err);
+        return new NextResponse('Server error getting tags', { status: 500 });
     }
 }
 

@@ -10,7 +10,8 @@ export interface User {
 
 export interface Recipe {
     id: number,
-    name: string
+    name: string,
+    user?: User
 }
 
 export interface Ingredient {
@@ -20,14 +21,16 @@ export interface Ingredient {
     variety?: string,
     seasons?: string[],
     recipes?: Recipe[],
-    notes?: string
-
+    notes?: string,
+    user?: User
 }
 
 export interface Tag {
     id: number,
     name: string,
-    type: string
+    type: string,
+    createdBy: number | null,
+    createdByUser: User | null
 }
 
 export interface AdminModule {
@@ -36,3 +39,4 @@ export interface AdminModule {
     onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
     close: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
+

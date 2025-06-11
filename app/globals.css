@@ -42,6 +42,10 @@ a {
   text-decoration: none;
 }
 
+h3 {
+  font-size: 16pt;
+}
+
 div.loader {
   position: absolute;
   left: 0;
@@ -166,7 +170,17 @@ div.admin-dashboard {
 
 div.admin-dashboard header {
   padding: 15px;
-  margin: 20px;
+  margin: 10px;
+}
+
+div.readouts {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+div.readout-modules {
+  display: flex;
 }
 
 .module.inactive {
@@ -184,7 +198,7 @@ div.admin-dashboard header {
   border-color: silver;
 }
 
-.module.active h2 {
+.module.active h3 {
   color: lightgreen;
 }
 
@@ -210,15 +224,7 @@ span.cat-data-label {
 div.admin-dashboard .body {
   display: flex;
   flex-wrap: wrap;
-  padding: 30px;  
-}
-
-.users-skeleton {
-  border-radius: 10px;
-  width: 400px;
-  height: 300px;
-  background: #414141;
-  animation: pulse 2s infinite ease-in-out;
+  padding: 30px;
 }
 
 .module {
@@ -245,6 +251,13 @@ div.admin-dashboard .body {
 #users-module {
   /* width: 500px; */
   width: fit-content;
+}
+
+
+span[class*="-creator"] {
+  color: darkgray;
+  font-size: 10pt;
+  margin-left: 5px;
 }
 
 @keyframes pulse {
@@ -312,6 +325,39 @@ ul {
   list-style-position: inside;
 }
 
+/* * ADD INGREDIENT */
+form#add-ingredient select,
+form#add-ingredient input[type="text"] {
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 14pt;
+}
+
+input#add-ingredient-submit {
+  font-size: 14pt;
+  border-radius: 15px;
+  background-color: lightskyblue;
+  padding: 10px 15px;
+  min-width: 100px;
+}
+
+form#add-ingredient input[name="name"] {
+  width: 100%;
+}
+
+form#add-ingredient .row {
+  margin: 10px 0;
+  width: 100%;
+  display: flex;
+  gap: 20px;
+}
+
+div.add-data-modules header {
+  margin: 0;
+  margin-bottom: 15px;
+  padding: 0;
+}
+
 /* **************** */
 /** LOGIN           */
 /* **************** */
@@ -335,7 +381,7 @@ div.body#login-page {
   height: 100%;
 }
 
-#login-page  div.login {
+#login-page div.login {
   position: relative;
   background-color: rgb(255, 255, 255);
   /* background-color: lightyellow; */
@@ -421,8 +467,8 @@ div.body#login-page {
 }
 
 input.login-page-field:focus {
-    background-color: rgb(207, 243, 255);
-    color: black;
+  background-color: rgb(207, 243, 255);
+  color: black;
 }
 
 .login-form-body {
@@ -547,3 +593,12 @@ a {
   display: flex;
   align-items: center;
 }
+
+.module div[class*="skeleton"] {
+  border-radius: 10px;
+  width: 400px;
+  height: 300px;
+  background: #414141;
+  animation: pulse 2s infinite ease-in-out;
+}
+

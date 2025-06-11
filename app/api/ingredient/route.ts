@@ -6,7 +6,11 @@ const prisma = new PrismaClient();
 
 export async function GET() {
     try {
-        const ingredients = await prisma.ingredient.findMany();
+        const ingredients = await prisma.ingredient.findMany({
+            include: {
+                user: true
+            }
+        });
         return NextResponse.json(ingredients);
     } catch (err) {
         console.error('Error fetching ingredients:', err);

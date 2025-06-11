@@ -1,11 +1,11 @@
-import { Ingredient, User } from "@/types/types";
+import { Tag } from "@/types/types";
 import { useEffect, useState } from "react";
 
 interface Props {
-    data: Ingredient[]
+    data: Tag[]
 }
 
-export default function Ingredients({ data }: Props) {
+export default function UserIngredientTags({ data }: Props) {
 
     const [dataStr, setDataStr] = useState('');
     const [showDetails, setShowDetails] = useState(false);
@@ -18,14 +18,7 @@ export default function Ingredients({ data }: Props) {
     return (
         <>
             <ul>
-                {
-                    data.map((ingredient) => {
-                        const user: User | { username: string } = ingredient.user || { username: 'Default' };
-                        return (
-                            <li key={ingredient.id}><span className="ingredient-name">{ingredient.name}</span> --<span className="ingredient-creator">{user.username}</span></li>
-                        )
-                    })
-                }
+                {data.map((tag) => <li key={tag.id}>{tag.name}</li>)}
             </ul>
             {showDetails
                 ? (<>

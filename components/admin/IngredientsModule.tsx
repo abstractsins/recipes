@@ -34,7 +34,7 @@ export default function IngredientsModule({ className, onClick: activate, active
     return (
         <div className={`module ${className}`} id="ingredients-module" onClick={activate}>
             <div className="module-header">
-                <h2>Ingredients</h2>
+                <h3>Ingredients</h3>
                 <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : ingredients.length}</span>
             </div>
             {active &&

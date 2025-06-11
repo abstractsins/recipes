@@ -20,7 +20,7 @@ return (
     <>
         {
             role === "admin" && profileView === true
-                ? <Link href="./admin"><span className="link"><RiAdminFill /> admin portal</span></Link>
+                ? <Link href="./admin"><span className="link"><RiAdminFill /> Admin Portal</span></Link>
                 : <Link href="./profile"><span className="link"><RiUser3Fill /> Profile</span></Link>
         }
 

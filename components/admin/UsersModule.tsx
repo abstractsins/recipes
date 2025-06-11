@@ -35,7 +35,7 @@ export default function UsersModule({ className, onClick: activate, active, clos
     return (
         <div className={`module ${className}`} id="users-module" onClick={activate}>
             <div className="module-header">
-                <h2>Users</h2>
+                <h3>Users</h3>
                 <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : users.length}</span>
             </div>
             {active &&

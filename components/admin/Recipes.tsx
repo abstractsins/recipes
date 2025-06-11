@@ -1,4 +1,4 @@
-import { Recipe } from "@/types/types";
+import { Recipe, User } from "@/types/types";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -18,9 +18,22 @@ export default function Recipes({ data }: Props) {
     return (
         <>
             <ul>
-                {data.map((recipe) => (
-                    <li key={recipe.id}>{recipe.name}</li>
-                ))}
+
+                <ul>
+                    {
+                        data.map((recipe) => {
+                            const user: User | { username: string } = recipe.user || { username: 'Default' };
+                            console.log(user);
+                            return (
+                                <li key={recipe.id}>
+                                    <span className="recipe-name">{recipe.name}</span> --
+                                    <span className="recipe-creator">{user.username}</span>
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+
             </ul>
             {showDetails
                 ? (<>

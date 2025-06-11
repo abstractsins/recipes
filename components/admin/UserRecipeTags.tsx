@@ -5,7 +5,7 @@ interface Props {
     data: Tag[]
 }
 
-export default function Users({ data }: Props) {
+export default function UserRecipeTags({ data }: Props) {
 
     const [dataStr, setDataStr] = useState('');
     const [showDetails, setShowDetails] = useState(false);
