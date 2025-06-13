@@ -39,4 +39,3 @@ export interface AdminModule {
     onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
     close: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
-

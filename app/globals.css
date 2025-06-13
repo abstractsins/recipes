@@ -2,6 +2,7 @@
   --background: #ffffff;
   --foreground: #171717;
   --black: rgb(10, 10, 10);
+  --black2: rgb(15, 15, 15);
   --grey-dark: #3f3f3f;
   --grey: rgb(30, 30, 30);
 }
@@ -68,6 +69,20 @@ span.load-text {
   font-size: 20pt;
   color: var(--black);
   font-weight: 600;
+}
+
+.screen-guard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  background-color: transparent;
+}
+
+input#add-ingredient-submit:active {
+  background-color: whitesmoke !important;
 }
 
 /* **************** */
@@ -164,6 +179,14 @@ span.logout:hover {
 
 /** DASHBOARD  */
 
+.grand-module {
+  /* margin: 20px 0; */
+  /* width: 100%; */
+  /* border: 1px solid deeppink; */
+  /* border-radius: 15px; */
+  /* background-color: rgb(48, 48, 48); */
+}
+
 div.admin-dashboard {
   color: white;
 }
@@ -181,6 +204,7 @@ div.readouts {
 
 div.readout-modules {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .module.inactive {
@@ -225,6 +249,19 @@ div.admin-dashboard .body {
   display: flex;
   flex-wrap: wrap;
   padding: 30px;
+}
+
+div.add-data .add-data-modules {
+  display: flex;
+}
+
+
+.add-data-modules .module {
+  min-width: 630px;
+}
+
+#add-ingredient-module {
+  /* width: 630px; */
 }
 
 .module {
@@ -325,38 +362,188 @@ ul {
   list-style-position: inside;
 }
 
+.admin-input,
+.admin-select {
+  width: 100%;
+  height: 48px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  outline: none;
+  background-color: #fff;
+  color: #000;
+  box-sizing: border-box;
+}
+
+.admin-input:focus,
+.admin-select:focus {
+  border-color: #68D391;
+  /* example green highlight */
+}
+
+.admin-select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 40px;
+
+  background-image: url('../icons/down-arrow.svg');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16pt;
+}
+
+.admin-select:focus {
+  background-image: none;
+}
+
+.module .loader {
+  top: 37%;
+}
+
+
 /* * ADD INGREDIENT */
 form#add-ingredient select,
 form#add-ingredient input[type="text"] {
   padding: 10px 15px;
   border-radius: 10px;
   font-size: 14pt;
+  max-width: 275px;
+  border: none;
 }
 
 input#add-ingredient-submit {
+  background-color: rgb(188, 226, 249);
+  border: none;
+  cursor: pointer;
   font-size: 14pt;
-  border-radius: 15px;
-  background-color: lightskyblue;
+  border-radius: 10px;
+  justify-self: flex-end;
   padding: 10px 15px;
-  min-width: 100px;
+  width: 100%;
+  height: 48px;
 }
+
+input#add-ingredient-submit:hover:not([class*="disabled"]) {
+  background-color: lightskyblue;
+}
+
 
 form#add-ingredient input[name="name"] {
   width: 100%;
+}
+
+.add-ingredient-body input::placeholder {
+  font-size: 12pt;
+  font-style: italic;
 }
 
 form#add-ingredient .row {
   margin: 10px 0;
   width: 100%;
   display: flex;
-  gap: 20px;
+  gap: 10px;
+}
+
+#add-ingredient-name-module input[name="name"] {
+  max-width: 100% !important;
+}
+
+#add-ingredient-user-module {
+  flex: 4;
+}
+
+#add-ingredient-user-module select {
+  max-width: 100% !important;
+}
+
+#add-ingredient-submit-module {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-ingredient-body .form-module {
+  flex: 1;
+  width: 100% !important;
+}
+
+#add-ingredient-name-module {
+  flex: 2;
 }
 
 div.add-data-modules header {
   margin: 0;
   margin-bottom: 15px;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 1;
 }
+
+div.add-data-modules header h3 {
+  margin-right: 30px;
+}
+
+div.add-data-modules header div.error span {
+  color: #ff7f7f;
+  max-width: 330px;
+  font-family: monospace;
+  font-size: 10pt;
+  display: flex;
+  flex-wrap: nowrap;
+  max-height: 24px;
+}
+
+
+
+#add-ingredient-submit-module {
+  justify-content: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 100%;
+}
+
+#add-ingredient-name-module input {
+  max-width: 380px;
+}
+
+.form-module.season {
+  display: flex;
+  flex-wrap: wrap;
+  /* gap: 10px; */
+  /* margin-top: 5px; */
+}
+
+
+.form-module label.season {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #111;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: 0.2s all;
+}
+
+.form-module label.season:hover {
+  background-color: #222;
+}
+
+.form-module label.season.selected {
+  background-color: #28a745;
+  /* or your theme green */
+  border-color: #28a745;
+  color: #fff;
+}
+
+
 
 /* **************** */
 /** LOGIN           */
@@ -480,7 +667,9 @@ input.login-page-field:focus {
 }
 
 .field-container {
+  display: flex;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .register-container {
@@ -502,6 +691,7 @@ input.login-page-field {
 input.disabled[type="submit"] {
   color: gray;
   background-color: darkgray;
+  cursor: default !important;
 }
 
 @media screen and (min-width: 2010px) {
@@ -602,3 +792,72 @@ a {
   animation: pulse 2s infinite ease-in-out;
 }
 
+div.footnote-container {
+  display: flex;
+  margin-top: 15px;
+}
+
+/** CHECKBOX */
+div.form-module.season .field-container {
+  /* display: flex; */
+  /* width: 100%; */
+  padding: 10px 0;
+  justify-content: space-around;
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
+
+/* .squaredFour */
+.squaredFour {
+  width: 20px;
+  position: relative;
+  margin: 20px auto;
+}
+
+.squaredFour label {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #fcfff4;
+  background: linear-gradient(to bottom, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+  border-radius: 4px;
+  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.squaredFour label:after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border: 3px solid #333;
+  border-top: none;
+  border-right: none;
+  background: transparent;
+  opacity: 0;
+  transform: rotate(-45deg);
+}
+
+.squaredFour label:hover::after {
+  opacity: 0.5;
+}
+
+.squaredFour input[type=checkbox] {
+  visibility: hidden;
+  margin: 5px;
+}
+
+.squaredFour input[type=checkbox]:checked+label:after {
+  opacity: 1;
+}
+
+* {
+  /* border: 1px solid red; */
+}

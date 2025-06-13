@@ -120,6 +120,46 @@ CREATE TABLE public."Recipe" (
 ALTER TABLE public."Recipe" OWNER TO postgres;
 
 --
+-- Name: RecipeIngredient; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."RecipeIngredient" (
+    id integer NOT NULL,
+    "recipeId" integer NOT NULL,
+    "ingredientId" integer NOT NULL,
+    quantity text NOT NULL,
+    "prepMethod" text,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    unit text NOT NULL
+);
+
+
+ALTER TABLE public."RecipeIngredient" OWNER TO postgres;
+
+--
+-- Name: RecipeIngredient_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."RecipeIngredient_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."RecipeIngredient_id_seq" OWNER TO postgres;
+
+--
+-- Name: RecipeIngredient_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."RecipeIngredient_id_seq" OWNED BY public."RecipeIngredient".id;
+
+
+--
 -- Name: Recipe_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -233,18 +273,6 @@ CREATE TABLE public."_IngredientTags" (
 ALTER TABLE public."_IngredientTags" OWNER TO postgres;
 
 --
--- Name: _IngredientToRecipe; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."_IngredientToRecipe" (
-    "A" integer NOT NULL,
-    "B" integer NOT NULL
-);
-
-
-ALTER TABLE public."_IngredientToRecipe" OWNER TO postgres;
-
---
 -- Name: _RecipeTags; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -289,6 +317,13 @@ ALTER TABLE ONLY public."Recipe" ALTER COLUMN id SET DEFAULT nextval('public."Re
 
 
 --
+-- Name: RecipeIngredient id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."RecipeIngredient" ALTER COLUMN id SET DEFAULT nextval('public."RecipeIngredient_id_seq"'::regclass);
+
+
+--
 -- Name: Tag id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -325,8 +360,18 @@ COPY public."Ingredient" (id, name, main, variety, category, subcategory, season
 --
 
 COPY public."Recipe" (id, name, "userId", "createdAt", "updatedAt") FROM stdin;
-1	Meatloaf	1	2025-06-09 21:38:42.645	2025-06-09 21:38:42.645
 2	Meatloaf	2	2025-06-09 21:38:42.652	2025-06-09 21:38:42.652
+1	Basic Meatloaf	1	2025-06-09 21:38:42.645	2025-06-09 21:38:42.645
+\.
+
+
+--
+-- Data for Name: RecipeIngredient; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."RecipeIngredient" (id, "recipeId", "ingredientId", quantity, "prepMethod", "createdAt", "updatedAt", unit) FROM stdin;
+1	1	1	2	\N	2025-06-11 04:45:31.784	2025-06-11 04:45:31.784	lbs
+2	1	2	0.5	chopped	2025-06-11 04:45:31.784	2025-06-11 04:45:31.784	cup
 \.
 
 
@@ -386,16 +431,6 @@ COPY public."_IngredientTags" ("A", "B") FROM stdin;
 
 
 --
--- Data for Name: _IngredientToRecipe; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."_IngredientToRecipe" ("A", "B") FROM stdin;
-1	1
-1	2
-\.
-
-
---
 -- Data for Name: _RecipeTags; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -413,6 +448,8 @@ COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs,
 7cdaf5e2-2fa7-4510-9407-9bb0a582a5b7	c162315976e12bfa8a7f5e158cd7473af5ea2f5e9fa0f9488b523e491d77df86	2025-06-09 17:38:40.226064-04	20250606185111_init	\N	\N	2025-06-09 17:38:40.220474-04	1
 a3fd448a-ada8-4256-a24b-b7ca0ffadc6e	f6af4418eb3244bba819c915afa02e5de36470eb151625478c88cd81af4bb380	2025-06-09 17:38:40.247428-04	20250609182258_add_username_to_user	\N	\N	2025-06-09 17:38:40.226631-04	1
 0e39eb41-1eb1-4a78-aa1b-5184492f2db6	833b7a6cd61e622000c443e59a3591d2c2586203ab7abb40159d2a8d80fae81d	2025-06-09 17:38:40.251177-04	20250609195241_add_tag_users	\N	\N	2025-06-09 17:38:40.24773-04	1
+79a74293-5a7e-469a-b740-91f669546bb0	432a558462b426b6578ef4a2f590e95e37aa26ca454253c76567b663ef587733	2025-06-11 00:23:09.940117-04	20250611042309_add_recipe_ingredient_join	\N	\N	2025-06-11 00:23:09.91495-04	1
+932cbd7a-29e0-4ff8-af6b-ef33d7253d12	c557e83e13fc04d787a8ea3679a862c9ecd29a19d5be500dd9c6f99c314cc46f	2025-06-11 00:40:14.318234-04	20250611044013_recipe_ingredient_join_edit	\N	\N	2025-06-11 00:40:14.315887-04	1
 \.
 
 
@@ -421,6 +458,13 @@ a3fd448a-ada8-4256-a24b-b7ca0ffadc6e	f6af4418eb3244bba819c915afa02e5de36470eb151
 --
 
 SELECT pg_catalog.setval('public."Ingredient_id_seq"', 10, true);
+
+
+--
+-- Name: RecipeIngredient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."RecipeIngredient_id_seq"', 2, true);
 
 
 --
@@ -450,6 +494,14 @@ SELECT pg_catalog.setval('public."User_id_seq"', 3, true);
 
 ALTER TABLE ONLY public."Ingredient"
     ADD CONSTRAINT "Ingredient_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: RecipeIngredient RecipeIngredient_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."RecipeIngredient"
+    ADD CONSTRAINT "RecipeIngredient_pkey" PRIMARY KEY (id);
 
 
 --
@@ -485,14 +537,6 @@ ALTER TABLE ONLY public."_IngredientTags"
 
 
 --
--- Name: _IngredientToRecipe _IngredientToRecipe_AB_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."_IngredientToRecipe"
-    ADD CONSTRAINT "_IngredientToRecipe_AB_pkey" PRIMARY KEY ("A", "B");
-
-
---
 -- Name: _RecipeTags _RecipeTags_AB_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -513,6 +557,13 @@ ALTER TABLE ONLY public._prisma_migrations
 --
 
 CREATE UNIQUE INDEX "Ingredient_userId_name_key" ON public."Ingredient" USING btree ("userId", name);
+
+
+--
+-- Name: RecipeIngredient_recipeId_ingredientId_key; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX "RecipeIngredient_recipeId_ingredientId_key" ON public."RecipeIngredient" USING btree ("recipeId", "ingredientId");
 
 
 --
@@ -544,13 +595,6 @@ CREATE INDEX "_IngredientTags_B_index" ON public."_IngredientTags" USING btree (
 
 
 --
--- Name: _IngredientToRecipe_B_index; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX "_IngredientToRecipe_B_index" ON public."_IngredientToRecipe" USING btree ("B");
-
-
---
 -- Name: _RecipeTags_B_index; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -563,6 +607,22 @@ CREATE INDEX "_RecipeTags_B_index" ON public."_RecipeTags" USING btree ("B");
 
 ALTER TABLE ONLY public."Ingredient"
     ADD CONSTRAINT "Ingredient_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: RecipeIngredient RecipeIngredient_ingredientId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."RecipeIngredient"
+    ADD CONSTRAINT "RecipeIngredient_ingredientId_fkey" FOREIGN KEY ("ingredientId") REFERENCES public."Ingredient"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: RecipeIngredient RecipeIngredient_recipeId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."RecipeIngredient"
+    ADD CONSTRAINT "RecipeIngredient_recipeId_fkey" FOREIGN KEY ("recipeId") REFERENCES public."Recipe"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
@@ -595,22 +655,6 @@ ALTER TABLE ONLY public."_IngredientTags"
 
 ALTER TABLE ONLY public."_IngredientTags"
     ADD CONSTRAINT "_IngredientTags_B_fkey" FOREIGN KEY ("B") REFERENCES public."Tag"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: _IngredientToRecipe _IngredientToRecipe_A_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."_IngredientToRecipe"
-    ADD CONSTRAINT "_IngredientToRecipe_A_fkey" FOREIGN KEY ("A") REFERENCES public."Ingredient"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: _IngredientToRecipe _IngredientToRecipe_B_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."_IngredientToRecipe"
-    ADD CONSTRAINT "_IngredientToRecipe_B_fkey" FOREIGN KEY ("B") REFERENCES public."Recipe"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

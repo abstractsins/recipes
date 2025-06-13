@@ -46,7 +46,7 @@ export default function Dashboard() {
 
             <div className="body">
 
-                <div className="add-data">
+                <div className="add-data grand-module">
                     <header>
                         <h2>Add or Edit Data</h2>
                     </header>
@@ -61,7 +61,7 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                <div className="readouts">
+                <div className="readouts grand-module">
                     <header>
                         <h2>Data Readouts</h2>
                     </header>

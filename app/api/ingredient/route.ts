@@ -22,16 +22,18 @@ export async function POST(req: NextRequest) {
     try {
 
         const body = await req.json();
-        const { name, userId } = body;
+        const { name, userId, seasons } = body;
+
+        const user = Number(userId.split(':')[0]);
 
         const newingredient = await prisma.ingredient.create({
             data: {
                 name,
-                userId,
-                seasons: [],
-                recipes: {
-                    connect: body.recipes.map((id: number) => ({ id })),
-                }
+                userId: user,
+                seasons,
+                // recipes: {
+                //     connect: body.recipes.map((id: number) => ({ id })),
+                // }
             },
             include: {
                 recipes: true
@@ -40,7 +42,14 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(newingredient, { status: 201 });
 
-    } catch (err) {
+    } catch (err: any) {
+
+        if (err.code === 'P2002') {
+            return new Response(JSON.stringify({ error: 'An ingredient with that name already exists for this user' }), {
+                status: 409, // Conflict
+            });
+        }
+
         console.error('Error creating ingredient:', err);
         return new NextResponse('Server error creating ingredient', { status: 500 });
     }
