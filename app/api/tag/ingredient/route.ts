@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; // your Prisma client
 
-// GET /api/tags/recipes
 export async function GET() {
     const tags = await prisma.tag.findMany({
         where: { type: 'ingredient' },
@@ -14,7 +13,6 @@ export async function GET() {
     return NextResponse.json(tags);
 }
 
-// POST /api/tags/recipes
 export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, createdBy } = body;

@@ -1,0 +1,82 @@
+'use client';
+
+import FormRow from "@/components/FormRow";
+import FieldModule from "@/components/FieldModule";
+import CloseButton from "@/components/admin/CloseButton";
+import AdminInput from "./AdminInput";
+import AdminSelect from "./AdminSelect";
+import UserSelect from "./UserSelect";
+import IngredientSelect from "./IngredientSelect";
+
+import { useFetchUsers } from "@/hooks/useFetchUsers";
+import { AdminModule } from "@/types/types";
+import { useState } from "react";
+
+import Loader from "../Loader";
+import ScreenGuard from "../ScreenGuard";
+
+
+export default function EditIngredient({
+    className,
+    onClick: activate,
+    active,
+    close
+}: AdminModule) {
+
+    const { users } = useFetchUsers();
+    const [waiting, setIsWaiting] = useState(false);
+    const [ingredientReady, setIngredientReady] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+    }
+
+    const handleUserSelect = async (selectedUser: string) => {
+        console.log('Selected user id:', selectedUser);
+        const selectedUserId: number = Number(selectedUser.split(':')[0]);
+        
+        selectedUserId && !isNaN(selectedUserId)
+            ? setIngredientReady(true)
+            : setIngredientReady(false);
+
+    }
+
+    return (
+        <div className={`module ${className}`} id="edit-ingredient-module" onClick={activate}>
+
+            <header>
+                <h3>Edit Ingredient</h3>
+            </header>
+
+            {waiting && (
+                <>
+                    {/* <Loader msg="Submitting" /> */}
+                    <ScreenGuard />
+                </>
+            )}
+
+            {active && (
+                <>
+                    <div className="edit-ingredient-body">
+                        <form id="edit-ingredient" onSubmit={handleSubmit}>
+
+                            <FormRow id="row-1">
+                                <FieldModule label="User" id="edit-ingredient-user-module">
+                                    <UserSelect onSelect={handleUserSelect} />
+                                </FieldModule>
+                            </FormRow>
+
+                            <FormRow id="row-2">
+                                <FieldModule label="Ingredient" id="edit-ingredient-ingredient-module">
+                                    <IngredientSelect ready={!ingredientReady} />
+                                </FieldModule>
+                            </FormRow>
+
+                        </form>
+                    </div>
+                    <CloseButton onClick={close} />
+                </>
+            )}
+        </div>
+    );
+}

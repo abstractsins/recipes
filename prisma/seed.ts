@@ -44,6 +44,22 @@ async function main() {
         },
     });
 
+    const notVeganTag = await prisma.tag.create({
+        data: {
+            name: 'not vegan',
+            type: 'ingredient',
+            createdBy: null,
+        },
+    });
+
+    const vegan = await prisma.tag.create({
+        data: {
+            name: 'vegan',
+            type: 'ingredient',
+            createdBy: null,
+        },
+    });
+
     const spicyIngredientTag = await prisma.tag.create({
         data: {
             name: 'spicy',
@@ -52,7 +68,7 @@ async function main() {
         },
     });
 
-    const dried = await prisma.tag.create({
+    const driedTag = await prisma.tag.create({
         data: {
             name: 'dried',
             type: 'ingredient',
@@ -60,7 +76,7 @@ async function main() {
         },
     });
 
-    const canned = await prisma.tag.create({
+    const cannedTag = await prisma.tag.create({
         data: {
             name: 'canned',
             type: 'ingredient',
@@ -207,7 +223,7 @@ async function main() {
             category: 'vegetable',
             subcategory: 'root',
             userId: adminUser.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [] },
         },
     });
 
@@ -217,7 +233,7 @@ async function main() {
             main: 'egg',
             variety: 'large',
             userId: adminUser.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [] },
         },
     });
 
@@ -226,7 +242,7 @@ async function main() {
             name: 'Sage',
             category: 'herb',
             userId: adminUser.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [{ id: driedTag.id }] },
         },
     });
 
@@ -237,7 +253,7 @@ async function main() {
             category: 'vegetable',
             subcategory: 'root',
             userId: adminUser.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [] },
         },
     });
 
@@ -248,7 +264,7 @@ async function main() {
             variety: 'whole',
             category: 'dairy',
             userId: adminUser.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [] },
         },
     });
 
@@ -259,7 +275,7 @@ async function main() {
             category: 'vegetable',
             subcategory: 'root',
             userId: regUser.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [] },
         },
     });
 
@@ -270,7 +286,7 @@ async function main() {
             variety: 'whole',
             category: 'dairy',
             userId: regUser.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [] },
         },
     });
 
@@ -281,7 +297,7 @@ async function main() {
             category: 'vegetable',
             subcategory: 'root',
             userId: regUser2.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [] },
         },
     });
 
@@ -292,7 +308,7 @@ async function main() {
             variety: 'whole',
             category: 'dairy',
             userId: regUser2.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            tags: { connect: [] },
         },
     });
 
@@ -302,7 +318,7 @@ async function main() {
             name: 'Meatloaf',
             userId: adminUser.id,
             tags: { connect: [{ id: quickTag.id }] },
-            ingredients: { connect: [{ id: meatTag.id }] },
+            ingredients: { connect: [] },
         },
     });
 
@@ -311,10 +327,9 @@ async function main() {
             name: 'Meatloaf',
             userId: regUser.id,
             tags: { connect: [{ id: quickTag.id }] },
-            ingredients: { connect: [{ id: meatTag.id }] },
+            ingredients: { connect: [] },
         },
     });
-
 
     await prisma.user.update({
         where: { email: 'dan' },

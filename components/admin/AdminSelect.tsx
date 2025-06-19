@@ -1,56 +1,67 @@
+// TODO
+// collapse tag view
+
 import React, { BlockquoteHTMLAttributes } from 'react';
-
-interface Option {
-    value: string;
-    label: string;
-}
-
-interface AdminSelectProps {
-    name: string;
-    options: Option[];
-    required?: boolean;
-    defaultValue?: string | [];
-    multiple?: boolean;
-    onChange: (value: string, checked: boolean) => void;
-}
+import { AdminSelectProps } from '@/types/types';
 
 export default function AdminSelect({
     name,
     options,
+    disabled,
+    id = '',
+    className = '',
     required = false,
-    defaultValue = '',
+    defaultValue,
     multiple = false,
     onChange
 }: AdminSelectProps) {
+
+    console.log(defaultValue);
+
     return (
         <>
             {!multiple
                 ? (
                     <select
                         name={name}
+                        id={id}
                         required={required}
                         defaultValue={defaultValue}
                         className="admin-select"
                         multiple={multiple}
                     >
-                        {options.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                        {options?.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                     </select>
                 )
                 : (<>
-                    {options.map((opt) => (
+                    {options?.map((opt) => {
 
-                        <div key={opt.value + '-container'} className='checkbox-container'>
-                            <label className={name} key={opt.value + '-label'}>
-                                <input
-                                    key={opt.value}
-                                    value={opt.value}
-                                    type="checkbox"
-                                    onChange={(e) => onChange(opt.value, e.target.checked)}
-                                />
-                                {opt.label}
-                            </label>
-                        </div>
-                    ))}
+                        const checked = defaultValue?.includes(opt.value);
+
+                        return (
+                            < div
+                                id={id}
+                                key={opt.value + '-container'}
+                                className={`checkbox-container ${disabled ? 'disabled' : ''}`}
+                            >
+                                <label
+                                    key={opt.value + '-label'}
+                                    className={`${name} ${checked ? 'checked' : ''}`}
+                                >
+                                    <input
+                                        checked={checked}
+                                        disabled={disabled}
+                                        key={opt.value}
+                                        value={opt.value}
+                                        type="checkbox"
+                                        onChange={(e) => onChange(opt.value, e.target.checked)}
+                                    />
+                                    {opt.label}
+                                </label>
+                            </div>)
+                    }
+
+                    )}
                 </>)
             }
         </>

@@ -6,11 +6,7 @@ const prisma = new PrismaClient();
 
 export async function GET() {
     try {
-        const ingredients = await prisma.ingredient.findMany({
-            include: {
-                user: true
-            }
-        });
+        const ingredients = await prisma.ingredient.findMany({ include: { user: true } });
         return NextResponse.json(ingredients);
     } catch (err) {
         console.error('Error fetching ingredients:', err);
@@ -22,7 +18,7 @@ export async function POST(req: NextRequest) {
     try {
 
         const body = await req.json();
-        const { name, userId, seasons } = body;
+        const { name, userId, seasons, main, variety, category, subcategory } = body;
 
         const user = Number(userId.split(':')[0]);
 
@@ -31,13 +27,12 @@ export async function POST(req: NextRequest) {
                 name,
                 userId: user,
                 seasons,
-                // recipes: {
-                //     connect: body.recipes.map((id: number) => ({ id })),
-                // }
+                main,
+                variety,
+                category,
+                subcategory
             },
-            include: {
-                recipes: true
-            },
+            include: { recipes: true },
         });
 
         return NextResponse.json(newingredient, { status: 201 });

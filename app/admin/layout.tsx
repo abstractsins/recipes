@@ -1,6 +1,7 @@
 import { getUser } from "@/lib/auth";
 
 import PrimeHeader from "@/components/prime/PrimeHeader";
+import { useFetchTags } from "@/hooks/useFetchTags";
 
 export const dynamic = 'force-dynamic';
 

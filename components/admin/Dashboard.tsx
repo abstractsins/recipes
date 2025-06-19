@@ -1,15 +1,9 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-// READOUT MODULES
-import UsersModule from "@/components/admin/UsersModule";
-import RecipesModule from "@/components/admin/RecipesModule";
-import IngredientsModule from "@/components/admin/IngredientsModule";
-import RecipeTagsModule from "./RecipeTagsModule";
-import IngredientTagsModule from "./IngredientTagsModule";
-
-import AddingIngredient from "./AddIngredient";
+import DashboardAddEdit from "./DashboardAddEdit";
+import DashboardReadouts from "./DashboardReadouts";
 
 
 export default function Dashboard() {
@@ -46,70 +40,17 @@ export default function Dashboard() {
 
             <div className="body">
 
-                <div className="add-data grand-module">
-                    <header>
-                        <h2>Add or Edit Data</h2>
-                    </header>
+                <DashboardAddEdit
+                    activeIds={activeIds}
+                    onClick={activate}
+                    close={deactivate}
+                />
 
-                    <div className="add-data-modules">
-                        <AddingIngredient
-                            className={`${activeIds.includes('add-ingredient-module') ? 'active' : 'inactive'}`}
-                            onClick={activate}
-                            active={activeIds.includes('add-ingredient-module')}
-                            close={deactivate}
-                        />
-                    </div>
-                </div>
-
-                <div className="readouts grand-module">
-                    <header>
-                        <h2>Data Readouts</h2>
-                    </header>
-
-                    <div className="readout-modules">
-
-                        {/* ---------- USERS ---------- */}
-                        <UsersModule
-                            className={`${activeIds.includes('users-module') ? 'active' : 'inactive'}`}
-                            onClick={activate}
-                            active={activeIds.includes('users-module')}
-                            close={deactivate}
-                        />
-
-                        {/* --------- RECIPES --------- */}
-                        <RecipesModule
-                            className={`${activeIds.includes('recipes-module') ? 'active' : 'inactive'}`}
-                            onClick={activate}
-                            active={activeIds.includes('recipes-module')}
-                            close={deactivate}
-                        />
-
-                        {/* ------- INGREDIENTS ------- */}
-                        <IngredientsModule
-                            className={`${activeIds.includes('ingredients-module') ? 'active' : 'inactive'}`}
-                            onClick={activate}
-                            active={activeIds.includes('ingredients-module')}
-                            close={deactivate}
-                        />
-
-                        {/* ----------- RECIPE TAGS ---------- */}
-                        <RecipeTagsModule
-                            className={`${activeIds.includes('recipe-tags-module') ? 'active' : 'inactive'}`}
-                            onClick={activate}
-                            active={activeIds.includes('recipe-tags-module')}
-                            close={deactivate}
-                        />
-
-                        {/* ----------- INGREDIENT TAGS ---------- */}
-                        <IngredientTagsModule
-                            className={`${activeIds.includes('ingredient-tags-module') ? 'active' : 'inactive'}`}
-                            onClick={activate}
-                            active={activeIds.includes('ingredient-tags-module')}
-                            close={deactivate}
-                        />
-                    </div>
-
-                </div>
+                <DashboardReadouts
+                    activeIds={activeIds}
+                    onClick={activate}
+                    close={deactivate}
+                />
 
             </div>
 

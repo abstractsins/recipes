@@ -17,7 +17,7 @@ export default function UsersModule({ className, onClick: activate, active, clos
     //* 👥 FETCH USERS
     //* ------------------------------------------
     useEffect(() => {
-        async function fetchUsers() {
+        const fetchUsers = async() => {
             try {
                 const res = await fetch('/api/user');
                 const data: User[] = await res.json();

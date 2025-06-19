@@ -5,3 +5,7 @@ export const toTitleCase = (text: string | undefined) => {
         return '';
     }
 }
+
+export const stripSpecialChars = (text: string ) => {
+    return text.replace(/[-.,;:/*+%$#@^&\\]/g, ' ');
+}

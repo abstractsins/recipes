@@ -6,16 +6,24 @@ interface AdminInputProps {
     type?: string;
     maxLength?: number;
     required?: boolean;
-    defaultValue?: string;
+    disabled?: boolean;
+    className?: string;
+    value?: string | string[];
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export default function AdminInput({
     name,
+    className = '',
     placeholder = '',
     type = 'text',
     maxLength = 56,
     required = false,
-    defaultValue = ''
+    disabled = false,
+    value,
+    onChange,
+    onKeyDown
 }: AdminInputProps) {
     return (
         <input
@@ -24,8 +32,11 @@ export default function AdminInput({
             placeholder={placeholder}
             maxLength={maxLength}
             required={required}
-            defaultValue={defaultValue}
-            className="admin-input"
+            disabled={disabled}
+            className={`admin-input ${className}`}
+            value={value}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
         />
     );
 }

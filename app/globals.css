@@ -81,7 +81,7 @@ span.load-text {
   background-color: transparent;
 }
 
-input#add-ingredient-submit:active {
+input#add-edit-ingredient-submit:active {
   background-color: whitesmoke !important;
 }
 
@@ -224,6 +224,7 @@ div.readout-modules {
 
 .module.active h3 {
   color: lightgreen;
+  transition: all .4s;
 }
 
 div.admin-dashboard header h1 {
@@ -257,12 +258,33 @@ div.add-data .add-data-modules {
 
 
 .add-data-modules .module {
-  min-width: 630px;
+  width: 630px;
 }
 
-#add-ingredient-module {
-  /* width: 630px; */
+#add-edit-ingredient-module header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* width: 100%; */
 }
+
+#add-edit-ingredient-module header #row-1 {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 30px;
+}
+
+.add-edit-mode-select {
+  display: flex;
+  gap: 10px;
+}
+
+h3.unselected {
+  color: gray !important;
+}
+
+
 
 .module {
   position: relative;
@@ -402,10 +424,11 @@ ul {
   top: 37%;
 }
 
-
 /* * ADD INGREDIENT */
-form#add-ingredient select,
-form#add-ingredient input[type="text"] {
+form#add-edit-ingredient select,
+select.admin-select[name="user"],
+select.admin-select[name="ingredient"],
+form#add-edit-ingredient input[type="text"] {
   padding: 10px 15px;
   border-radius: 10px;
   font-size: 14pt;
@@ -413,7 +436,13 @@ form#add-ingredient input[type="text"] {
   border: none;
 }
 
-input#add-ingredient-submit {
+select.admin-select[name="user"],
+select.admin-select[name="ingredient"] {
+  min-width: 400px;
+}
+
+
+input#add-edit-ingredient-submit {
   background-color: rgb(188, 226, 249);
   border: none;
   cursor: pointer;
@@ -421,55 +450,57 @@ input#add-ingredient-submit {
   border-radius: 10px;
   justify-self: flex-end;
   padding: 10px 15px;
-  width: 100%;
+  width: 110px;
   height: 48px;
 }
 
-input#add-ingredient-submit:hover:not([class*="disabled"]) {
+input#add-edit-ingredient-submit:hover:not([class*="disabled"]) {
   background-color: lightskyblue;
 }
 
-
-form#add-ingredient input[name="name"] {
+form#add-edit-ingredient input[name="name"] {
   width: 100%;
 }
 
-.add-ingredient-body input::placeholder {
+.add-edit-ingredient-body input::placeholder {
   font-size: 12pt;
   font-style: italic;
 }
 
-form#add-ingredient .row {
+form#edit-ingredient .row,
+form#add-edit-ingredient .row {
   margin: 10px 0;
   width: 100%;
   display: flex;
   gap: 10px;
 }
 
-#add-ingredient-name-module input[name="name"] {
+#add-edit-ingredient-name-module input[name="name"] {
   max-width: 100% !important;
 }
 
-#add-ingredient-user-module {
+#add-edit-ingredient-user-module {
   flex: 4;
 }
 
-#add-ingredient-user-module select {
+
+select.admin-select[name="user"],
+#add-edit-ingredient-user-module select {
   max-width: 100% !important;
 }
 
-#add-ingredient-submit-module {
+#add-edit-ingredient-submit-module {
   flex: 1;
   display: flex;
   justify-content: flex-end;
 }
 
-.add-ingredient-body .form-module {
+.add-edit-ingredient-body .form-module {
   flex: 1;
   width: 100% !important;
 }
 
-#add-ingredient-name-module {
+#add-edit-ingredient-name-module {
   flex: 2;
 }
 
@@ -484,22 +515,20 @@ div.add-data-modules header {
 }
 
 div.add-data-modules header h3 {
-  margin-right: 30px;
+  /* margin-right: 30px; */
 }
 
 div.add-data-modules header div.error span {
   color: #ff7f7f;
-  max-width: 330px;
+  flex-wrap: nowrap;
+  max-height: 32px;
   font-family: monospace;
   font-size: 10pt;
   display: flex;
-  flex-wrap: nowrap;
-  max-height: 24px;
+  padding: 10px 0;
 }
 
-
-
-#add-ingredient-submit-module {
+#add-edit-ingredient-submit-module {
   justify-content: flex-end;
   display: flex;
   flex-direction: column;
@@ -507,7 +536,7 @@ div.add-data-modules header div.error span {
   width: 100%;
 }
 
-#add-ingredient-name-module input {
+#add-edit-ingredient-name-module input {
   max-width: 380px;
 }
 
@@ -518,31 +547,62 @@ div.add-data-modules header div.error span {
   /* margin-top: 5px; */
 }
 
+div.tags-module {
+  border: 2px solid gray;
+  border-radius: 10px;
+  padding: 10px;
+}
 
+.form-module label.default-tags,
+.form-module label.user-tags,
+.form-module label.add-tags,
 .form-module label.season {
+  cursor: pointer;
   display: flex;
   align-items: center;
   padding: 8px 16px;
   border: 1px solid #ccc;
   border-radius: 20px;
-  background-color: #111;
-  color: #fff;
-  cursor: pointer;
+  /* background-color: #111; */
+  /* color: #fff; */
+  /* cursor: pointer; */
   user-select: none;
   transition: 0.2s all;
 }
 
+.form-module label.season {
+  background-color: rgba(238, 166, 144, 0.25);
+  color: darkgray;
+}
+
+label.season[checked] {
+  background-color: lightblue !important;
+}
+
+label.user-tags {
+  background-color: rgba(250, 250, 210, 0.25);
+  color: darkgray;
+}
+
+label.user-tags:hover {
+  color: black;
+  background-color: lightgoldenrodyellow;
+}
+
+label.default-tags {
+  background-color: rgba(224, 255, 255, 0.25);
+  color: darkgray;
+}
+
+label.default-tags:hover {
+  background-color: rgba(224, 255, 255, 0.95);
+  color: black;
+}
+
 .form-module label.season:hover {
-  background-color: #222;
+  background-color: rgba(238, 166, 144, 0.95);
+  color: black;
 }
-
-.form-module label.season.selected {
-  background-color: #28a745;
-  /* or your theme green */
-  border-color: #28a745;
-  color: #fff;
-}
-
 
 
 /* **************** */
@@ -805,6 +865,14 @@ div.form-module.season .field-container {
   justify-content: space-around;
 }
 
+div.form-module.user-tags .field-container,
+div.form-module.default-tags .field-container {
+  padding-top: 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
 input[type="checkbox"] {
   margin-right: 0.5em;
 }
@@ -860,4 +928,179 @@ input[type="checkbox"] {
 
 * {
   /* border: 1px solid red; */
+}
+
+
+/* * TOGGLE */
+
+.toggle-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 0.25em;
+}
+
+.toggle-icon {
+  width: 0.5em;
+  height: 0.5em;
+  fill: #4c9bab;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.4));
+  transition: fill 0.4s;
+}
+
+.toggle-checkbox:not(:checked)+.toggle-icon.off,
+.toggle-checkbox:checked~.toggle-icon.on {
+  fill: #e0f9fc;
+}
+
+.toggle-checkbox {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  z-index: 1;
+  border-radius: 3.125em;
+  width: 4.05em;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.toggle-container {
+  position: relative;
+  border-radius: 3.125em;
+  width: 4.05em;
+  height: 1.5em;
+  background-image: repeating-conic-gradient(#0b66a0 0% 25%, #1093a8 0% 50%);
+  background-size: 0.125em 0.125em;
+  box-shadow: inset 0 0.125em 0.25em rgba(0, 9, 38, 0.6), inset -1.5em 0 0.0625em rgba(0, 9, 38, 0.5), inset 0.5em 0 0.5em rgba(0, 9, 38, 0.5), 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.toggle-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0.0625em;
+  left: 0.0625em;
+  border-radius: inherit;
+  width: 2.55em;
+  height: calc(100% - .125em);
+  background-image: linear-gradient(to right, #86e2fa, #125e79);
+  box-shadow: 0 0.125em 0.25em rgba(0, 0, 0, 0.6);
+  transition: left 0.4s;
+}
+
+.toggle-checkbox:checked~.toggle-container>.toggle-button {
+  left: 1.4375em;
+}
+
+.toggle-button::before {
+  content: "";
+  position: absolute;
+  top: inherit;
+  border-radius: inherit;
+  width: calc(100% - .375em);
+  height: inherit;
+  background-image: linear-gradient(to right, #0f73a8, #57cfe2, #b3f0ff);
+}
+
+.toggle-button::after {
+  content: "";
+  position: absolute;
+  width: 0.5em;
+  height: 38%;
+  background-image: repeating-linear-gradient(to right, #d2f2f6 0 0.0625em, #4ea0ae 0.0625em 0.125em, transparent 0.125em 0.1875em);
+}
+
+input[type="text"].disabled {
+  color: black;
+  /* background-color: rgb(109, 109, 109); */
+  background-color: #B6B6B6;
+}
+
+input[type="checkbox"].disabled,
+div.checkbox-container.disabled label {
+  cursor: default !important;
+}
+
+div.checkbox-container.disabled label:hover {
+  background-color: #111;
+  /* background-color: unset; */
+}
+
+select[disabled] {
+  cursor: default;
+}
+
+.status-container {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+}
+
+.status-container span {
+  font-family: monospace;
+  color: lightgreen;
+}
+
+.row.user-tags,
+.row.add-tags,
+.form-module.default-tags {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+input.add-tag {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  color: white;
+  padding: 10px 0 0 10px !important;
+  background-color: transparent;
+  border-radius: 0 !important;
+  border-bottom: 1px solid white !important;
+  margin-left: 15px;
+  margin-right: 5px;
+  width: 150px;
+}
+
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.padding-top-20 {
+  padding-top: 20px;
+}
+
+div.plus-circle-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  font-size: 16pt;
+  cursor: pointer;
+}
+
+div.plus-circle-container:hover {
+  color: lightblue;
+}
+
+.tags-module .row {
+  margin: 0 !important;
+}
+
+label.default-tags.checked {
+  background-color: rgba(224, 255, 255, 0.95);
+  color: black;
+}
+
+label.user-tags.checked {
+  background-color: rgba(250, 250, 210, 0.95);
+  color: black;
+}
+
+label.season.checked {
+  background-color: rgba(238, 166, 144, 0.95);
+  color: black;
 }
