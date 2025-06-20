@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Tag } from "@/types/types";
-
+import { Tag, TagOption } from "@/types/types";
 import { TagType } from "@prisma/client";
+import { tagsIntoOptions } from "@/utils/utils";
 
 interface Props {
     type: TagType,
@@ -13,6 +13,7 @@ interface Props {
 
 export function useFetchTags({ type, user, refreshKey }: Props) {
     const [tags, setTags] = useState<Tag[]>([]);
+    const [tagOptions, setTagOptions] = useState<TagOption[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -31,5 +32,7 @@ export function useFetchTags({ type, user, refreshKey }: Props) {
         fetchTags();
     }, [refreshKey]);
 
-    return { tags, isLoading };
+    useEffect(() => { if (tags) setTagOptions(tagsIntoOptions(tags)) }, [tags]);
+
+    return { tagOptions, isLoading };
 }

@@ -2,13 +2,16 @@
 // collapse tag view
 
 import React, { BlockquoteHTMLAttributes } from 'react';
-import { AdminSelectProps } from '@/types/types';
+import { AdminSelectProps, SeasonOption } from '@/types/types';
+
+import { TagOption, Option } from '@/types/types';
 
 export default function AdminSelect({
     name,
     options,
     disabled,
     id = '',
+    isLoading,
     className = '',
     required = false,
     defaultValue,
@@ -16,7 +19,7 @@ export default function AdminSelect({
     onChange
 }: AdminSelectProps) {
 
-    console.log(defaultValue);
+    const toValue = (v: string | Option): string | undefined => typeof v === 'string' ? v : v.value;
 
     return (
         <>
@@ -26,7 +29,7 @@ export default function AdminSelect({
                         name={name}
                         id={id}
                         required={required}
-                        defaultValue={defaultValue}
+                        defaultValue={typeof defaultValue === 'string' ? defaultValue : undefined}
                         className="admin-select"
                         multiple={multiple}
                     >
@@ -34,34 +37,53 @@ export default function AdminSelect({
                     </select>
                 )
                 : (<>
-                    {options?.map((opt) => {
+                    {isLoading
+                        ? (
+                            <>
+                                <div className={`checkbox-container ${disabled ? 'disabled' : ''}`}>
+                                    <label className={`skeleton`}></label>
+                                </div>
+                                <div className={`checkbox-container ${disabled ? 'disabled' : ''}`}>
+                                    <label className={`skeleton`}></label>
+                                </div>
+                                <div className={`checkbox-container ${disabled ? 'disabled' : ''}`}>
+                                    <label className={`skeleton`}></label>
+                                </div>
+                                <div className={`checkbox-container ${disabled ? 'disabled' : ''}`}>
+                                    <label className={`skeleton`}></label>
+                                </div>
+                            </>
+                        )
+                        : (
+                            options?.map((opt: TagOption | SeasonOption) => {
 
-                        const checked = defaultValue?.includes(opt.value);
+                                const checked = (defaultValue && typeof defaultValue !== 'string')
+                                    ? defaultValue.map(toValue).includes(toValue(opt))
+                                    : false;
 
-                        return (
-                            < div
-                                id={id}
-                                key={opt.value + '-container'}
-                                className={`checkbox-container ${disabled ? 'disabled' : ''}`}
-                            >
-                                <label
-                                    key={opt.value + '-label'}
-                                    className={`${name} ${checked ? 'checked' : ''}`}
-                                >
-                                    <input
-                                        checked={checked}
-                                        disabled={disabled}
-                                        key={opt.value}
-                                        value={opt.value}
-                                        type="checkbox"
-                                        onChange={(e) => onChange(opt.value, e.target.checked)}
-                                    />
-                                    {opt.label}
-                                </label>
-                            </div>)
+                                return (
+                                    < div
+                                        id={id}
+                                        key={opt.value + '-container'}
+                                        className={`checkbox-container ${disabled ? 'disabled' : ''}`}
+                                    >
+                                        <label key={opt.value + '-label'} className={`${name} ${checked ? 'checked' : ''}`}>
+                                            <input
+                                                autoComplete='off'
+                                                checked={checked}
+                                                disabled={disabled}
+                                                key={opt.value}
+                                                value={opt.value}
+                                                type="checkbox"
+                                                onChange={(e) => onChange(opt, e.target.checked)}
+                                            />
+                                            {opt.label}
+                                        </label>
+                                    </div>
+                                )
+                            })
+                        )
                     }
-
-                    )}
                 </>)
             }
         </>

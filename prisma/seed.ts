@@ -205,7 +205,7 @@ async function main() {
     //* 🥕 Create an ingredient
     const beef = await prisma.ingredient.create({
         data: {
-            name: 'Ground Beef 90/10',
+            name: 'ground beef 90/10',
             main: 'beef',
             variety: 'ground, 90/10',
             category: 'meat',
@@ -217,7 +217,7 @@ async function main() {
 
     const onion = await prisma.ingredient.create({
         data: {
-            name: 'White Onion',
+            name: 'white onion',
             main: 'onion',
             variety: 'white',
             category: 'vegetable',
@@ -229,7 +229,7 @@ async function main() {
 
     const largeEgg = await prisma.ingredient.create({
         data: {
-            name: 'Large Egg',
+            name: 'large egg',
             main: 'egg',
             variety: 'large',
             userId: adminUser.id,
@@ -239,7 +239,7 @@ async function main() {
 
     const sage = await prisma.ingredient.create({
         data: {
-            name: 'Sage',
+            name: 'sage',
             category: 'herb',
             userId: adminUser.id,
             tags: { connect: [{ id: driedTag.id }] },
@@ -248,7 +248,7 @@ async function main() {
 
     const carrot = await prisma.ingredient.create({
         data: {
-            name: 'Carrot',
+            name: 'carrot',
             main: 'carrot',
             category: 'vegetable',
             subcategory: 'root',
@@ -270,7 +270,7 @@ async function main() {
 
     const carrot2 = await prisma.ingredient.create({
         data: {
-            name: 'Carrot',
+            name: 'carrot',
             main: 'carrot',
             category: 'vegetable',
             subcategory: 'root',
@@ -292,7 +292,7 @@ async function main() {
 
     const carrot3 = await prisma.ingredient.create({
         data: {
-            name: 'Carrot',
+            name: 'carrot',
             main: 'carrot',
             category: 'vegetable',
             subcategory: 'root',
@@ -315,7 +315,7 @@ async function main() {
     //* 🍝 Create a recipe
     const meatloaf1 = await prisma.recipe.create({
         data: {
-            name: 'Meatloaf',
+            name: 'meatloaf',
             userId: adminUser.id,
             tags: { connect: [{ id: quickTag.id }] },
             ingredients: { connect: [] },
@@ -324,7 +324,7 @@ async function main() {
 
     const meatloaf2 = await prisma.recipe.create({
         data: {
-            name: 'Meatloaf',
+            name: 'meatloaf',
             userId: regUser.id,
             tags: { connect: [{ id: quickTag.id }] },
             ingredients: { connect: [] },

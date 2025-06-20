@@ -387,7 +387,7 @@ ul {
 .admin-input,
 .admin-select {
   width: 100%;
-  height: 48px;
+  height: 42px;
   font-size: 1rem;
   border-radius: 12px;
   border: 1px solid #ccc;
@@ -518,14 +518,22 @@ div.add-data-modules header h3 {
   /* margin-right: 30px; */
 }
 
+div.add-data-modules header div.status-container span,
 div.add-data-modules header div.error span {
-  color: #ff7f7f;
   flex-wrap: nowrap;
   max-height: 32px;
   font-family: monospace;
   font-size: 10pt;
   display: flex;
-  padding: 10px 0;
+  padding-top: 10px;
+}
+
+.error span {
+  color: #ff7f7f;
+}
+
+.status-container span {
+  color: lightgreen;
 }
 
 #add-edit-ingredient-submit-module {
@@ -553,6 +561,12 @@ div.tags-module {
   padding: 10px;
 }
 
+div.checkbox-container label.skeleton {
+  width: 100px;
+  height: 39px;
+}
+
+div.checkbox-container label.skeleton,
 .form-module label.default-tags,
 .form-module label.user-tags,
 .form-module label.add-tags,
@@ -563,9 +577,6 @@ div.tags-module {
   padding: 8px 16px;
   border: 1px solid #ccc;
   border-radius: 20px;
-  /* background-color: #111; */
-  /* color: #fff; */
-  /* cursor: pointer; */
   user-select: none;
   transition: 0.2s all;
 }
@@ -575,16 +586,16 @@ div.tags-module {
   color: darkgray;
 }
 
-label.season[checked] {
+/* label.season[checked] {
   background-color: lightblue !important;
-}
+} */
 
 label.user-tags {
   background-color: rgba(250, 250, 210, 0.25);
   color: darkgray;
 }
 
-label.user-tags:hover {
+div.checkbox-container:not([class*="disabled"]) label.user-tags:hover {
   color: black;
   background-color: lightgoldenrodyellow;
 }
@@ -594,12 +605,17 @@ label.default-tags {
   color: darkgray;
 }
 
-label.default-tags:hover {
+label.skeleton {
+  /* background-color: var(--grey-dark); */
+  background-color: green;
+}
+
+div.checkbox-container:not([class*="disabled"]) label.default-tags:hover {
   background-color: rgba(224, 255, 255, 0.95);
   color: black;
 }
 
-.form-module label.season:hover {
+.form-module div.checkbox-container:not([class*="disabled"]) label.season:hover {
   background-color: rgba(238, 166, 144, 0.95);
   color: black;
 }
@@ -728,6 +744,7 @@ input.login-page-field:focus {
 
 .field-container {
   display: flex;
+  align-items: end;
   width: 100%;
   box-sizing: border-box;
 }
@@ -849,7 +866,6 @@ a {
   width: 400px;
   height: 300px;
   background: #414141;
-  animation: pulse 2s infinite ease-in-out;
 }
 
 div.footnote-container {
@@ -1025,8 +1041,9 @@ div.checkbox-container.disabled label {
 }
 
 div.checkbox-container.disabled label:hover {
-  background-color: #111;
+  /* background-color: #111; */
   /* background-color: unset; */
+  /* background-color: initial; */
 }
 
 select[disabled] {
@@ -1034,9 +1051,10 @@ select[disabled] {
 }
 
 .status-container {
-  display: flex;
   align-items: center;
-  padding: 15px;
+  display: flex;
+  justify-content: center;
+  height: 100%;
 }
 
 .status-container span {
@@ -1103,4 +1121,8 @@ label.user-tags.checked {
 label.season.checked {
   background-color: rgba(238, 166, 144, 0.95);
   color: black;
+}
+
+.skeleton {
+  animation: pulse 2s infinite ease-in-out;
 }

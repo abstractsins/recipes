@@ -19,7 +19,7 @@ export interface Ingredient {
     name: string
     main?: string,
     variety?: string,
-    seasons?: string[],
+    seasons: string[],
     recipes?: Recipe[],
     notes?: string,
     user?: User,
@@ -31,14 +31,6 @@ export interface Ingredient {
     updatedAt?: Date
 }
 
-export interface Tag {
-    id: number,
-    name: string,
-    type: string,
-    createdBy: number | null,
-    createdByUser: User | null
-}
-
 export interface AdminModule {
     className: string;
     active: boolean;
@@ -48,14 +40,16 @@ export interface AdminModule {
 
 export interface AdminSelectProps {
     name: string;
-    options?: TagOption[];
+    options?: TagOption[] | SeasonOption[];
     className?: string;
     required?: boolean;
-    defaultValue?: string | string[];
+    isLoading?: boolean;
+    defaultValue?: string | string[] | TagOption[];
     multiple?: boolean;
     disabled?: boolean;
     id?: string;
-    onChange: (value: string, checked: boolean) => void;
+    // onChange: (value: string, checked: boolean) => void;
+    onChange: (tag: TagOption | SeasonOption | Option, checked: boolean) => void;
 }
 
 export type Mode = 'add' | 'edit';
@@ -66,13 +60,36 @@ export type TagOption = {
     label: string;
     value: string;
 }
+
+export interface Tag {
+    id: number,
+    name: string,
+    type: string,
+    createdBy: number | null,
+    createdByUser: User | null
+}
+
+export interface SeasonOption {
+    id?: number;
+    name?: string;
+    label: string;
+    value: string;
+}
+
+export type Option = {
+    id?: number;
+    name?: string;
+    label?: string;
+    value?: string;
+}
+
 export type IngredientFormState = {
     name: string;
     main: string;
     variety: string;
     category: string;
     subcategory: string;
-    seasons: string[];
-    defaultTags: string[];
-    userTags: string[];
+    seasons: SeasonOption[];
+    selectedDefaultTagOptions: TagOption[];
+    selectedUserTagOptions: TagOption[];
 };

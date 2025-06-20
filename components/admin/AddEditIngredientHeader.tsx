@@ -4,11 +4,12 @@ import Toggle from "../Toggle";
 interface Props {
     active: boolean;
     mode: string;
+    statusMsg: string | null | undefined;
     error: string | null | undefined;
     handleModeSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function AddEditIngredientHeader({active, mode, error, handleModeSelect} : Props) {
+export default function AddEditIngredientHeader({ active, mode, error, statusMsg, handleModeSelect }: Props) {
     return (
         <>
             <FormRow id="row-1">
@@ -33,6 +34,15 @@ export default function AddEditIngredientHeader({active, mode, error, handleMode
                     </div>
                 }
             </FormRow>
+
+            <FormRow id="status-row">
+                {active &&
+                    <div className="status-container">
+                        {statusMsg && <span>🥒 {statusMsg}</span>}
+                    </div>
+                }
+            </FormRow>
+
         </>
     );
 }

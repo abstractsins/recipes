@@ -15,7 +15,7 @@ interface Props extends AdminSelectProps {
     type: TagType;
     user: number | null;
     refreshKey?: number | null,
-    onSelect?: (value: string) => void;
+    onSelect?: (tag: TagOption) => void;
 }
 
 export default function TagsSelect({ 
@@ -30,29 +30,17 @@ export default function TagsSelect({
     onSelect 
 }: Props) {
 
-    const [modTags, setModTags] = useState<TagOption[]>([]);
-
-    const { tags } = useFetchTags({type, user, refreshKey});
-
-    useEffect(() => {
-        let modTagsArr: TagOption[] = [];
-        for (const tag of tags) {
-            const { id, name } = tag;
-            const label = toTitleCase(name);
-            const value = name;
-            modTagsArr.push({ id, name, label, value });
-        }
-        setModTags(modTagsArr);
-    }, [tags]);
+    const { tagOptions, isLoading } = useFetchTags({type, user, refreshKey});
 
     return (
         <AdminSelect
             name={name}
+            isLoading={isLoading}
             disabled={disabled}
             defaultValue={defaultValue}
             onChange={onChange}
             multiple={multiple}
-            options={modTags}
+            options={tagOptions}
         />
     );
 }
