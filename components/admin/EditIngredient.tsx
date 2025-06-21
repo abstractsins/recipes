@@ -1,10 +1,10 @@
 'use client';
 
-import FormRow from "@/components/FormRow";
-import FieldModule from "@/components/FieldModule";
-import CloseButton from "@/components/admin/CloseButton";
-import AdminInput from "./AdminInput";
-import AdminSelect from "./AdminSelect";
+import FormRow from "@/components/admin/formElements/FormRow";
+import FieldModule from "@/components/admin/formElements/FieldModule";
+import CloseButton from "@/components/admin/dashboard/CloseButton";
+import AdminInput from "./formElements/AdminInput";
+import AdminSelect from "./formElements/AdminSelect";
 import UserSelect from "./UserSelect";
 import IngredientSelect from "./IngredientSelect";
 
@@ -12,8 +12,8 @@ import { useFetchUsers } from "@/hooks/useFetchUsers";
 import { AdminModule } from "@/types/types";
 import { useState } from "react";
 
-import Loader from "../Loader";
-import ScreenGuard from "../ScreenGuard";
+import Loader from "../general/Loader";
+import ScreenGuard from "../general/ScreenGuard";
 
 
 export default function EditIngredient({

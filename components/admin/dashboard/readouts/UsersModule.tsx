@@ -2,25 +2,26 @@
 
 import { useEffect, useState } from "react";
 
-import Recipes from "./Recipes";
-import CloseButton from "./CloseButton";
-import { Recipe, AdminModule } from "@/types/types";
+import Users from "./Users";
+import CloseButton from "./dashboard/CloseButton";
 
-export default function RecipesModule({ className, onClick: activate, active, close }: AdminModule) {
+import { User, AdminModule } from "@/types/types";
+
+export default function UsersModule({ className, onClick: activate, active, close }: AdminModule) {
 
     const [isLoading, setIsLoading] = useState(true);
-    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
 
 
     //* ------------------------------------------
-    //* 👥 FETCH RECIPES
+    //* 👥 FETCH USERS
     //* ------------------------------------------
     useEffect(() => {
-        async function fetchRecipes() {
+        const fetchUsers = async() => {
             try {
-                const res = await fetch('/api/recipe');
-                const data: Recipe[] = await res.json();
-                setRecipes(data);
+                const res = await fetch('/api/user');
+                const data: User[] = await res.json();
+                setUsers(data);
             } catch (err) {
                 console.error("Failed to fetch users:", err);
             } finally {
@@ -28,14 +29,14 @@ export default function RecipesModule({ className, onClick: activate, active, cl
             }
         }
 
-        fetchRecipes();
+        fetchUsers();
     }, []);
 
     return (
-        <div className={`module ${className}`} id="recipes-module" onClick={activate}>
+        <div className={`module ${className}`} id="users-module" onClick={activate}>
             <div className="module-header">
-                <h3>Recipes</h3>
-                <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : recipes.length}</span>
+                <h3>Users</h3>
+                <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : users.length}</span>
             </div>
             {active &&
                 (<>
@@ -43,7 +44,7 @@ export default function RecipesModule({ className, onClick: activate, active, cl
                         {
                             isLoading
                                 ? <div className="users-skeleton"></div>
-                                : <Recipes data={recipes} />
+                                : <Users data={users} />
                         }
                     </div>
 

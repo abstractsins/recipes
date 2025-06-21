@@ -57,12 +57,7 @@ export default function AdminSelect({
                         : (
                             options?.map((opt: TagOption | SeasonOption) => {
 
-                                const checked = (
-                                    defaultValue && 
-                                    // typeof defaultValue !== 'string' &&
-                                    typeof defaultValue[0] === 'number'
-                                )
-                                    && defaultValue.includes(opt.id ?? opt.value);
+                                const checked = defaultValue?.includes(opt.id);
 
                                 return (
                                     < div

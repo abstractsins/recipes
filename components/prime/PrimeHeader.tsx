@@ -1,6 +1,6 @@
-import Environment from "../admin/Environment";
-import Greeting from "../Greeting";
-import HeaderButtons from "../HeaderButtons";
+import Environment from "./Environment";
+import Greeting from "./Greeting";
+import HeaderButtons from "../profile/HeaderButtons";
 
 interface Props {
     nickname: string | undefined;

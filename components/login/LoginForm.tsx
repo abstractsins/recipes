@@ -6,9 +6,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import RegisterLink from "./RegisterLink";
+import RegisterLink from "../general/RegisterLink";
 
-import Loader from "./Loader";
+import Loader from "../general/Loader";
 
 export default function LoginForm() {
 

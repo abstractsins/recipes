@@ -1,7 +1,7 @@
 import { getUser } from '@/lib/auth'
 
-import Greeting from '@/components/Greeting';
-import HeaderButtons from "@/components/HeaderButtons";
+import Greeting from '@/components/prime/Greeting';
+import HeaderButtons from "@/components/profile/HeaderButtons";
 
 export const dynamic = 'force-dynamic';
 

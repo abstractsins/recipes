@@ -1,7 +1,7 @@
 'use client';
 
-import ProfileButton from "./ProfileButton";
-import LogoutButton from "./LogoutButton";
+import ProfileButton from "../ProfileButton";
+import LogoutButton from "../LogoutButton";
 import { useRouter } from "next/navigation";
 
 interface Props {

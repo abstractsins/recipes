@@ -17,24 +17,24 @@ import {
     SeasonOption
 } from "@/types/types";
 
-import Loader from "@/components/Loader";
-import ScreenGuard from "@/components/ScreenGuard";
+import Loader from "@/components/general/Loader";
+import ScreenGuard from "@/components/general/ScreenGuard";
 
-import FormRow from "@/components/FormRow";
-import FieldModule from "@/components/FieldModule";
-import CloseButton from "@/components/admin/CloseButton";
+import FormRow from "@/components/admin/formElements/FormRow";
+import FieldModule from "@/components/admin/formElements/FieldModule";
+import CloseButton from "@/components/admin/dashboard/CloseButton";
 
-import AdminInput from "./AdminInput";
-import AdminSelect from "./AdminSelect";
-import TagsSelect from "./TagsSelect";
-import UserSelect from "./UserSelect";
-import IngredientSelect from "./IngredientSelect";
+import AdminInput from "../formElements/AdminInput";
+import AdminSelect from "../formElements/AdminSelect";
+import TagsSelect from "../TagsSelect";
+import UserSelect from "../UserSelect";
+import IngredientSelect from "../IngredientSelect";
 import AddEditIngredientHeader from "./AddEditIngredientHeader";
 
 import { seasonOptions, seasonsIntoOptions, tagsIntoOptions } from "@/utils/utils";
 
 import { toTitleCase } from "@/utils/utils";
-import IngredientTags from "./IngredientTags";
+import IngredientTags from "../IngredientTags";
 
 
 export default function AddEditIngredient({ className, onClick: activate, active, close }: AdminModule) {

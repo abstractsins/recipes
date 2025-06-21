@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { Ingredient, AdminModule } from "@/types/types";
 import Ingredients from "./Ingredients";
-import CloseButton from "./CloseButton";
+import CloseButton from "./dashboard/CloseButton";
 
 export default function IngredientsModule({ className, onClick: activate, active, close }: AdminModule) {
 

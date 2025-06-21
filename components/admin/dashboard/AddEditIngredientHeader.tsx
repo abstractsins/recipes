@@ -1,5 +1,5 @@
-import FormRow from "@/components/FormRow";
-import Toggle from "../Toggle";
+import FormRow from "@/components/admin/formElements/FormRow";
+import Toggle from "../../general/Toggle";
 
 interface Props {
     active: boolean;

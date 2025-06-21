@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-import RecipeTags from "./RecipeTags";
-import CloseButton from "./CloseButton";
+import IngredientTags from "./IngredientTags";
+import CloseButton from "./dashboard/CloseButton";
 
 import { Tag, AdminModule } from "@/types/types";
 
-export default function RecipeTagsModule({ className, onClick: activate, active, close }: AdminModule) {
+export default function IngredientTagsModule({ className, onClick: activate, active, close }: AdminModule) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [tags, setTags] = useState<Tag[]>([]);
@@ -19,10 +19,9 @@ export default function RecipeTagsModule({ className, onClick: activate, active,
     useEffect(() => {
         async function fetchTags() {
             try {
-                const res = await fetch('/api/tag/recipe');
+                const res = await fetch('/api/tag/ingredient');
                 const data: Tag[] = await res.json();
                 setTags(data);
-                console.log(data);
             } catch (err) {
                 console.error("Failed to fetch tags:", err);
             } finally {
@@ -34,9 +33,9 @@ export default function RecipeTagsModule({ className, onClick: activate, active,
     }, []);
 
     return (
-        <div className={`module ${className}`} id="recipe-tags-module" onClick={activate}>
+        <div className={`module ${className}`} id="ingredient-tags-module" onClick={activate}>
             <div className="module-header">
-                <h3>Recipe Tags</h3>
+                <h3>Ingredient Tags</h3>
                 <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : tags.length}</span>
             </div>
             {active &&
@@ -45,7 +44,7 @@ export default function RecipeTagsModule({ className, onClick: activate, active,
                         {
                             isLoading
                                 ? <div className="tags-skeleton"></div>
-                                : <RecipeTags data={tags} />
+                                : <IngredientTags data={tags} />
                         }
                     </div>
 

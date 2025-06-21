@@ -1,6 +1,6 @@
 'use client';
 
-import AdminSelect from "./AdminSelect";
+import AdminSelect from "./formElements/AdminSelect";
 import { useFetchTags } from "@/hooks/useFetchTags";
 
 import { AdminSelectProps } from "@/types/types";

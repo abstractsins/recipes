@@ -208,12 +208,6 @@ async function main() {
 
 
 
-
-
-
-
-
-
     //* 🥕 Create an ingredient
     const beef = await prisma.ingredient.create({
         data: {

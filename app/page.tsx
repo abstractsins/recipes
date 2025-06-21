@@ -1,6 +1,6 @@
 import { PiChefHat } from "react-icons/pi";
 import Link from "next/link";
-import RegisterLink from "@/components/RegisterLink";
+import RegisterLink from "@/components/general/RegisterLink";
 
 export default function Home() {
 
