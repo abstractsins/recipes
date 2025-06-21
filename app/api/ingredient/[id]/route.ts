@@ -1,14 +1,12 @@
 // api/ingredient/[id]/route.ts
 
+import IngredientTags from '@/components/admin/IngredientTags';
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server'
 
 const prisma = new PrismaClient();
 
-export async function GET(
-    req: NextRequest,
-    { params }: any
-) {
+export async function GET(req: NextRequest, { params }: any) {
     // await the promise exactly once
     const { id } = await params;
     const numericId = Number(id)
@@ -17,12 +15,18 @@ export async function GET(
     }
 
     try {
-        const ingredient = await prisma.ingredient.findUnique({ where: { id: numericId } });
+
+        const ingredient = await prisma.ingredient.findUnique({
+            where: { id: numericId },
+            include: { IngredientTag: true, user: false }
+        });
+
         if (!ingredient) {
             return new NextResponse('Ingredient not found.', { status: 404 });
         }
 
         return NextResponse.json(ingredient);
+
     } catch (err) {
         console.error('Error fetching ingredient:', err);
         return new NextResponse('Server error.', { status: 500 });
@@ -43,7 +47,8 @@ export async function PUT(req: NextRequest, { params }: any) {
             main,
             variety,
             category,
-            subcategory
+            subcategory,
+            IngredientTag
         } = await req.json();
 
         const urlParams = await params;
@@ -61,14 +66,20 @@ export async function PUT(req: NextRequest, { params }: any) {
                 main,
                 variety,
                 category,
-                subcategory
-            },
+                subcategory,
+                IngredientTag: {
+                    deleteMany: {}, // Remove existing tag links
+                    create: IngredientTag.map((id: number) => ({
+                        tag: { connect: { id } }
+                    }))
+                }
+            }
         });
 
         return NextResponse.json({ message: "Ingredient updated." });
-    } catch (err) {
-        console.error('Error editing ingredient:', err);
-        return new NextResponse('Server error editing recipe', { status: 500 });
+    } catch (err: any) {
 
+        console.error('Error editing ingredient:', err);
+        return new NextResponse(JSON.stringify({ error: 'Server error editing recipe' }), { status: 500 });
     }
 }

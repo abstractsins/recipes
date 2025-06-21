@@ -12,7 +12,6 @@ import {
     AdminModule,
     Ingredient,
     Mode,
-    Tag,
     IngredientFormState,
     TagOption,
     SeasonOption
@@ -35,6 +34,7 @@ import AddEditIngredientHeader from "./AddEditIngredientHeader";
 import { seasonOptions, seasonsIntoOptions, tagsIntoOptions } from "@/utils/utils";
 
 import { toTitleCase } from "@/utils/utils";
+import IngredientTags from "./IngredientTags";
 
 
 export default function AddEditIngredient({ className, onClick: activate, active, close }: AdminModule) {
@@ -68,8 +68,8 @@ export default function AddEditIngredient({ className, onClick: activate, active
         category: '',
         subcategory: '',
         seasons: [],
-        selectedDefaultTagOptions: [],
-        selectedUserTagOptions: []
+        selectedDefaultTagIndexes: [],
+        selectedUserTagIndexes: []
     });
 
     const isDisabled = mode === 'edit' && !ingredientReady;
@@ -88,7 +88,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
         !exceptions?.includes('ingredientId') && setSelectedIngredientId(null);
         !exceptions?.includes('ingredient') && setIngredientInfo(null);
         !exceptions?.includes('authorId') && setSelectedAuthorId(null);
-        !exceptions?.includes('form') && setFormState({ name: '', main: '', variety: '', category: '', subcategory: '', seasons: [], selectedDefaultTagOptions: [], selectedUserTagOptions: [] });
+        !exceptions?.includes('form') && setFormState({ name: '', main: '', variety: '', category: '', subcategory: '', seasons: [], selectedDefaultTagIndexes: [], selectedUserTagIndexes: [] });
         !exceptions?.includes('userReady') && setUserReady(false);
         !exceptions?.includes('ingredientReady') && setIngredientReady(false);
     };
@@ -97,26 +97,24 @@ export default function AddEditIngredient({ className, onClick: activate, active
     const handleSeasonSelect = (season: SeasonOption, checked: boolean) => {
         setFormState(prev => ({
             ...prev,
-            seasons: checked ? [...prev.seasons, season] : prev.seasons.filter(s => s !== season),
+            seasons: checked ? [...prev.seasons, season.value] : prev.seasons.filter(s => s !== season.value),
         }));
-        console.log(formState.seasons)
     };
 
     // Default Tags
     const handleDefaultTagSelect = (tag: TagOption, checked: boolean) => {
+        console.log(formState.selectedDefaultTagIndexes)
         setFormState(prev => ({
             ...prev,
-            selectedDefaultTagOptions: checked ? [...prev.selectedDefaultTagOptions, tag] : prev.selectedDefaultTagOptions.filter(s => s !== tag),
+            selectedDefaultTagIndexes: checked ? [...prev.selectedDefaultTagIndexes, tag.id] : prev.selectedDefaultTagIndexes.filter(s => s !== tag.id),
         }));
-        console.log(formState.selectedDefaultTagOptions)
     };
 
     const handleUserTagSelect = (tag: TagOption, checked: boolean) => {
         setFormState(prev => ({
             ...prev,
-            selectedUserTagOptions: checked ? [...prev.selectedUserTagOptions, tag] : prev.selectedUserTagOptions.filter(s => s !== tag),
+            selectedUserTagIndexes: checked ? [...prev.selectedUserTagIndexes, tag.id] : prev.selectedUserTagIndexes.filter(s => s !== tag.id),
         }));
-        console.log(formState.selectedUserTagOptions)
     };
 
     const handleIngredientSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -128,6 +126,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
             setIngredientReady(false);
         }
         setStatusMsg(null);
+        setError(null);
     };
 
     const handleModeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,26 +142,19 @@ export default function AddEditIngredient({ className, onClick: activate, active
         setStatusMsg(null);
 
         const data = {
-            name: formState.name.toLowerCase(),
+            ...formState,
             userId: mode === 'add' ? (new FormData(e.currentTarget).get('user')) : selectedUserId,
-            category: formState.category.toLowerCase(),
-            subcategory: formState.subcategory.toLowerCase(),
-            main: formState.main.toLowerCase(),
-            variety: formState.variety.toLowerCase(),
-            seasons: formState.seasons.map(s => s.value),
-            tags: [...formState.selectedDefaultTagOptions, ...formState.selectedUserTagOptions]
+            IngredientTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
         };
 
         try {
             const res = await fetch(
-                mode === 'add' ? '/api/ingredient' : `/api/ingredient/${selectedIngredientId}`,
-                {
-                    method: mode === 'add' ? 'POST' : 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                    credentials: 'include',
-                }
-            );
+                mode === 'add' ? '/api/ingredient' : `/api/ingredient/${selectedIngredientId}`, {
+                method: mode === 'add' ? 'POST' : 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+                credentials: 'include',
+            });
 
             if (!res.ok) {
                 const error = await res.json();
@@ -186,6 +178,8 @@ export default function AddEditIngredient({ className, onClick: activate, active
             setSelectedIngredientId(null);
             setIngredientValue('null');
         }
+
+        document.getElementById('add-edit-ingredient-module')?.scrollIntoView({ behavior: 'smooth' })
     };
 
     const userIngredientTagInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -225,8 +219,8 @@ export default function AddEditIngredient({ className, onClick: activate, active
                 category: '',
                 subcategory: '',
                 seasons: [],
-                selectedDefaultTagOptions: [],
-                selectedUserTagOptions: []
+                selectedDefaultTagIndexes: [],
+                selectedUserTagIndexes: []
             });
         } else {
             setUserReady(false);
@@ -281,8 +275,10 @@ export default function AddEditIngredient({ className, onClick: activate, active
                 category: ingredientInfo.category ?? '',
                 subcategory: ingredientInfo.subcategory ?? '',
                 seasons: seasonsIntoOptions(ingredientInfo.seasons) ?? [],
-                selectedDefaultTagOptions: tagsIntoOptions(ingredientInfo.defaultTags) ?? [],
-                selectedUserTagOptions: tagsIntoOptions(ingredientInfo.userTags) ?? []
+                // selectedDefaultTagOptions: tagsIntoOptions(ingredientInfo.defaultTags) ?? [],
+                // selectedUserTagOptions: tagsIntoOptions(ingredientInfo.userTags) ?? []
+                selectedDefaultTagIndexes: ingredientInfo.defaultTags ?? [],
+                selectedUserTagIndexes: ingredientInfo.userTags ?? []
             });
         }
     }, [ingredientInfo]);
@@ -295,7 +291,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
 
             setFormState(prev => ({
                 ...prev,
-                selectedUserTagOptions: []
+                selectedUserTagIndexes: []
             }))
         }
     }, [selectedAuthorId, selectedUserId]);
@@ -406,7 +402,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                     <FieldModule label="Default-Tags">
                                         <TagsSelect
                                             name="default-tags"
-                                            defaultValue={formState.selectedDefaultTagOptions}
+                                            defaultValue={formState.selectedDefaultTagIndexes}
                                             disabled={isDisabled}
                                             onChange={handleDefaultTagSelect}
                                             multiple
@@ -423,7 +419,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                             <FieldModule label="User-Tags">
                                                 <TagsSelect
                                                     name="user-tags"
-                                                    defaultValue={formState.selectedUserTagOptions}
+                                                    defaultValue={formState.selectedUserTagIndexes}
                                                     disabled={isDisabled}
                                                     onChange={handleUserTagSelect}
                                                     multiple

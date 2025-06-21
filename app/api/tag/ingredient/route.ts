@@ -6,7 +6,7 @@ export async function GET() {
         where: { type: 'ingredient' },
         orderBy: { createdBy: 'desc' },
         include: {
-            createdByUser: true
+            createdByUser: false
         }
     });
 

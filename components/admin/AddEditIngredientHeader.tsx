@@ -19,7 +19,9 @@ export default function AddEditIngredientHeader({ active, mode, error, statusMsg
                         <h3 className={mode === 'add' ? '' : 'unselected'}>
                             Add
                         </h3>
+
                         <Toggle onChange={handleModeSelect} />
+                        
                         <h3 className={mode === 'edit' ? '' : 'unselected'}>
                             Edit
                         </h3>

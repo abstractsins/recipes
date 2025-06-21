@@ -35,6 +35,40 @@ async function main() {
 
 
     //* 🧂 Create some default tags
+
+    // * RECIPE
+    const spicyRecipeTag = await prisma.tag.create({
+        data: {
+            name: 'spicy',
+            type: 'recipe',
+            createdBy: null,
+        },
+    });
+
+    const quickRecipeTag = await prisma.tag.create({
+        data: {
+            name: 'quick',
+            type: 'recipe',
+            createdBy: null,
+        },
+    });
+
+    const friedRecipeTag = await prisma.tag.create({
+        data: {
+            name: 'fried',
+            type: 'recipe',
+            createdBy: null,
+        },
+    });
+
+    const onePotRecipeTag = await prisma.tag.create({
+        data: {
+            name: 'one pot',
+            type: 'recipe',
+            createdBy: null,
+        },
+    });
+
     // * INGREDIENT
     const meatTag = await prisma.tag.create({
         data: {
@@ -44,7 +78,7 @@ async function main() {
         },
     });
 
-    const notVeganTag = await prisma.tag.create({
+    const notVeganIngredientTag = await prisma.tag.create({
         data: {
             name: 'not vegan',
             type: 'ingredient',
@@ -52,7 +86,7 @@ async function main() {
         },
     });
 
-    const vegan = await prisma.tag.create({
+    const veganIngredientTag = await prisma.tag.create({
         data: {
             name: 'vegan',
             type: 'ingredient',
@@ -68,7 +102,7 @@ async function main() {
         },
     });
 
-    const driedTag = await prisma.tag.create({
+    const driedIngredientTag = await prisma.tag.create({
         data: {
             name: 'dried',
             type: 'ingredient',
@@ -76,7 +110,7 @@ async function main() {
         },
     });
 
-    const cannedTag = await prisma.tag.create({
+    const cannedIngredientTag = await prisma.tag.create({
         data: {
             name: 'canned',
             type: 'ingredient',
@@ -84,38 +118,7 @@ async function main() {
         },
     });
 
-    // * RECIPE
-    const spicyRecipeTag = await prisma.tag.create({
-        data: {
-            name: 'spicy',
-            type: 'recipe',
-            createdBy: null,
-        },
-    });
 
-    const quickTag = await prisma.tag.create({
-        data: {
-            name: 'quick',
-            type: 'recipe',
-            createdBy: null,
-        },
-    });
-
-    const fried = await prisma.tag.create({
-        data: {
-            name: 'fried',
-            type: 'recipe',
-            createdBy: null,
-        },
-    });
-
-    const onePot = await prisma.tag.create({
-        data: {
-            name: 'one pot',
-            type: 'recipe',
-            createdBy: null,
-        },
-    });
 
 
     //* 🧂 Create some user tags
@@ -168,6 +171,8 @@ async function main() {
         },
     });
 
+
+
     //* * USER INGREDIENTS
     const expensive = await prisma.tag.create({
         data: {
@@ -202,6 +207,13 @@ async function main() {
     });
 
 
+
+
+
+
+
+
+
     //* 🥕 Create an ingredient
     const beef = await prisma.ingredient.create({
         data: {
@@ -211,7 +223,11 @@ async function main() {
             category: 'meat',
             subcategory: 'beef',
             userId: adminUser.id,
-            tags: { connect: [{ id: meatTag.id }] },
+            IngredientTag: {
+                create: [
+                    { tag: { connect: { id: meatTag.id } } }
+                ]
+            }
         },
     });
 
@@ -223,7 +239,6 @@ async function main() {
             category: 'vegetable',
             subcategory: 'root',
             userId: adminUser.id,
-            tags: { connect: [] },
         },
     });
 
@@ -233,7 +248,6 @@ async function main() {
             main: 'egg',
             variety: 'large',
             userId: adminUser.id,
-            tags: { connect: [] },
         },
     });
 
@@ -242,7 +256,11 @@ async function main() {
             name: 'sage',
             category: 'herb',
             userId: adminUser.id,
-            tags: { connect: [{ id: driedTag.id }] },
+            IngredientTag: {
+                create: [
+                    { tag: { connect: { id: driedIngredientTag.id } } }
+                ]
+            }
         },
     });
 
@@ -253,7 +271,6 @@ async function main() {
             category: 'vegetable',
             subcategory: 'root',
             userId: adminUser.id,
-            tags: { connect: [] },
         },
     });
 
@@ -264,7 +281,11 @@ async function main() {
             variety: 'whole',
             category: 'dairy',
             userId: adminUser.id,
-            tags: { connect: [] },
+            IngredientTag: {
+                create: [
+                    { tag: { connect: { id: notVeganIngredientTag.id } } }
+                ]
+            }
         },
     });
 
@@ -275,7 +296,6 @@ async function main() {
             category: 'vegetable',
             subcategory: 'root',
             userId: regUser.id,
-            tags: { connect: [] },
         },
     });
 
@@ -286,7 +306,6 @@ async function main() {
             variety: 'whole',
             category: 'dairy',
             userId: regUser.id,
-            tags: { connect: [] },
         },
     });
 
@@ -297,7 +316,11 @@ async function main() {
             category: 'vegetable',
             subcategory: 'root',
             userId: regUser2.id,
-            tags: { connect: [] },
+            IngredientTag: {
+                create: [
+                    { tag: { connect: { id: veganIngredientTag.id } } }
+                ]
+            }
         },
     });
 
@@ -308,17 +331,31 @@ async function main() {
             variety: 'whole',
             category: 'dairy',
             userId: regUser2.id,
-            tags: { connect: [] },
         },
     });
+
+
+
+
+
+
+
 
     //* 🍝 Create a recipe
     const meatloaf1 = await prisma.recipe.create({
         data: {
             name: 'meatloaf',
             userId: adminUser.id,
-            tags: { connect: [{ id: quickTag.id }] },
-            ingredients: { connect: [] },
+            ingredients: {
+                create: [
+                    {
+                        ingredient: { connect: { id: beef.id } },
+                        quantity: '1',     // supply required cols
+                        unit: 'lb',
+                        prepMethod: null     // optional field
+                    }
+                ]
+            },
         },
     });
 
@@ -326,10 +363,18 @@ async function main() {
         data: {
             name: 'meatloaf',
             userId: regUser.id,
-            tags: { connect: [{ id: quickTag.id }] },
             ingredients: { connect: [] },
+            RecipeTag: {
+                create: [
+                    { tag: { connect: { id: quickRecipeTag.id } } },
+                    { tag: { connect: { id: spicyRecipeTag.id } } }
+                ]
+            }
         },
     });
+
+
+
 
     await prisma.user.update({
         where: { email: 'dan' },
@@ -338,7 +383,9 @@ async function main() {
 
 
     console.log('Seeded successfully!');
+
 }
+
 
 main()
     .catch((e) => {

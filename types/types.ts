@@ -25,8 +25,8 @@ export interface Ingredient {
     user?: User,
     category?: string,
     subcategory?: string,
-    defaultTags: Tag[],
-    userTags: Tag[],
+    defaultTags: number[],
+    userTags: number[],
     createdAt?: Date,
     updatedAt?: Date
 }
@@ -44,7 +44,7 @@ export interface AdminSelectProps {
     className?: string;
     required?: boolean;
     isLoading?: boolean;
-    defaultValue?: string | string[] | TagOption[];
+    defaultValue?: string | string[] | number[];
     multiple?: boolean;
     disabled?: boolean;
     id?: string;
@@ -55,8 +55,8 @@ export interface AdminSelectProps {
 export type Mode = 'add' | 'edit';
 
 export type TagOption = {
-    id?: number;
-    name?: string;
+    id: number;
+    name: string;
     label: string;
     value: string;
 }
@@ -89,7 +89,7 @@ export type IngredientFormState = {
     variety: string;
     category: string;
     subcategory: string;
-    seasons: SeasonOption[];
-    selectedDefaultTagOptions: TagOption[];
-    selectedUserTagOptions: TagOption[];
+    seasons: string[];
+    selectedDefaultTagIndexes: number[];
+    selectedUserTagIndexes: number[];
 };

@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 
 export async function GET(req: Request, { params }: { params: { userId: string } }) {
     try {
-        const userId = parseInt(params.userId);
+        const urlParams = await params;
+        const userId = parseInt(urlParams.userId);
 
         const ingredients = await prisma.ingredient.findMany({
             where: { userId: userId }

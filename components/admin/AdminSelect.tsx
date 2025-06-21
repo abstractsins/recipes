@@ -57,9 +57,12 @@ export default function AdminSelect({
                         : (
                             options?.map((opt: TagOption | SeasonOption) => {
 
-                                const checked = (defaultValue && typeof defaultValue !== 'string')
-                                    ? defaultValue.map(toValue).includes(toValue(opt))
-                                    : false;
+                                const checked = (
+                                    defaultValue && 
+                                    // typeof defaultValue !== 'string' &&
+                                    typeof defaultValue[0] === 'number'
+                                )
+                                    && defaultValue.includes(opt.id ?? opt.value);
 
                                 return (
                                     < div
@@ -67,12 +70,16 @@ export default function AdminSelect({
                                         key={opt.value + '-container'}
                                         className={`checkbox-container ${disabled ? 'disabled' : ''}`}
                                     >
-                                        <label key={opt.value + '-label'} className={`${name} ${checked ? 'checked' : ''}`}>
+                                        <label
+                                            key={opt.value + '-label'}
+                                            className={`${name} ${checked ? 'checked' : ''}`}
+                                        >
                                             <input
                                                 autoComplete='off'
                                                 checked={checked}
                                                 disabled={disabled}
-                                                key={opt.value}
+                                                key={opt.label}
+                                                id={String(opt.id)}
                                                 value={opt.value}
                                                 type="checkbox"
                                                 onChange={(e) => onChange(opt, e.target.checked)}

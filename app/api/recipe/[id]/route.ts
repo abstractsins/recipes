@@ -17,12 +17,13 @@ export async function GET(
     try {
         const recipe = await prisma.recipe.findUnique({
             where: { id: numericId },
-            include: { ingredients: true }
-
+            include: { 
+                ingredients: true,
+                RecipeTag: true
+            }
         });
-        if (!recipe) {
-            return new NextResponse('Recipe not found.', { status: 404 });
-        }
+
+        if (!recipe) return new NextResponse('Recipe not found.', { status: 404 });
 
         return NextResponse.json(recipe);
     } catch (err) {

@@ -38,16 +38,16 @@ model Recipe {
   userId      Int
   user        User               @relation(fields: [userId], references: [id])
   ingredients RecipeIngredient[]
-  tags        Tag[]              @relation("RecipeTags")
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @default(now())
+  RecipeTag   RecipeTag[]
 
   @@unique([userId, name])
 }
 
 model RecipeIngredient {
   id           Int        @id @default(autoincrement())
-  recipe       Recipe?     @relation(fields: [recipeId], references: [id])
+  recipe       Recipe?    @relation(fields: [recipeId], references: [id])
   recipeId     Int
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   ingredientId Int
@@ -61,36 +61,56 @@ model RecipeIngredient {
 }
 
 model Ingredient {
-  id          Int                @id @default(autoincrement())
-  name        String // freeform label
-  main        String? // optional structured base
-  variety     String? // optional variety
-  category    String? // e.g. "vegetable", "spice", "meat"
-  subcategory String? // e.g. "starch", ""
-  seasons     String[]
-  notes       String? // freeform notes
-  userId      Int
-  user        User               @relation(fields: [userId], references: [id])
-  recipes     RecipeIngredient[]
-  tags        Tag[]              @relation("IngredientTags")
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @default(now()) @updatedAt
+  id            Int                @id @default(autoincrement())
+  name          String // freeform label
+  main          String? // optional structured base
+  variety       String? // optional variety
+  category      String? // e.g. "vegetable", "spice", "meat"
+  subcategory   String? // e.g. "starch", ""
+  seasons       String[]
+  notes         String? // freeform notes
+  userId        Int
+  user          User               @relation(fields: [userId], references: [id])
+  recipes       RecipeIngredient[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @default(now()) @updatedAt
+  IngredientTag IngredientTag[]
 
   @@unique([userId, name])
 }
 
 model Tag {
-  id            Int          @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   name          String
   type          TagType
-  ingredients   Ingredient[] @relation("IngredientTags")
-  recipes       Recipe[]     @relation("RecipeTags")
-  createdBy     Int? // null = system tag, otherwise user-specific
-  createdByUser User?        @relation(fields: [createdBy], references: [id])
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @default(now()) @updatedAt
+  createdBy     Int?
+  createdByUser User?   @relation(fields: [createdBy], references: [id])
 
-  @@unique([name, type, createdBy]) // ✅ unique per user (or globally if createdBy is null)
+  ingredientTags IngredientTag[]
+  recipeTags     RecipeTag[] // (if you make one—see below)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([name, type, createdBy])
+}
+
+model IngredientTag {
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredientId Int
+  tag          Tag        @relation(fields: [tagId], references: [id])
+  tagId        Int
+
+  @@id([ingredientId, tagId]) // composite PK keeps duplicates out
+}
+
+model RecipeTag {
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId Int
+  tag      Tag    @relation(fields: [tagId], references: [id])
+  tagId    Int
+
+  @@id([recipeId, tagId])
 }
 
 enum TagType {

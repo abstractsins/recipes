@@ -6,7 +6,9 @@ const prisma = new PrismaClient();
 
 export async function GET() {
     try {
-        const ingredients = await prisma.ingredient.findMany({ include: { user: true } });
+        const ingredients = await prisma.ingredient.findMany({
+            include: { IngredientTag: true, user: false }
+        });
         return NextResponse.json(ingredients);
     } catch (err) {
         console.error('Error fetching ingredients:', err);
@@ -22,6 +24,8 @@ export async function POST(req: NextRequest) {
 
         const user = Number(userId.split(':')[0]);
 
+        console.log(body.IngredientTag)
+
         const newingredient = await prisma.ingredient.create({
             data: {
                 name,
@@ -30,9 +34,14 @@ export async function POST(req: NextRequest) {
                 main,
                 variety,
                 category,
-                subcategory
+                subcategory,
+                IngredientTag: {
+                    create: body.IngredientTag.map((tagId: number) => ({
+                        tag: { connect: { id: tagId } }
+                    }))
+                }
             },
-            include: { recipes: true },
+            include: { recipes: true, IngredientTag: true },
         });
 
         return NextResponse.json(newingredient, { status: 201 });

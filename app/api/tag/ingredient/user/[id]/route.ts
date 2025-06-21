@@ -8,7 +8,7 @@ export async function GET(req: NextRequest, { params }: any) {
     const tags = await prisma.tag.findMany({
         where: { type: 'ingredient', createdBy: numericId || null },
         orderBy: { name: 'asc' },
-        include: { createdByUser: true }
+        include: { createdByUser: false }
     });
 
     console.log(tags);
