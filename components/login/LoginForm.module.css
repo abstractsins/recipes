@@ -1,0 +1,123 @@
+div.login {
+  position: relative;
+  background-color: rgb(255, 255, 255);
+  /* background-color: lightyellow; */
+  border: 1px solid black;
+  border-radius: 25px;
+  height: 385px;
+  flex-direction: column;
+  width: 550px;
+  padding: 30px 50px;
+  display: flex;
+}
+
+div.login header {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+div.login header h2 {
+  font-family: var(--font-parkinsans), sans-serif;
+  font-size: 24pt;
+  color: rgb(247, 134, 89);
+}
+
+.login-module {
+  display: flex;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.button-module {
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.login-module-button {
+  display: flex;
+  font-size: 12pt;
+  padding: 15px;
+  border-radius: 10px;
+  border: unset;
+  width: 100px;
+  text-transform: capitalize;
+}
+
+.login-module-button.inactive {
+  background-color: darkgray;
+  color: gray;
+}
+
+.login-module-button.active {
+  background-color: #517ed3;
+  color: white;
+  cursor: pointer;
+}
+
+.login-module-button.active:hover {
+  background-color: rgb(59, 115, 221);
+}
+
+.login-module-button.active:active {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+.field-label {
+  display: flex;
+  font-family: "alatsi", sans-serif;
+  color: var(--black);
+  align-items: center;
+  margin-right: 15px;
+  font-size: 14pt;
+}
+
+.login-page-field {
+  color: white;
+  font-size: 14pt;
+  border-radius: 10px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+input.login-page-field:focus {
+  background-color: rgb(207, 243, 255);
+  color: black;
+}
+
+.login-form-body {
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+  justify-content: space-evenly;
+
+}
+
+.field-container {
+  display: flex;
+  align-items: end;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.register-container {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 15px;
+}
+
+
+input.login-page-field {
+  background-color: slategray;
+}
+
+input.disabled[type="submit"] {
+  color: gray;
+  background-color: darkgray;
+  cursor: default !important;
+}
+

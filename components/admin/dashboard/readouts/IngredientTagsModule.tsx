@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import IngredientTags from "./IngredientTags";
-import CloseButton from "./dashboard/CloseButton";
+import CloseButton from "@/components/admin/dashboard/CloseButton";
 
 import { Tag, AdminModule } from "@/types/types";
 

@@ -6,6 +6,8 @@ import { AdminSelectProps, SeasonOption } from '@/types/types';
 
 import { TagOption, Option } from '@/types/types';
 
+import styles from './AdminSelect.module.css';
+
 export default function AdminSelect({
     name,
     options,
@@ -30,7 +32,7 @@ export default function AdminSelect({
                         id={id}
                         required={required}
                         defaultValue={typeof defaultValue === 'string' ? defaultValue : undefined}
-                        className="admin-select"
+                        className={styles["admin-select"]}
                         multiple={multiple}
                     >
                         {options?.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
@@ -40,16 +42,16 @@ export default function AdminSelect({
                     {isLoading
                         ? (
                             <>
-                                <div className={`checkbox-container ${disabled ? 'disabled' : ''}`}>
+                                <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
                                     <label className={`skeleton`}></label>
                                 </div>
-                                <div className={`checkbox-container ${disabled ? 'disabled' : ''}`}>
+                                <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
                                     <label className={`skeleton`}></label>
                                 </div>
-                                <div className={`checkbox-container ${disabled ? 'disabled' : ''}`}>
+                                <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
                                     <label className={`skeleton`}></label>
                                 </div>
-                                <div className={`checkbox-container ${disabled ? 'disabled' : ''}`}>
+                                <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
                                     <label className={`skeleton`}></label>
                                 </div>
                             </>
@@ -63,7 +65,7 @@ export default function AdminSelect({
                                     < div
                                         id={id}
                                         key={opt.value + '-container'}
-                                        className={`checkbox-container ${disabled ? 'disabled' : ''}`}
+                                        className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}
                                     >
                                         <label
                                             key={opt.value + '-label'}

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import styles from './AdminInput.module.css';
+
 interface AdminInputProps {
     name: string;
     placeholder?: string;
@@ -33,7 +35,7 @@ export default function AdminInput({
             maxLength={maxLength}
             required={required}
             disabled={disabled}
-            className={`admin-input ${className}`}
+            className={`${styles['admin-input']} ${className}`}
             value={value}
             onChange={onChange}
             onKeyDown={onKeyDown}

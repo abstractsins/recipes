@@ -3,6 +3,8 @@ import { getUser } from "@/lib/auth";
 import PrimeHeader from "@/components/prime/PrimeHeader";
 import { useFetchTags } from "@/hooks/useFetchTags";
 
+import '@/components/admin/dashboard/dashboard.css';
+
 export const dynamic = 'force-dynamic';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

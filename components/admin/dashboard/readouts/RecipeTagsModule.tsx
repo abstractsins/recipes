@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import RecipeTags from "./RecipeTags";
-import CloseButton from "./dashboard/CloseButton";
+import RecipeTags from "@/components/admin/dashboard/readouts/RecipeTags";
+import CloseButton from "@/components/admin/dashboard/CloseButton";
 
 import { Tag, AdminModule } from "@/types/types";
 

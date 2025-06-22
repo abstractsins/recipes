@@ -1,0 +1,11 @@
+span.logout {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  color: white;
+}
+
+span.logout:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

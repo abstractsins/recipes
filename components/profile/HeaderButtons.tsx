@@ -1,8 +1,10 @@
 'use client';
 
-import ProfileButton from "../ProfileButton";
-import LogoutButton from "../LogoutButton";
+import ProfileButton from "@/components/profile/ProfileButton";
+import LogoutButton from "@/components/profile/LogoutButton";
 import { useRouter } from "next/navigation";
+
+import styles from './HeaderButtons.module.css';
 
 interface Props {
     role: string | undefined;
@@ -15,7 +17,7 @@ export default function HeaderButtons({ role, profileView }: Props) {
     if (role === undefined) router.push('./login')
 
     return (
-        <div className="header-buttons">
+        <div className={styles["header-buttons"]}>
             <ProfileButton role={role} profileView={profileView} />
             <LogoutButton />
         </div>

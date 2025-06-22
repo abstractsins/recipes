@@ -1,5 +1,5 @@
 import AddEditIngredient from "./AddEditIngredient"
-import EditIngredient from "./EditIngredient";
+import styles from './DashboardAddEdit.module.css';
 
 interface Props {
     activeIds: string[];
@@ -10,7 +10,7 @@ interface Props {
 export default function DashboardAddEdit({ onClick: activate, close: deactivate, activeIds }: Props) {
 
     return (
-        <div className="add-data grand-module">
+        <div className={`${styles['add-data']} grand-module`}>
             <header>
                 <h2>Add or Edit Data</h2>
             </header>

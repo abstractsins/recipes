@@ -1,0 +1,116 @@
+/* ************************** */
+/** HIGH LEVEL MODULE STYLING */
+/* ************************** */
+
+.module.inactive {
+  cursor: pointer;
+  background-color: var(--grey);
+}
+
+.module.inactive:hover {
+  border-color: white;
+  background-color: var(--black);
+}
+
+.module.active {
+  background-color: var(--black);
+  border-color: silver;
+}
+
+.module.active h3 {
+  color: lightgreen;
+  transition: all .4s;
+}
+
+div.module-header {
+  margin-bottom: 5px;
+}
+
+div.module-header h2 {
+  font-size: 20pt;
+  margin-bottom: 5px;
+}
+
+span.cat-data-label {
+  text-transform: uppercase;
+  font-size: 10pt;
+  color: lightcyan;
+}
+
+div.add-data .add-data-modules {
+  display: flex;
+}
+
+.add-data-modules .module {
+  width: 630px;
+}
+
+.grand-module > header {
+    margin: 10px;
+    padding: 10px;
+}
+
+.add-edit-mode-select {
+  display: flex;
+  gap: 10px;
+}
+
+h3.unselected {
+  color: gray !important;
+}
+
+.module {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  margin: 15px;
+  border: 3px solid gray;
+  border-radius: 15px;
+  min-width: 300px;
+  height: fit-content;
+  transition: all 250ms;
+}
+
+.module-header {
+  margin-bottom: 15px;
+}
+
+.module-body {
+  padding-top: 20px;
+}
+
+#users-module {
+  /* width: 500px; */
+  width: fit-content;
+}
+
+span[class*="-creator"] {
+  color: darkgray;
+  font-size: 10pt;
+  margin-left: 5px;
+}
+
+.details.button {
+  cursor: pointer;
+  margin-top: 20px;
+  align-self: flex-end;
+  display: flex;
+  width: fit-content;
+  padding: 5px 10px;
+  transition: all 100ms;
+}
+
+.details.button:hover {
+  background-color: var(--black);
+  text-decoration: underline;
+}
+
+.details.button:active {
+  color: lightgreen;
+  /* background-color: var(--grey-dark); */
+}
+
+pre.details {
+  margin-top: 15px;
+}

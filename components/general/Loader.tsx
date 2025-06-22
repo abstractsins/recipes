@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { toTitleCase } from "@/utils/utils";
 
+import styles from './Loader.module.css';
+
 interface Props { msg: string }
 
 export default function Loader({ msg }: Props) {
@@ -22,8 +24,8 @@ export default function Loader({ msg }: Props) {
     });
 
     return (
-        <div className="loader">
-            <span className="load-text">
+        <div className={styles["loader"]}>
+            <span className={styles["load-text"]}>
                 {loadText}
             </span>
         </div>

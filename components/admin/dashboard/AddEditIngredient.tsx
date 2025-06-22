@@ -1,5 +1,7 @@
 'use client';
 
+import styles from './AddEditIngredient.module.css';
+
 import { FiPlusCircle } from "react-icons/fi";
 
 import {
@@ -27,8 +29,8 @@ import CloseButton from "@/components/admin/dashboard/CloseButton";
 import AdminInput from "../formElements/AdminInput";
 import AdminSelect from "../formElements/AdminSelect";
 import TagsSelect from "../TagsSelect";
-import UserSelect from "../UserSelect";
-import IngredientSelect from "../IngredientSelect";
+import UserSelect from "../formElements/UserSelect";
+import IngredientSelect from "../formElements/IngredientSelect";
 import AddEditIngredientHeader from "./AddEditIngredientHeader";
 
 import { seasonOptions, seasonsIntoOptions, tagsIntoOptions } from "@/utils/utils";
@@ -298,8 +300,12 @@ export default function AddEditIngredient({ className, onClick: activate, active
 
 
     return (
-        <div className={`module ${className}`} id="add-edit-ingredient-module" onClick={activate}>
-            <header>
+        <div
+            className={`module ${className} ${styles['add-edit-ingredient-module']}`}
+            onClick={activate}
+            id='add-edit-ingredient-module'
+        >
+            <header className={`module-header ${styles['header']}`}>
                 <AddEditIngredientHeader
                     active={active}
                     mode={mode}
@@ -317,13 +323,13 @@ export default function AddEditIngredient({ className, onClick: activate, active
 
                             {mode === 'edit' && (
                                 <>
-                                    <FormRow id="row-0">
+                                    <FormRow className={styles['row-0']} >
                                         <FieldModule label="User" id="edit-ingredient-user-module">
                                             <UserSelect onSelect={handleUserSelect} />
                                         </FieldModule>
                                     </FormRow>
 
-                                    <FormRow id="row-00">
+                                    <FormRow className={styles['row-00']} >
                                         <FieldModule label="Ingredient" id="edit-ingredient-ingredient-module">
                                             <IngredientSelect
                                                 value={ingredientValue}
@@ -336,7 +342,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                 </>
                             )}
 
-                            <FormRow id="row-1">
+                            <FormRow className={styles['row-1']}>
                                 <FieldModule label="Name*">
                                     <AdminInput name="name"
                                         required disabled={isDisabled}
@@ -348,7 +354,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow id="row-2">
+                            <FormRow className={styles['row-2']} >
                                 <FieldModule label="Season">
                                     <AdminSelect
                                         name="season"
@@ -361,23 +367,29 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow id="row-3">
+                            <FormRow className={styles['row-3']} >
                                 <FieldModule label="Main Class">
-                                    <AdminInput name="main" disabled={isDisabled} value={formState.main}
+                                    <AdminInput
+                                        name="main"
+                                        disabled={isDisabled}
+                                        value={formState.main}
                                         placeholder="e.g. Potato"
                                         className={isDisabled ? 'disabled' : ''}
                                         onChange={e => setFormState({ ...formState, main: e.target.value })} />
                                 </FieldModule>
 
                                 <FieldModule label="Variety">
-                                    <AdminInput name="variety" disabled={isDisabled} value={formState.variety}
+                                    <AdminInput
+                                        name="variety"
+                                        disabled={isDisabled}
+                                        value={formState.variety}
                                         placeholder="e.g. Fingerling"
                                         className={isDisabled ? 'disabled' : ''}
                                         onChange={e => setFormState({ ...formState, variety: e.target.value })} />
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow id="row-4">
+                            <FormRow className={styles['row-4']} >
                                 <FieldModule label="Category">
                                     <AdminInput
                                         name="category"
@@ -398,7 +410,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                             </FormRow>
                             <div className="tags-module">
 
-                                <FormRow id="row-5">
+                                <FormRow className={styles['row-5']} >
                                     <FieldModule label="Default-Tags">
                                         <TagsSelect
                                             name="default-tags"
@@ -415,7 +427,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
 
                                 {(selectedAuthorId || selectedUserId) &&
                                     <>
-                                        <FormRow id="row-6" className="user-tags">
+                                        <FormRow className={styles['row-6']} className="user-tags">
                                             <FieldModule label="User-Tags">
                                                 <TagsSelect
                                                     name="user-tags"
@@ -430,7 +442,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                             </FieldModule>
                                         </FormRow>
 
-                                        <FormRow id="row-7" className="add-tags">
+                                        <FormRow className={`${styles['row-7']} add-tags`}>
                                             <FieldModule label="Add-Tags">
                                                 <AdminInput
                                                     name="add-user-ingredient-tag"
@@ -454,7 +466,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                             </div>
 
 
-                            <FormRow id="row-8" className={`${mode === 'edit' ? 'padding-top-20' : ''}`}>
+                            <FormRow className={styles['row-']} className={`${mode === 'edit' ? 'padding-top-20' : ''}`}>
                                 {mode === 'add' && (
                                     <FieldModule label="User*" id="add-edit-ingredient-user-module">
                                         <UserSelect onSelect={handleAuthorSelect} />
@@ -466,7 +478,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow id="row-9">
+                            <FormRow className={styles['row-']} >
                                 <div className="footnote-container"><span>* Required</span></div>
                             </FormRow>
 

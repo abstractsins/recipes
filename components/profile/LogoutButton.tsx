@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { MdLogout } from "react-icons/md";
-
+import styles from './LogoutButton.module.css';
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -13,6 +13,6 @@ export default function LogoutButton() {
   }
 
   return (
-    <span className="link logout" onClick={handleLogout}>Logout <MdLogout /></span>
+    <span className={`link ${styles['logout']}`} onClick={handleLogout}>Logout <MdLogout /></span>
   );
 }

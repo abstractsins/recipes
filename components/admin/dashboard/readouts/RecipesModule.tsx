@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import Recipes from "./Recipes";
-import CloseButton from "./dashboard/CloseButton";
+import CloseButton from "@/components/admin/dashboard/CloseButton";
 import { Recipe, AdminModule } from "@/types/types";
 
 export default function RecipesModule({ className, onClick: activate, active, close }: AdminModule) {

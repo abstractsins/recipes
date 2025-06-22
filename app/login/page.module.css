@@ -1,0 +1,53 @@
+div.body.login-page {
+  background-image: url('@/app/public/images/food.jpg');
+  background-size: 125%;
+  background-position-x: -333px;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 50px;
+  height: 100vh;
+}
+
+.login-page div.login-container {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+  height: 100%;
+}
+
+@media screen and (min-width: 2010px) {
+  div.login-page {
+    background-position-x: -500px !important;
+    background-position-y: -100px !important;
+  }
+}
+
+@media screen and (max-width: 1360px) {
+
+  div.login-page {
+    background-size: 150% !important;
+  }
+
+}
+
+@media screen and (max-width: 670px) {
+
+  div.login-page {
+    background-size: 180% !important;
+    background-position-y: -250px !important;
+  }
+
+}
+
+@media screen and (max-width: 435px) {
+
+  div.login-page {
+    background-size: 190% !important;
+    background-position-x: -250px !important;
+    background-position-y: -50px !important;
+  }
+
+}

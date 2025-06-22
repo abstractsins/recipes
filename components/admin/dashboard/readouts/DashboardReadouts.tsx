@@ -4,6 +4,8 @@ import IngredientsModule from "./IngredientsModule"
 import RecipeTagsModule from "./RecipeTagsModule"
 import IngredientTagsModule from "./IngredientTagsModule"
 
+import styles from './DashboardReadouts.module.css';
+
 interface Props {
     activeIds: string[];
     onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -13,12 +15,12 @@ interface Props {
 export default function DashboardReadouts({ onClick: activate, close: deactivate, activeIds }: Props) {
 
     return (
-        <div className="readouts grand-module">
+        <div className={`${styles["readouts"]} grand-module`}>
             <header>
                 <h2>Data Readouts</h2>
             </header>
 
-            <div className="readout-modules">
+            <div className={styles["readout-modules"]}>
 
                 {/* ---------- USERS ---------- */}
                 <UsersModule

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 
 import DashboardAddEdit from "./DashboardAddEdit";
-import DashboardReadouts from "./DashboardReadouts";
-
+import DashboardReadouts from "./readouts/DashboardReadouts";
+import styles from "./Dashboard.module.css";
 
 export default function Dashboard() {
 
@@ -33,12 +33,12 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="admin-dashboard">
-            <header>
+        <div className={styles["admin-dashboard"]}>
+            <header className={styles['header']}>
                 <h1>Recipe Database Admin Dashboard</h1>
             </header>
 
-            <div className="body">
+            <div className={styles["body"]}>
 
                 <DashboardAddEdit
                     activeIds={activeIds}

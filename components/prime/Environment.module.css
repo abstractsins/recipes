@@ -1,0 +1,9 @@
+span.env {
+  font-size: 24pt;
+}
+
+span.label {
+  font-size: 16pt;
+  font-family: "alatsi", sans-serif;
+  color: darkgrey;
+}

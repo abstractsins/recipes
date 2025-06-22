@@ -3,17 +3,17 @@
 import FormRow from "@/components/admin/formElements/FormRow";
 import FieldModule from "@/components/admin/formElements/FieldModule";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
-import AdminInput from "./formElements/AdminInput";
-import AdminSelect from "./formElements/AdminSelect";
-import UserSelect from "./UserSelect";
-import IngredientSelect from "./IngredientSelect";
+import AdminInput from "@/components/admin/formElements/AdminInput";
+import AdminSelect from "@/components/admin/formElements/AdminSelect";
+import UserSelect from "@/components/admin/formElements/UserSelect";
+import IngredientSelect from "@/components/admin/formElements/IngredientSelect";
 
 import { useFetchUsers } from "@/hooks/useFetchUsers";
 import { AdminModule } from "@/types/types";
 import { useState } from "react";
 
-import Loader from "../general/Loader";
-import ScreenGuard from "../general/ScreenGuard";
+import Loader from "@/components/general/Loader";
+import ScreenGuard from "@/components/general/ScreenGuard";
 
 
 export default function EditIngredient({

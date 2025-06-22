@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import Users from "./Users";
-import CloseButton from "./dashboard/CloseButton";
+import Users from "@/components/admin/dashboard/readouts/Users";
+import CloseButton from "@/components/admin/dashboard/CloseButton";
 
 import { User, AdminModule } from "@/types/types";
 
