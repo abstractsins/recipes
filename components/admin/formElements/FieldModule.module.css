@@ -1,6 +1,7 @@
 .form-module {
   flex: 1;
   width: 100% !important;
+  margin-top: 10px;
 }
 
 .form-module.default-tags {
@@ -10,15 +11,13 @@
 
 /** CHECKBOX */
 .field-container {
-  /* display: flex; */
-  /* width: 100%; */
-  padding: 10px 0;
-  justify-content: space-around;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px 0 10px 0;
+  justify-content: flex-start;
+  gap: 15px;
 }
 
-.field-container {
-  padding-top: 10px;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 15px;
+.season .field-container {
+  justify-content: center;
 }

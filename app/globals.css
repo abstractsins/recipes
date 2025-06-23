@@ -38,31 +38,30 @@ h3 {
   font-size: 16pt;
 }
 
-input {
-  font-family: var(--font-geist-sans), Helvetica, sans-serif;
-}  
-
-input[type="checkbox"] {
-  margin-right: 0.5em;
-}  
-
 ul {
   list-style-position: inside;
 }
 
+.light {
+  color: black;
+}
 
+.dark {
+  color: whitesmoke
+}
 
 .link:hover {
-  color: rgb(26, 157, 201);
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .link.light:hover {
-  cursor: pointer;
   color: rgb(0, 0, 255);
 }
 
-
+.link.dark:hover {
+  color: rgb(138, 255, 255);
+}
 
 .skeleton {
   animation: pulse 2s infinite ease-in-out;
@@ -70,17 +69,88 @@ ul {
 
 
 
+/* ***************** */
+/** GENERIC HELPERS  */
+/* ***************** */
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.padding-top-20 {
+  padding-top: 20px;
+}
+
+
+
+/* **************** */
+/** INPUT ELEMENTS  */
+/* **************** */
+
+input {
+  font-family: var(--font-geist-sans), Helvetica, sans-serif;
+}
+
+input::placeholder {
+  font-size: 12pt;
+  font-style: italic;
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
 input[type="text"].disabled {
   color: black;
-  /* background-color: rgb(109, 109, 109); */
   background-color: #B6B6B6;
+}
+
+input[type="checkbox"].disabled,
+div.checkbox-container.disabled label {
+  cursor: default !important;
+}
+
+select[disabled] {
+  cursor: default;
+}
+
+
+/* ********************************* */
+/** SHARED STATUS AND ERROR ELEMENTS */
+/* ********************************* */
+
+.status-container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+div.status-container span,
+div.error span {
+  flex-wrap: nowrap;
+  max-height: 32px;
+  font-family: monospace;
+  font-size: 10pt;
+  display: flex;
+  padding-top: 10px;
+}
+
+.error span {
+  color: #ff7f7f;
+}
+
+.status-container span {
+  color: lightgreen;
 }
 
 
 
 
 
-
+/* ************ */
+/** ANIMATIONS  */
+/* ************ */
 
 @keyframes pulse {
   0% {
@@ -103,34 +173,6 @@ input[type="text"].disabled {
 
 
 
-
-
-
-
-
-
-
-/* ********************************* */
-/** SHARED STATUS AND ERROR ELEMENTS */
-/* ********************************* */
-
-div.status-container span,
-div.error span {
-  flex-wrap: nowrap;
-  max-height: 32px;
-  font-family: monospace;
-  font-size: 10pt;
-  display: flex;
-  padding-top: 10px;
-}
-
-.error span {
-  color: #ff7f7f;
-}
-
-.status-container span {
-  color: lightgreen;
-}
 
 
 
@@ -185,12 +227,6 @@ form#add-edit-ingredient input[name="name"] {
   width: 100%;
 }
 
-.add-edit-ingredient-body input::placeholder {
-  font-size: 12pt;
-  font-style: italic;
-}
-
-
 
 #add-edit-ingredient-name-module input[name="name"] {
   max-width: 100% !important;
@@ -199,7 +235,6 @@ form#add-edit-ingredient input[name="name"] {
 #add-edit-ingredient-user-module {
   flex: 4;
 }
-
 
 select.admin-select[name="user"],
 #add-edit-ingredient-user-module select {
@@ -212,11 +247,9 @@ select.admin-select[name="user"],
   justify-content: flex-end;
 }
 
-
 .add-edit-ingredient-name-module {
   flex: 2;
 }
-
 
 #add-edit-ingredient-submit-module {
   justify-content: flex-end;
@@ -241,57 +274,15 @@ input#add-edit-ingredient-submit:active {
   /* margin-top: 5px; */
 }
 
-div.tags-module {
-  border: 2px solid gray;
-  border-radius: 10px;
-  padding: 10px;
-}
-
-div.checkbox-container label.skeleton {
-  width: 100px;
-  height: 39px;
-}
-
-div.checkbox-container label.skeleton,
-label.default-tags,
-label.user-tags,
-label.add-tags,
-label.season {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  user-select: none;
-  transition: 0.2s all;
-}
 
 
-/* label.season[checked] {
-  background-color: lightblue !important;
-} */
-
-
-label.user-tags {
-  background-color: rgba(250, 250, 210, 0.25);
-  color: darkgray;
-}
 
 div.checkbox-container:not([class*="disabled"]) label.user-tags:hover {
   color: black;
   background-color: lightgoldenrodyellow;
 }
 
-label.default-tags {
-  background-color: rgba(224, 255, 255, 0.25);
-  color: darkgray;
-}
 
-label.skeleton {
-  /* background-color: var(--grey-dark); */
-  background-color: green;
-}
 
 div.checkbox-container:not([class*="disabled"]) label.default-tags:hover {
   background-color: rgba(224, 255, 255, 0.95);
@@ -304,74 +295,6 @@ div.checkbox-container:not([class*="disabled"]) label.default-tags:hover {
 }
 
 
-/* **************** */
-/** LOGIN           */
-/* **************** */
-
-
-/* **************** */
-/** REGISTRATION    */
-/* **************** */
-
-.register-body h1 {
-  color: white;
-}
-
-.register-body h2 {
-  color: gray
-}
-
-/* **************** */
-/** UNAUTHORIZED    */
-/* **************** */
-
-.unauthorized-page h1 {
-  color: white;
-}
-
-
-/* **************** */
-/** PROFILE         */
-/* **************** */
-
-#profile-layout header {
-  display: flex;
-  padding: 20px 100px 20px 20px;
-  min-height: 75px;
-  width: 100%;
-  justify-content: space-between;
-}
-
-#profile-layout .admin-portal span {
-  display: flex;
-  align-items: center;
-  justify-self: center;
-  gap: 10px;
-}
-
-.header-buttons {
-  display: flex;
-  gap: 50px;
-}
-
-.header-buttons span {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-
-.module div[class*="skeleton"] {
-  border-radius: 10px;
-  width: 400px;
-  height: 300px;
-  background: #414141;
-}
-
-div.footnote-container {
-  display: flex;
-  margin-top: 15px;
-}
 
 
 
@@ -380,93 +303,6 @@ div.footnote-container {
 
 
 
-
-
-
-
-input[type="checkbox"].disabled,
-div.checkbox-container.disabled label {
-  cursor: default !important;
-}
-
-div.checkbox-container.disabled label:hover {
-  /* background-color: #111; */
-  /* background-color: unset; */
-  /* background-color: initial; */
-}
-
-select[disabled] {
-  cursor: default;
-}
-
-.status-container {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  height: 100%;
-}
-
-.status-container span {
-  font-family: monospace;
-  color: lightgreen;
-}
-
-.row.user-tags,
-.row.add-tags,
-.form-module.default-tags {
-  border-radius: 10px;
-  padding: 10px;
-}
-
-input.add-tag {
-  display: flex;
-  align-items: flex-end;
-  height: 100%;
-  color: white;
-  padding: 10px 0 0 10px !important;
-  background-color: transparent;
-  border-radius: 0 !important;
-  border-bottom: 1px solid white !important;
-  margin-left: 15px;
-  margin-right: 5px;
-  width: 150px;
-}
-
-
-.margin-top-20 {
-  margin-top: 20px;
-}
-
-.padding-top-20 {
-  padding-top: 20px;
-}
-
-div.plus-circle-container {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  font-size: 16pt;
-  cursor: pointer;
-}
-
-div.plus-circle-container:hover {
-  color: lightblue;
-}
-
-label.default-tags.checked {
-  background-color: rgba(224, 255, 255, 0.95);
-  color: black;
-}
-
-label.user-tags.checked {
-  background-color: rgba(250, 250, 210, 0.95);
-  color: black;
-}
-
-label.season.checked {
-  background-color: rgba(238, 166, 144, 0.95);
-  color: black;
-}
 
 
 * {

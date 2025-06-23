@@ -18,19 +18,19 @@ interface Props extends AdminSelectProps {
     onSelect?: (tag: TagOption) => void;
 }
 
-export default function TagsSelect({ 
-    name, 
-    disabled, 
+export default function TagsSelect({
+    name,
+    disabled,
     defaultValue,
-    onChange, 
-    multiple, 
-    type, 
-    user, 
+    onChange,
+    multiple,
+    type,
+    user,
     refreshKey = 0,
-    onSelect 
+    onSelect
 }: Props) {
 
-    const { tagOptions, isLoading } = useFetchTags({type, user, refreshKey});
+    const { tagOptions, isLoading } = useFetchTags({ type, user, refreshKey });
 
     return (
         <AdminSelect

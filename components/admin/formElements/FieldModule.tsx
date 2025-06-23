@@ -4,12 +4,13 @@ import { toTitleCase } from "@/utils/utils";
 import styles from './FieldModule.module.css';
 
 interface FieldModuleProps {
+  className: string;
   label?: string;
   children: React.ReactNode;
   id?: string
 }
 
-export default function FieldModule({ label, children, id }: FieldModuleProps) {
+export default function FieldModule({ className, label, children, id }: FieldModuleProps) {
 
   let title = 'null';
   if (label) {
@@ -18,7 +19,7 @@ export default function FieldModule({ label, children, id }: FieldModuleProps) {
   }
 
   return (
-    <div className={`${styles['form-module']} ${label?.toLowerCase()}`} id={id ?? ''}>
+    <div className={`${styles['form-module']} ${styles[className]} ${label?.toLowerCase()}`} id={id ?? ''}>
       {label && (
         <div className="field-label">
           <span>{title}</span>

@@ -16,11 +16,11 @@ export default function Home() {
       <div className={styles["splash-body"]}>
 
         <div className={styles["login-container"]}>
-          <Link href="./login"><span> <PiChefHat /> Login</span></Link>
+          <Link className={`link dark`} href="./login"><span> <PiChefHat /> Login</span></Link>
         </div>
 
-        <RegisterLink />
-        
+        <RegisterLink theme="dark"/>
+
       </div>
 
     </div>

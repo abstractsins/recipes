@@ -18,8 +18,8 @@ export default function HeaderButtons({ role, profileView }: Props) {
 
     return (
         <div className={styles["header-buttons"]}>
-            <ProfileButton role={role} profileView={profileView} />
-            <LogoutButton />
+            <ProfileButton theme="dark" role={role} profileView={profileView} />
+            <LogoutButton theme="dark" />
         </div>
     );
 }

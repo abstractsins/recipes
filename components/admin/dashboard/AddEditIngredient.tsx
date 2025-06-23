@@ -318,7 +318,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
             {waiting && <><ScreenGuard /></>}
             {active && (
                 <>
-                    <div className="add-edit-ingredient-body">
+                    <div className={styles['add-edit-ingredient-body']}>
                         <form id="add-edit-ingredient" onSubmit={handleSubmit}>
 
                             {mode === 'edit' && (
@@ -355,7 +355,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                             </FormRow>
 
                             <FormRow className={styles['row-2']} >
-                                <FieldModule label="Season">
+                                <FieldModule className={`tags`} label="Season">
                                     <AdminSelect
                                         name="season"
                                         disabled={isDisabled}
@@ -408,7 +408,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                         onChange={e => setFormState({ ...formState, subcategory: e.target.value })} />
                                 </FieldModule>
                             </FormRow>
-                            <div className="tags-module">
+                            <div className={styles["tags-module"]}>
 
                                 <FormRow className={styles['row-5']} >
                                     <FieldModule label="Default-Tags">
@@ -427,7 +427,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
 
                                 {(selectedAuthorId || selectedUserId) &&
                                     <>
-                                        <FormRow className={styles['row-6']} className="user-tags">
+                                        <FormRow className={`${styles['row-6']} ${styles["user-tags"]}`}>
                                             <FieldModule label="User-Tags">
                                                 <TagsSelect
                                                     name="user-tags"
@@ -442,7 +442,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                             </FieldModule>
                                         </FormRow>
 
-                                        <FormRow className={`${styles['row-7']} add-tags`}>
+                                        <FormRow className={`${styles['add-tags']}`}>
                                             <FieldModule label="Add-Tags">
                                                 <AdminInput
                                                     name="add-user-ingredient-tag"
@@ -453,7 +453,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                                     value={userIngredientTagValue}
                                                 />
                                                 <div
-                                                    className="plus-circle-container"
+                                                    className={`${styles["plus-circle-container"]} ${styles['dark']}`}
                                                     onClick={addUserIngredientTag}
                                                 >
                                                     <FiPlusCircle />

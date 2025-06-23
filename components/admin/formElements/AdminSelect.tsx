@@ -43,16 +43,16 @@ export default function AdminSelect({
                         ? (
                             <>
                                 <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
-                                    <label className={`skeleton`}></label>
+                                    <label className={`${styles['skeleton']} skeleton`}></label>
                                 </div>
                                 <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
-                                    <label className={`skeleton`}></label>
+                                    <label className={`${styles['skeleton']} skeleton`}></label>
                                 </div>
                                 <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
-                                    <label className={`skeleton`}></label>
+                                    <label className={`${styles['skeleton']} skeleton`}></label>
                                 </div>
                                 <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
-                                    <label className={`skeleton`}></label>
+                                    <label className={`${styles['skeleton']} skeleton`}></label>
                                 </div>
                             </>
                         )
@@ -65,11 +65,11 @@ export default function AdminSelect({
                                     < div
                                         id={id}
                                         key={opt.value + '-container'}
-                                        className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}
+                                        className={`${styles['checkbox-container']} ${disabled && 'disabled'}`}
                                     >
                                         <label
                                             key={opt.value + '-label'}
-                                            className={`${name} ${checked ? 'checked' : ''}`}
+                                            className={`${styles[name]} ${checked && styles['checked']}`}
                                         >
                                             <input
                                                 autoComplete='off'

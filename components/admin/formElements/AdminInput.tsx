@@ -35,7 +35,7 @@ export default function AdminInput({
             maxLength={maxLength}
             required={required}
             disabled={disabled}
-            className={`${styles['admin-input']} ${className}`}
+            className={`${styles['admin-input']} ${styles[className]}`}
             value={value}
             onChange={onChange}
             onKeyDown={onKeyDown}

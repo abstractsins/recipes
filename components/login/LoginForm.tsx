@@ -118,8 +118,8 @@ export default function LoginForm() {
                         />
                     </div>
                 </form>
-
-                <RegisterLink />
+                
+                <RegisterLink theme="light" />
 
             </div>
         </>

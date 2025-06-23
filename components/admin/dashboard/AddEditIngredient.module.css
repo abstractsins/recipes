@@ -13,3 +13,21 @@
     align-items: center;
     gap: 30px;
 }
+
+
+div.plus-circle-container {
+  display: flex;
+  align-items: center;
+  font-size: 16pt;
+  cursor: pointer;
+}
+
+div.plus-circle-container.dark:hover {
+  color: rgb(138, 255, 255);
+}
+
+div.tags-module {
+  border: 2px solid gray;
+  border-radius: 10px;
+  padding: 10px;
+}

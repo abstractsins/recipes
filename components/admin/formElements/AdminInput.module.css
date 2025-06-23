@@ -14,3 +14,17 @@
     border-color: #68D391;
     /* example green highlight */
 }
+
+input.add-tag {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  color: white;
+  padding: 10px 0 0 10px !important;
+  background-color: transparent;
+  border-radius: 0 !important;
+  border-bottom: 1px solid white !important;
+  margin-left: 15px;
+  margin-right: 5px;
+  width: 150px;
+}
