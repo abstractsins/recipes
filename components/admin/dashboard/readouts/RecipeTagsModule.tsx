@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import RecipeTags from "@/components/admin/dashboard/readouts/RecipeTags";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 
-import { Tag, AdminModule } from "@/types/types";
+import { Tag, AdminReadoutModule } from "@/types/types";
 
-export default function RecipeTagsModule({ className, onClick: activate, active, close }: AdminModule) {
+export default function RecipeTagsModule({ className, onClick: activate, active, close }: AdminReadoutModule) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [tags, setTags] = useState<Tag[]>([]);

@@ -6,7 +6,9 @@ import { AdminSelectProps, SeasonOption } from '@/types/types';
 
 import { TagOption, Option } from '@/types/types';
 
-import styles from './AdminSelect.module.css';
+import styles from './Select.module.css';
+
+import TagSkeletons from './TagSkeletons';
 
 export default function AdminSelect({
     name,
@@ -33,29 +35,13 @@ export default function AdminSelect({
                         required={required}
                         defaultValue={typeof defaultValue === 'string' ? defaultValue : undefined}
                         className={styles["admin-select"]}
-                        multiple={multiple}
                     >
                         {options?.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                     </select>
                 )
                 : (<>
                     {isLoading
-                        ? (
-                            <>
-                                <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
-                                    <label className={`${styles['skeleton']} skeleton`}></label>
-                                </div>
-                                <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
-                                    <label className={`${styles['skeleton']} skeleton`}></label>
-                                </div>
-                                <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
-                                    <label className={`${styles['skeleton']} skeleton`}></label>
-                                </div>
-                                <div className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}>
-                                    <label className={`${styles['skeleton']} skeleton`}></label>
-                                </div>
-                            </>
-                        )
+                        ? (className === 'tag' && <TagSkeletons />)
                         : (
                             options?.map((opt: TagOption | SeasonOption) => {
 
@@ -65,11 +51,11 @@ export default function AdminSelect({
                                     < div
                                         id={id}
                                         key={opt.value + '-container'}
-                                        className={`${styles['checkbox-container']} ${disabled && 'disabled'}`}
+                                        className={`${styles['checkbox-container']} ${disabled ? 'disabled' : ''}`}
                                     >
                                         <label
                                             key={opt.value + '-label'}
-                                            className={`${styles[name]} ${checked && styles['checked']}`}
+                                            className={`${styles[name]} ${styles[className]} ${checked ? styles['checked'] : ''} ${disabled ? styles['disabled'] : ''} ${disabled ? 'disabled' : ''}`}
                                         >
                                             <input
                                                 autoComplete='off'

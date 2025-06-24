@@ -1,3 +1,7 @@
+// **************
+// * DATA TYPES *
+// **************
+
 export interface User {
     id: number,
     email: string | null,
@@ -31,11 +35,24 @@ export interface Ingredient {
     updatedAt?: Date
 }
 
-export interface AdminModule {
-    className: string;
-    active: boolean;
-    onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
-    close: (e: React.MouseEvent<HTMLDivElement>) => void;
+export interface Tag {
+    id: number,
+    name: string,
+    type: string,
+    createdBy: number | null,
+    createdByUser: User | null
+}
+
+
+
+// ***************
+// * UI ELEMENTS *
+// ***************
+
+export interface AdminReadoutModule {
+    title: string;
+    id: string;
+    hookData: any; 
 }
 
 export interface AdminSelectProps {
@@ -48,7 +65,6 @@ export interface AdminSelectProps {
     multiple?: boolean;
     disabled?: boolean;
     id?: string;
-    // onChange: (value: string, checked: boolean) => void;
     onChange: (tag: TagOption | SeasonOption | Option, checked: boolean) => void;
 }
 
@@ -59,14 +75,6 @@ export type TagOption = {
     name: string;
     label: string;
     value: string;
-}
-
-export interface Tag {
-    id: number,
-    name: string,
-    type: string,
-    createdBy: number | null,
-    createdByUser: User | null
 }
 
 export interface SeasonOption {
@@ -82,6 +90,12 @@ export type Option = {
     label?: string;
     value?: string;
 }
+
+
+
+// ***************
+// * FORM STATES *
+// ***************
 
 export type IngredientFormState = {
     name: string;

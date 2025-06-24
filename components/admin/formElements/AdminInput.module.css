@@ -28,3 +28,16 @@ input.add-tag {
   margin-right: 5px;
   width: 150px;
 }
+
+.admin-input[disabled] {
+  background-color: darkgray;
+  cursor: default;
+}
+
+.admin-input  [disabled] {
+  cursor: default;
+}
+
+.checkbox-container .disabled {
+  cursor: default;
+}

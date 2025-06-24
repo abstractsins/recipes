@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 
 import Recipes from "./Recipes";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
-import { Recipe, AdminModule } from "@/types/types";
+import { Recipe, AdminReadoutModule } from "@/types/types";
 
-export default function RecipesModule({ className, onClick: activate, active, close }: AdminModule) {
+export default function RecipesModule({ className, onClick: activate, active, close }: AdminReadoutModule) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [recipes, setRecipes] = useState<Recipe[]>([]);

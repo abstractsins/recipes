@@ -1,6 +1,8 @@
 import FormRow from "@/components/admin/formElements/FormRow";
 import Toggle from "../../general/Toggle";
 
+import styles from './AddEditIngredient.module.css'
+
 interface Props {
     active: boolean;
     mode: string;
@@ -21,7 +23,7 @@ export default function AddEditIngredientHeader({ active, mode, error, statusMsg
                         </h3>
 
                         <Toggle onChange={handleModeSelect} />
-                        
+
                         <h3 className={mode === 'edit' ? '' : 'unselected'}>
                             Edit
                         </h3>
@@ -29,20 +31,20 @@ export default function AddEditIngredientHeader({ active, mode, error, statusMsg
                 }
             </FormRow>
 
-            <FormRow id="error-row">
-                {active &&
-                    <div className="error">
-                        {error && <span>🍓 {error}</span>}
-                    </div>
-                }
-            </FormRow>
+            <FormRow className="status-row">
 
-            <FormRow id="status-row">
-                {active &&
-                    <div className="status-container">
-                        {statusMsg && <span>🥒 {statusMsg}</span>}
+                {active && error &&
+                    <div className={styles["error"]}>
+                        <span>🍓 {error}</span>
                     </div>
                 }
+
+                {active && statusMsg &&
+                    <div className={styles["status"]}>
+                        <span>🥒 {statusMsg}</span>
+                    </div>
+                }
+                
             </FormRow>
 
         </>

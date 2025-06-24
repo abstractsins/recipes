@@ -4,6 +4,7 @@ import PrimeHeader from "@/components/prime/PrimeHeader";
 import { useFetchTags } from "@/hooks/useFetchTags";
 
 import '@/components/admin/dashboard/dashboard.css';
+import { DashboardProvider } from "@/context/DashboardContext";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <>
       <PrimeHeader nickname={nickname} role={role} />
-      {children}
+      <DashboardProvider >
+        {children}
+      </DashboardProvider>
     </>
   );
 }

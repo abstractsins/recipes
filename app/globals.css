@@ -100,13 +100,16 @@ input[type="checkbox"] {
   margin-right: 0.5em;
 }
 
+input[type="checkbox"]:not([disabled]) {
+  cursor: pointer;
+}
+
 input[type="text"].disabled {
   color: black;
   background-color: #B6B6B6;
 }
 
-input[type="checkbox"].disabled,
-div.checkbox-container.disabled label {
+.disabled:hover {
   cursor: default !important;
 }
 
@@ -115,36 +118,10 @@ select[disabled] {
 }
 
 
+
 /* ********************************* */
 /** SHARED STATUS AND ERROR ELEMENTS */
 /* ********************************* */
-
-.status-container {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  height: 100%;
-}
-
-div.status-container span,
-div.error span {
-  flex-wrap: nowrap;
-  max-height: 32px;
-  font-family: monospace;
-  font-size: 10pt;
-  display: flex;
-  padding-top: 10px;
-}
-
-.error span {
-  color: #ff7f7f;
-}
-
-.status-container span {
-  color: lightgreen;
-}
-
-
 
 
 
@@ -210,13 +187,15 @@ select.admin-select[name="ingredient"] {
 input#add-edit-ingredient-submit {
   background-color: rgb(188, 226, 249);
   border: none;
-  cursor: pointer;
   font-size: 14pt;
   border-radius: 10px;
   justify-self: flex-end;
-  padding: 10px 15px;
+  padding: 9px 15px;
   width: 110px;
-  height: 48px;
+}
+
+input#add-edit-ingredient-submit:hover {
+  cursor: pointer;
 }
 
 input#add-edit-ingredient-submit:hover:not([class*="disabled"]) {
@@ -277,10 +256,6 @@ input#add-edit-ingredient-submit:active {
 
 
 
-div.checkbox-container:not([class*="disabled"]) label.user-tags:hover {
-  color: black;
-  background-color: lightgoldenrodyellow;
-}
 
 
 

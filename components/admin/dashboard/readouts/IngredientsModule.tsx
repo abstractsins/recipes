@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-import { Ingredient, AdminModule } from "@/types/types";
+import { Ingredient, AdminReadoutModule } from "@/types/types";
 import Ingredients from "./Ingredients";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 
-export default function IngredientsModule({ className, onClick: activate, active, close }: AdminModule) {
+export default function IngredientsModule({ className, onClick: activate, active, close }: AdminReadoutModule) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);

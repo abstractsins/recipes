@@ -9,7 +9,7 @@ import UserSelect from "@/components/admin/formElements/UserSelect";
 import IngredientSelect from "@/components/admin/formElements/IngredientSelect";
 
 import { useFetchUsers } from "@/hooks/useFetchUsers";
-import { AdminModule } from "@/types/types";
+import { AdminReadoutModule } from "@/types/types";
 import { useState } from "react";
 
 import Loader from "@/components/general/Loader";
@@ -21,7 +21,7 @@ export default function EditIngredient({
     onClick: activate,
     active,
     close
-}: AdminModule) {
+}: AdminReadoutModule) {
 
     const { users } = useFetchUsers();
     const [waiting, setIsWaiting] = useState(false);

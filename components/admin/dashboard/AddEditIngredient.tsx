@@ -11,7 +11,7 @@ import {
 } from "react";
 
 import {
-    AdminModule,
+    AdminReadoutModule,
     Ingredient,
     Mode,
     IngredientFormState,
@@ -39,7 +39,7 @@ import { toTitleCase } from "@/utils/utils";
 import IngredientTags from "../IngredientTags";
 
 
-export default function AddEditIngredient({ className, onClick: activate, active, close }: AdminModule) {
+export default function AddEditIngredient({ className, onClick: activate, active, close }: AdminReadoutModule) {
 
     //* STATES
     const [waiting, setWaiting] = useState(false);
@@ -315,7 +315,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                 />
             </header>
 
-            {waiting && <><ScreenGuard /></>}
+            {waiting && <ScreenGuard />}
             {active && (
                 <>
                     <div className={styles['add-edit-ingredient-body']}>
@@ -361,6 +361,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                         disabled={isDisabled}
                                         defaultValue={formState.seasons}
                                         multiple
+                                        className={`tag`}
                                         onChange={handleSeasonSelect}
                                         options={seasonOptions}
                                     />

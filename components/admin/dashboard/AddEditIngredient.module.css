@@ -1,19 +1,15 @@
 .header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* width: 100%; */
-    /* padding: 0 !important; */
-    /* margin: 0 !important; */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .row-1 {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    gap: 30px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 30px;
 }
-
 
 div.plus-circle-container {
   display: flex;
@@ -31,3 +27,17 @@ div.tags-module {
   border-radius: 10px;
   padding: 10px;
 }
+
+label.user-tags:hover {
+  color: black;
+  background-color: lightgoldenrodyellow;
+}
+
+.error span {
+  color: #ff7f7f;
+}
+
+.status span {
+  color: lightgreen;
+}
+

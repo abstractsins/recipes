@@ -4,7 +4,7 @@ import { toTitleCase } from "@/utils/utils";
 import styles from './FieldModule.module.css';
 
 interface FieldModuleProps {
-  className: string;
+  className?: string;
   label?: string;
   children: React.ReactNode;
   id?: string
@@ -14,7 +14,7 @@ export default function FieldModule({ className, label, children, id }: FieldMod
 
   let title = 'null';
   if (label) {
-    title = stripSpecialChars(label);
+    title = stripSpecialChars(label, ['*']);
     title = toTitleCase(title);
   }
 

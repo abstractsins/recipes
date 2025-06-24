@@ -5,3 +5,25 @@
   gap: 15px;
   margin: 0 !important;
 }
+
+.status-row {
+  min-height: 32px;
+}
+
+.status-container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+div.status-container span,
+div.error span {
+  flex-wrap: nowrap;
+  max-height: 32px;
+  font-family: monospace;
+  font-size: 10pt;
+  display: flex;
+  padding-top: 10px;
+}
+

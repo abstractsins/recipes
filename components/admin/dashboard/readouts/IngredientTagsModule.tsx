@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import IngredientTags from "./IngredientTags";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 
-import { Tag, AdminModule } from "@/types/types";
+import { Tag, AdminReadoutModule } from "@/types/types";
 
-export default function IngredientTagsModule({ className, onClick: activate, active, close }: AdminModule) {
+export default function IngredientTagsModule({ className, onClick: activate, active, close }: AdminReadoutModule) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [tags, setTags] = useState<Tag[]>([]);

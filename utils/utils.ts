@@ -1,5 +1,18 @@
-import { SeasonOption, Tag, TagOption } from "@/types/types";
+// ***********
+// * IMPORTS * 
+// ***********
 
+import { 
+    SeasonOption, 
+    Tag, 
+    TagOption 
+} from "@/types/types";
+
+
+
+// ***********
+// * EXPORTS * 
+// ***********
 
 export const toTitleCase = (text: string | undefined) => {
     if (text !== undefined) {
@@ -9,8 +22,13 @@ export const toTitleCase = (text: string | undefined) => {
     }
 }
 
-export const stripSpecialChars = (text: string) => {
-    return text.replace(/[-.,;:/*+%$#@^&\\]/g, ' ');
+export const stripSpecialChars = (text: string, exceptions?: string[]) => {
+    let chars: string[] = '-.,;:/*+%$#@^&\\\\'.split('');
+    if (exceptions) chars = chars.filter(char => !exceptions.includes(char));
+    const charString: string = chars.join('');
+    console.log(charString);
+    const reg = new RegExp('[' + charString + ']', 'g')
+    return text.replace(reg, ' ');
 }
 
 export const tagsIntoOptions = (tags: Tag[]) => {

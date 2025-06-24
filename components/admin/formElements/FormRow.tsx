@@ -6,9 +6,9 @@ interface FormRowProps {
   children: React.ReactNode;
 }
 
-export default function FormRow({ id, className = '', children }: FormRowProps) {
+export default function FormRow({ id, className, children }: FormRowProps) {
   return (
-    <div className={`${styles['row']} ${styles[className]}`} id={id}>
+    <div className={`${styles['row']} ${className ? (styles[className]) : ''}`} id={id}>
       {children}
     </div>
   );
