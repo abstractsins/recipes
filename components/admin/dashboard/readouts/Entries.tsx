@@ -12,7 +12,7 @@ interface Props {
     data: User[] | Ingredient[] | Tag[]
 }
 
-export default function Users({ data }: Props) {
+export default function Entries({ data }: Props) {
 
     const [dataStr, setDataStr] = useState('');
     const [showDetails, setShowDetails] = useState(false);
@@ -26,11 +26,11 @@ export default function Users({ data }: Props) {
         <>
             <ul>
                 {data.map((entry) => {
+                    console.log(entry);
                     if ('nickname' in entry) {
                         return (<li key={entry.id}>{entry.nickname} --<span className={styles["creator"]}>{entry.username}</span></li>)
-                    } else if ('user' in entry) {
-                        const user: User | { username: string } = entry.user || { username: 'Default' };
-                        return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}>{user.username}</span></li>)
+                    } else if ('userId' in entry) {
+                        return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}> user: {String(entry.userId)}</span></li>)
                     } else if ('createdBy' in entry) {
                         const user: User | { username: string } = entry.createdByUser || { username: 'Default' };
                         return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}>{user.username}</span></li>)

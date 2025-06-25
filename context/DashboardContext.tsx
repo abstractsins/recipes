@@ -1,16 +1,30 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
-import { Tag, TagType } from '@prisma/client';
+import { TagType } from '@prisma/client';
 import { useFetchTags } from '@/hooks/useFetchTags';
 
+import { useFetchRecipes } from '@/hooks/useFetchRecipes';
+import { useFetchUsers } from '@/hooks/useFetchUsers';
+import { useFetchIngredients } from '@/hooks/useFetchIngredients';
+
+import {
+  User,
+  Ingredient,
+  Tag,
+  Recipe
+} from '@/types/types';
+
 interface DashboardContextValue {
+  users: User[];
+  ingredients: Ingredient[];
+  recipes: Recipe[];
   ingredientTags: Tag[];
   recipeTags: Tag[];
   activeModuleIds: string[];
   refreshTags: (newTags: Tag[]) => void; // optional updater
-  activateModule: (id: string) => void;
-  deactivateModule: (id: string) => void;
+  activateModule: (e: React.MouseEvent<HTMLDivElement>) => void;
+  deactivateModule: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const DashboardContext = createContext<DashboardContextValue | undefined>(undefined);
@@ -19,45 +33,66 @@ interface DashboardProviderProps {
   children: ReactNode;
 }
 
-export function DashboardProvider({children }: DashboardProviderProps) {
+
+export function DashboardProvider({ children }: DashboardProviderProps) {
+
+  const { users } = useFetchUsers();
+  const { ingredients } = useFetchIngredients();
+  const { recipes } = useFetchRecipes();
+
+  const { tags: ingredientTags } = useFetchTags({ type: 'ingredient', user: 0, refreshKey: null });
+  const { tags: recipeTags } = useFetchTags({ type: 'recipe', user: 0, refreshKey: null });
+  const { tagOptions } = useFetchTags({ type: "ingredient", user: null, refreshKey: null });
+
   const [tags, setTags] = useState<Tag[]>();
-  const [activeIds, setActiveIds] = useState<string[]>([]);
 
-  useEffect(()=>{
-    const {tagOptions} = useFetchTags({type: "ingredient", user: null, refreshKey: null});
-    // setTags(tags);
-  }, [])
-
-  const ingredientTags = useMemo(
-    () => tags.filter((tag) => tag.type === TagType.ingredient),
-    [tags]
-  );
-
-  const recipeTags = useMemo(
-    () => tags.filter((tag) => tag.type === TagType.recipe),
-    [tags]
-  );
+  const [activeModuleIds, setActiveModuleIds] = useState<string[]>([]);
 
   const refreshTags = (newTags: Tag[]) => setTags(newTags);
 
-  const activate = (id: string) => {
-    setActiveIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
-  };
 
-  const deactivate = (id: string) => {
-    setActiveIds((prev) => prev.filter((i) => i !== id));
-  };
+  const activateModule = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    const id = target.closest('.module')?.getAttribute('id');
+    let updatedActiveIds = activeModuleIds.slice();
+    if (id && !activeModuleIds.includes(id)) {
+      updatedActiveIds.push(id);
+      setActiveModuleIds(updatedActiveIds);
+    }
+  }
 
+
+  const deactivateModule = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    const id = target.closest('.module')?.getAttribute('id');
+    if (id && activeModuleIds.includes(id)) {
+      let updatedActiveIds = activeModuleIds.slice();
+      const iActive = activeModuleIds.indexOf(id);
+      updatedActiveIds.splice(iActive, 1);
+      setActiveModuleIds(updatedActiveIds);
+    }
+  }
+
+console.log(ingredientTags);
+console.log(recipeTags);
   const value: DashboardContextValue = {
     ingredientTags,
     recipeTags,
     refreshTags,
-    activeModuleIds: activeIds,
-    activateModule: activate,
-    deactivateModule: deactivate,
+    activeModuleIds,
+    activateModule,
+    deactivateModule,
+    users,
+    ingredients,
+    recipes,
   };
 
-  return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
+
+  return (
+    <DashboardContext.Provider value={value}>
+      {children}
+    </DashboardContext.Provider>
+  );
 }
 
 
@@ -68,4 +103,3 @@ export function useDashboard() {
   }
   return context;
 }
-

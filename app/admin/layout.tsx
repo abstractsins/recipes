@@ -16,8 +16,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <>
-      <PrimeHeader nickname={nickname} role={role} />
       <DashboardProvider >
+        <PrimeHeader nickname={nickname} role={role} />
         {children}
       </DashboardProvider>
     </>

@@ -53,6 +53,7 @@ export interface AdminReadoutModule {
     title: string;
     id: string;
     hookData: any; 
+    isActive: boolean;
 }
 
 export interface AdminSelectProps {

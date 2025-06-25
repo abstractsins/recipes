@@ -16,11 +16,15 @@ export function useFetchTags({ type, user, refreshKey }: Props) {
     const [tagOptions, setTagOptions] = useState<TagOption[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const fetchString = user === 0 ? 'api/tag/'+type : '/api/tag/'+type+'/user/'+user;
+
     useEffect(() => {
+        console.log(user);
         async function fetchTags() {
             try {
-                const res = await fetch(`/api/tag/${type}/user/${user}`);
+                const res = await fetch(fetchString);
                 const data: Tag[] = await res.json();
+                console.log(data);
                 setTags(data);
             } catch (err) {
                 console.error("Failed to fetch tags:", err);
@@ -34,5 +38,5 @@ export function useFetchTags({ type, user, refreshKey }: Props) {
 
     useEffect(() => { if (tags) setTagOptions(tagsIntoOptions(tags)) }, [tags]);
 
-    return { tagOptions, isLoading };
+    return { tagOptions, tags, isLoading };
 }

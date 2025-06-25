@@ -1,41 +1,54 @@
 'use client';
 
+import React from "react";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 import { AdminReadoutModule } from "@/types/types";
 import { useDashboard } from "@/context/DashboardContext";
-import Users from "./Users";
+import { useEffect } from "react";
 
+import Entries from "./Entries";
 
+function DashboardReadoutModule({ title, id, hookData, isActive }: AdminReadoutModule) {
 
-export default function DashboardReadoutModule({ title, id, hookData }: AdminReadoutModule) {
     const {
-        activeModuleIds: activeIds,
         activateModule: activate,
         deactivateModule: deactivate
     } = useDashboard();
 
-    const isActive = activeIds.includes(id);
     const isLoading = false;
 
+    useEffect(() => {
+        console.log("hookData changed:", hookData);
+    }, [hookData]);
+
     return (
-        <div className={`module ${activeIds.includes(id) ? 'active' : 'inactive'}`} id={id} onClick={() => activate(id)}>
+        <div className={`module ${isActive ? 'active' : 'inactive'}`} id={id} onClick={activate}>
             <div className="module-header">
                 <h3>{title}</h3>
                 <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : hookData.length}</span>
             </div>
-            {active &&
+            {isActive &&
                 (<>
                     <div className="module-body">
                         {
                             isLoading
                                 ? <div className="DashboardReadoutModule-skeleton"></div>
-                                : <Users data={hookData} />
+                                : <Entries data={hookData} />
                         }
                     </div>
 
-                    <CloseButton onClick={close} />
-                </>
-                )}
+                    <CloseButton onClick={deactivate} />
+                </>)}
         </div>
     );
 }
+
+function areEqual(prevProps: any, nextProps: any) {
+    return (
+        prevProps.id === nextProps.id &&
+        prevProps.isActive === nextProps.isActive &&
+        prevProps.hookData === nextProps.hookData
+    );
+}
+
+export default React.memo(DashboardReadoutModule, areEqual);

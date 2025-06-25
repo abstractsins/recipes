@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { User } from "@/types/types";
+import { useMemo } from "react";
 
 export function useFetchUsers() {
   const [users, setUsers] = useState<User[]>([]);
@@ -21,5 +22,6 @@ export function useFetchUsers() {
     fetchUsers();
   }, []);
 
-  return { users, isLoading };
+  
+  return useMemo(() => ({ users, isLoading }), [users, isLoading]);
 }

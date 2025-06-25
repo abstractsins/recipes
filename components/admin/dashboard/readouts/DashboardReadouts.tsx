@@ -1,15 +1,9 @@
-import UsersModule from "./UsersModule"
-import RecipesModule from "./RecipesModule"
-import IngredientsModule from "./IngredientsModule"
-import RecipeTagsModule from "./RecipeTagsModule"
-import IngredientTagsModule from "./IngredientTagsModule"
+import styles from './DashboardReadouts.module.css';
 
 import DashboardReadoutModule from "./DashboardReadoutModule";
 
-import styles from './DashboardReadouts.module.css';
-import { useFetchUsers } from "@/hooks/useFetchUsers"
-import { useFetchTags } from "@/hooks/useFetchTags"
-import { useFetchIngredients } from "@/hooks/useFetchIngredients"
+import { useMemo } from 'react';
+import { useDashboard } from '@/context/DashboardContext';
 
 interface Props {
     activeIds: string[];
@@ -17,11 +11,51 @@ interface Props {
     close: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function DashboardReadouts({ onClick: activate, close: deactivate, activeIds }: Props) {
 
-    const { users } = useFetchUsers();
-    const { ingredients } = useFetchIngredients();
-    // const {recipes} = useFetchRecipes();
+export default function DashboardReadouts({ activeIds }: Props) {
+
+    const {
+        users,
+        ingredients,
+        recipes,
+        ingredientTags,
+        recipeTags
+    } = useDashboard();
+
+
+    const moduleConfigs = useMemo(() => [
+        {
+            id: 'users-module',
+            title: 'Users',
+            hookData: users,
+            Component: DashboardReadoutModule,
+        },
+        {
+            id: 'ingredients-module',
+            title: 'Ingredients',
+            hookData: ingredients,
+            Component: DashboardReadoutModule,
+        },
+        {
+            id: 'recipes-module',
+            title: 'Recipes',
+            hookData: recipes,
+            Component: DashboardReadoutModule,
+        },
+        {
+            id: 'ingredient-tags-module',
+            title: 'Ingredient Tags',
+            hookData: ingredientTags,
+            Component: DashboardReadoutModule,
+        },
+        {
+            id: 'recipe-tags-module',
+            title: 'Recipe Tags',
+            hookData: recipeTags,
+            Component: DashboardReadoutModule,
+        }
+    ], [users, ingredients, recipes, ingredientTags, recipeTags]);
+
 
     return (
         <div className={`${styles["readouts"]} grand-module`}>
@@ -31,59 +65,18 @@ export default function DashboardReadouts({ onClick: activate, close: deactivate
 
             <div className={styles["readout-modules"]}>
 
-                {/* ---------- USERS ---------- */}
-                <DashboardReadoutModule
-                    title='Users'
-                    id='users-module'
-                    hookData={users}
-                    className={`${activeIds.includes('users-module') ? 'active' : 'inactive'}`}
-                />
+                {moduleConfigs.map(({ id, title, hookData, Component }) => (
+                    <Component
+                        key={id}
+                        id={id}
+                        title={title}
+                        hookData={hookData}
+                        isActive={activeIds.includes(id)}
+                    />
+                ))}
 
-                {/* --------- RECIPES --------- */}
-                {/* <RecipesModule
-                    className={`${activeIds.includes('recipes-module') ? 'active' : 'inactive'}`}
-                    onClick={activate}
-                    active={activeIds.includes('recipes-module')}
-                    close={deactivate}
-                /> */}
-
-                {/* ------- INGREDIENTS ------- */}
-                <DashboardReadoutModule
-                    title='Ingredients'
-                    id='ingredients-module'
-                    hookData={ingredients}
-                    className={`${activeIds.includes('ingredients-module') ? 'active' : 'inactive'}`}
-                    onClick={activate}
-                    active={activeIds.includes('ingredients-module')}
-                    close={deactivate}
-                />
-
-                {/* ------- INGREDIENTS ------- */}
-                {/* <IngredientsModule
-                    className={`${activeIds.includes('ingredients-module') ? 'active' : 'inactive'}`}
-                    onClick={activate}
-                    active={activeIds.includes('ingredients-module')}
-                    close={deactivate}
-                /> */}
-
-                {/* ----------- RECIPE TAGS ---------- */}
-                <RecipeTagsModule
-                    className={`${activeIds.includes('recipe-tags-module') ? 'active' : 'inactive'}`}
-                    onClick={activate}
-                    active={activeIds.includes('recipe-tags-module')}
-                    close={deactivate}
-                />
-
-                {/* ----------- INGREDIENT TAGS ---------- */}
-                <IngredientTagsModule
-                    className={`${activeIds.includes('ingredient-tags-module') ? 'active' : 'inactive'}`}
-                    onClick={activate}
-                    active={activeIds.includes('ingredient-tags-module')}
-                    close={deactivate}
-                />
             </div>
 
         </div>
-
     )
 }
