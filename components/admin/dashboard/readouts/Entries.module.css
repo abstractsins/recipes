@@ -1,3 +1,29 @@
+
 .creator {
-    
+  color: darkgray;
+  font-size: 10pt;
+}
+
+.details.button {
+  cursor: pointer;
+  margin-top: 20px;
+  align-self: flex-end;
+  display: flex;
+  width: fit-content;
+  padding: 5px 10px;
+  transition: all 100ms;
+}
+
+.details.button:hover {
+  background-color: var(--black);
+  text-decoration: underline;
+}
+
+.details.button:active {
+  color: lightgreen;
+  /* background-color: var(--grey-dark); */
+}
+
+pre.details {
+  margin-top: 15px;
 }

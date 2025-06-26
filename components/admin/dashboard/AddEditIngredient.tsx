@@ -11,7 +11,6 @@ import {
 } from "react";
 
 import {
-    AdminReadoutModule,
     Ingredient,
     Mode,
     IngredientFormState,
@@ -39,7 +38,15 @@ import { toTitleCase } from "@/utils/utils";
 import IngredientTags from "../IngredientTags";
 
 
-export default function AddEditIngredient({ className, onClick: activate, active, close }: AdminReadoutModule) {
+interface Props {
+    id: string;
+    isActive: boolean;
+    onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+    close: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+
+export default function AddEditIngredient({ id, isActive, onClick, close }: Props) {
 
     //* STATES
     const [waiting, setWaiting] = useState(false);
@@ -119,16 +126,15 @@ export default function AddEditIngredient({ className, onClick: activate, active
         }));
     };
 
-    const handleIngredientSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const ingredientId = Number(e.target.value.split(" ")[0].match(/\d+/));
-        if (!isNaN(ingredientId)) {
-            setSelectedIngredientId(ingredientId);
-            setIngredientReady(true);
-        } else {
-            setIngredientReady(false);
+    const handleIngredientSelect = (selectedIngredient: number | null) => {
+        setSelectedIngredientId(selectedIngredient);
+        setIngredientReady(!!selectedIngredient);
+
+        if (!selectedIngredient) {
+            resetAll(['ingredientList', 'userReady']);
         }
-        setStatusMsg(null);
-        setError(null);
+        // setStatusMsg(null);
+        // setError(null);
     };
 
     const handleModeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,12 +214,12 @@ export default function AddEditIngredient({ className, onClick: activate, active
 
 
     // User selection (edit mode)
-    const handleUserSelect = async (selectedUser: string) => {
-        const userId = Number(selectedUser.split(":")[0]);
-        if (!isNaN(userId)) {
-            setSelectedUserId(userId);
+    const handleUserSelect = async (selectedUser: number | null) => {
+        if (selectedUser !== null) {
+            setSelectedUserId(selectedUser);
             setUserReady(true);
             setIngredientReady(false);
+            setSelectedIngredientId(null); 
             setFormState({
                 name: '',
                 main: '',
@@ -290,7 +296,6 @@ export default function AddEditIngredient({ className, onClick: activate, active
 
     useEffect(() => {
         if (selectedAuthorId || selectedUserId) {
-
             setFormState(prev => ({
                 ...prev,
                 selectedUserTagIndexes: []
@@ -301,13 +306,13 @@ export default function AddEditIngredient({ className, onClick: activate, active
 
     return (
         <div
-            className={`module ${className} ${styles['add-edit-ingredient-module']}`}
-            onClick={activate}
-            id='add-edit-ingredient-module'
+            className={`module ${styles['module']} ${isActive ? styles['active'] : styles['inactive']} ${styles['add-edit-ingredient-module']}`}
+            onClick={onClick}
+            id={id}
         >
-            <header className={`module-header ${styles['header']}`}>
+            <header className={`${styles['module-header']} ${styles['header']}`}>
                 <AddEditIngredientHeader
-                    active={active}
+                    active={isActive}
                     mode={mode}
                     error={error}
                     statusMsg={statusMsg}
@@ -316,10 +321,10 @@ export default function AddEditIngredient({ className, onClick: activate, active
             </header>
 
             {waiting && <ScreenGuard />}
-            {active && (
+            {isActive && (
                 <>
                     <div className={styles['add-edit-ingredient-body']}>
-                        <form id="add-edit-ingredient" onSubmit={handleSubmit}>
+                        <form id="add-edit-ingredient" className="add-edit-ingredient" onSubmit={handleSubmit}>
 
                             {mode === 'edit' && (
                                 <>
@@ -332,7 +337,7 @@ export default function AddEditIngredient({ className, onClick: activate, active
                                     <FormRow className={styles['row-00']} >
                                         <FieldModule label="Ingredient" id="edit-ingredient-ingredient-module">
                                             <IngredientSelect
-                                                value={ingredientValue}
+                                                value={selectedIngredientId}
                                                 data={userReady ? userIngredientList : []}
                                                 ready={userReady}
                                                 onSelect={handleIngredientSelect}
@@ -467,15 +472,15 @@ export default function AddEditIngredient({ className, onClick: activate, active
                             </div>
 
 
-                            <FormRow className={styles['row-']} className={`${mode === 'edit' ? 'padding-top-20' : ''}`}>
+                            <FormRow className={`${styles['row-']} ${mode === 'edit' ? 'padding-top-20' : ''}`}>
                                 {mode === 'add' && (
-                                    <FieldModule label="User*" id="add-edit-ingredient-user-module">
+                                    <FieldModule label="User*" className={styles["add-edit-ingredient-user-module"]}>
                                         <UserSelect onSelect={handleAuthorSelect} />
                                     </FieldModule>
                                 )}
 
-                                <FieldModule id="add-edit-ingredient-submit-module">
-                                    <input disabled={waiting} id="add-edit-ingredient-submit" type="submit" value={toTitleCase(mode)} />
+                                <FieldModule className={styles["add-edit-ingredient-submit-module"]}>
+                                    <input disabled={waiting} className={styles["add-edit-ingredient-submit"]} type="submit" value={toTitleCase(mode)} />
                                 </FieldModule>
                             </FormRow>
 

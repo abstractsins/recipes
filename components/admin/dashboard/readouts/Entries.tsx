@@ -26,26 +26,24 @@ export default function Entries({ data }: Props) {
         <>
             <ul>
                 {data.map((entry) => {
-                    console.log(entry);
                     if ('nickname' in entry) {
                         return (<li key={entry.id}>{entry.nickname} --<span className={styles["creator"]}>{entry.username}</span></li>)
                     } else if ('userId' in entry) {
                         return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}> user: {String(entry.userId)}</span></li>)
                     } else if ('createdBy' in entry) {
-                        const user: User | { username: string } = entry.createdByUser || { username: 'Default' };
-                        return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}>{user.username}</span></li>)
+                        return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}> user: {entry.createdBy || 'Default'}</span></li>)
                     }
                 })}
             </ul>
 
             {showDetails
                 ? (<>
-                    <div className="details button" onClick={() => setShowDetails(false)}>LESS DETAILS 🦴</div>
-                    <pre className="details">
+                    <div className={`${styles["details"]} ${styles["button"]}`} onClick={() => setShowDetails(false)}>LESS DETAILS 🦴</div>
+                    <pre className={styles["details"]}>
                         {dataStr}
                     </pre>
                 </>)
-                : <div className="details button" onClick={() => setShowDetails(true)}>MORE DETAILS 🥩</div>
+                : <div className={`${styles["details"]} ${styles["button"]}`} onClick={() => setShowDetails(true)}>MORE DETAILS 🥩</div>
             }
 
         </>

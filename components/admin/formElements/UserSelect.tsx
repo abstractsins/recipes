@@ -1,31 +1,44 @@
-import { useFetchUsers } from "@/hooks/useFetchUsers";
-import styles from './Select.module.css';
+import styles from './AdminSelect.module.css';
+import Select from 'react-select';
+import { useDashboard } from "@/context/DashboardContext";
+
+
+type UserOption = {
+    value: number | null;
+    label: string;
+};
 
 interface Props {
-    onSelect?: (value: string) => void;
+    onSelect: (value: number | null) => void;
 }
 
 export default function UserSelect({ onSelect }: Props) {
 
-    const { users } = useFetchUsers();
+    const { users } = useDashboard();
 
-    const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedValue = e.target.value;
+    const handleSelect = (selectedOption: UserOption | null) => {
         if (onSelect) {
-            onSelect(selectedValue);
+            onSelect(selectedOption?.value || null);
         }
     }
 
+    const mappedUsers = users.map(el => {
+        return {
+            value: el.id,
+            label: `${el.id}: ${el.username} -- ${el.nickname}, ${el.email}`
+        }
+    })
+
+
     return (
-        <select onChange={handleSelect} className={styles["admin-select"]} name="user" defaultValue={'User'}>
-            <option value="null" label="Select User"></option>
-            {
-                users.map(el => (
-                    <option key={el.id}>
-                        {`${el.id}: ${el.username} -- ${el.nickname}, ${el.email}`}
-                    </option>
-                ))
-            }
-        </select>
+        <Select<UserOption>
+            onChange={handleSelect}
+            className={styles["admin-select"]}
+            classNamePrefix='add-edit-user'
+            name="user"
+            defaultValue={null}
+            options={mappedUsers}
+            isClearable
+        />
     );
 }

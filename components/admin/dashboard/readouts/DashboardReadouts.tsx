@@ -12,14 +12,16 @@ interface Props {
 }
 
 
-export default function DashboardReadouts({ activeIds }: Props) {
+export default function DashboardReadouts({ activeIds, onClick, close }: Props) {
 
     const {
         users,
         ingredients,
         recipes,
         ingredientTags,
-        recipeTags
+        recipeTags,
+        activateModule,
+        deactivateModule
     } = useDashboard();
 
 
@@ -58,7 +60,7 @@ export default function DashboardReadouts({ activeIds }: Props) {
 
 
     return (
-        <div className={`${styles["readouts"]} grand-module`}>
+        <div className={`${styles["readouts"]} ${styles['grand-module']}`}>
             <header>
                 <h2>Data Readouts</h2>
             </header>
@@ -72,6 +74,8 @@ export default function DashboardReadouts({ activeIds }: Props) {
                         title={title}
                         hookData={hookData}
                         isActive={activeIds.includes(id)}
+                        onClick={activateModule}
+                        close={deactivateModule}
                     />
                 ))}
 

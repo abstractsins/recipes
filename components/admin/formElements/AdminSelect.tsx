@@ -6,7 +6,7 @@ import { AdminSelectProps, SeasonOption } from '@/types/types';
 
 import { TagOption, Option } from '@/types/types';
 
-import styles from './Select.module.css';
+import styles from './AdminSelect.module.css';
 
 import TagSkeletons from './TagSkeletons';
 

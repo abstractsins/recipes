@@ -8,3 +8,8 @@ div.readout-modules {
   display: flex;
   flex-wrap: wrap;
 }
+
+.grand-module > header {
+  padding-left: 40px;
+}
+

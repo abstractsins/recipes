@@ -1,10 +1,8 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
   --black: rgb(10, 10, 10);
   --black2: rgb(15, 15, 15);
-  --grey-dark: #3f3f3f;
   --grey: rgb(30, 30, 30);
+  --grey-dark: #3f3f3f;
 }
 
 * {
@@ -67,6 +65,9 @@ ul {
   animation: pulse 2s infinite ease-in-out;
 }
 
+.disabled:hover {
+  cursor: default !important;
+}
 
 
 /* ***************** */
@@ -94,6 +95,7 @@ input {
 input::placeholder {
   font-size: 12pt;
   font-style: italic;
+  padding-left: 15px;
 }
 
 input[type="checkbox"] {
@@ -104,24 +106,9 @@ input[type="checkbox"]:not([disabled]) {
   cursor: pointer;
 }
 
-input[type="text"].disabled {
-  color: black;
-  background-color: #B6B6B6;
-}
-
-.disabled:hover {
-  cursor: default !important;
-}
-
 select[disabled] {
   cursor: default;
 }
-
-
-
-/* ********************************* */
-/** SHARED STATUS AND ERROR ELEMENTS */
-/* ********************************* */
 
 
 
@@ -153,112 +140,6 @@ select[disabled] {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* * ADD INGREDIENT */
-form#add-edit-ingredient select,
-select.admin-select[name="user"],
-select.admin-select[name="ingredient"],
-form#add-edit-ingredient input[type="text"] {
-  padding: 10px 15px;
-  border-radius: 10px;
-  font-size: 14pt;
-  max-width: 275px;
-  border: none;
-}
-
-select.admin-select[name="user"],
-select.admin-select[name="ingredient"] {
-  min-width: 400px;
-}
-
-input#add-edit-ingredient-submit {
-  background-color: rgb(188, 226, 249);
-  border: none;
-  font-size: 14pt;
-  border-radius: 10px;
-  justify-self: flex-end;
-  padding: 9px 15px;
-  width: 110px;
-}
-
-input#add-edit-ingredient-submit:hover {
-  cursor: pointer;
-}
-
-input#add-edit-ingredient-submit:hover:not([class*="disabled"]) {
-  background-color: lightskyblue;
-}
-
-form#add-edit-ingredient input[name="name"] {
-  width: 100%;
-}
-
-
-#add-edit-ingredient-name-module input[name="name"] {
-  max-width: 100% !important;
-}
-
-#add-edit-ingredient-user-module {
-  flex: 4;
-}
-
-select.admin-select[name="user"],
-#add-edit-ingredient-user-module select {
-  max-width: 100% !important;
-}
-
-#add-edit-ingredient-submit-module {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.add-edit-ingredient-name-module {
-  flex: 2;
-}
-
-#add-edit-ingredient-submit-module {
-  justify-content: flex-end;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  width: 100%;
-}
-
-input#add-edit-ingredient-submit:active {
-  background-color: whitesmoke !important;
-}
-
-#add-edit-ingredient-name-module input {
-  max-width: 380px;
-}
-
-.form-module.season {
-  display: flex;
-  flex-wrap: wrap;
-  /* gap: 10px; */
-  /* margin-top: 5px; */
-}
-
-
-
-
-
-
-
 div.checkbox-container:not([class*="disabled"]) label.default-tags:hover {
   background-color: rgba(224, 255, 255, 0.95);
   color: black;
@@ -271,14 +152,45 @@ div.checkbox-container:not([class*="disabled"]) label.default-tags:hover {
 
 
 
+/* *************** */
+/* * REACT-SELECT  */
+/* *************** */
 
+.add-edit-user__control {
+  border: 2px solid transparent !important;
+  border-radius: 12px !important;
+  min-width: 400px !important;
+  /* width: 100% !important; */
+  max-width: 450px !important;
+}
 
+.add-edit-user__option {
+  color: black !important;
+  width: fit-content;
+}
 
+.add-edit-ingredient__control {
+  border: 2px solid transparent !important;
+  border-radius: 12px !important;
+  min-width: 400px !important;
+  /* background-color: blue; */
+}
 
+.add-edit-ingredient__option {
+  color: black !important;
+  width: fit-content;
+}
 
+.add-edit-ingredient__control--is-disabled {
+  background-color: darkgray !important;
+  color: gray;
+  border: none !important;
+}
 
-
-
+.add-edit-user__control--is-focused,
+.add-edit-ingredient__control--is-focused {
+  border: 2px solid lightgreen !important;
+}
 
 * {
   /* border: 1px solid red; */

@@ -54,6 +54,8 @@ export interface AdminReadoutModule {
     id: string;
     hookData: any; 
     isActive: boolean;
+    onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+    close: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export interface AdminSelectProps {

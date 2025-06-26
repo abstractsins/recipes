@@ -2,26 +2,8 @@
 /** HIGH LEVEL MODULE STYLING */
 /* ************************** */
 
-.module.inactive {
-  cursor: pointer;
-  background-color: var(--grey);
-}
 
-.module.inactive:hover {
-  border-color: white;
-  background-color: var(--black);
-}
-
-.module.active {
-  background-color: var(--black);
-  border-color: silver;
-}
-
-.module.active h3 {
-  color: lightgreen;
-  transition: all .4s;
-}
-
+/* 
 div.module-header {
   margin-bottom: 5px;
 }
@@ -50,14 +32,6 @@ div.add-data .add-data-modules {
     padding: 10px;
 }
 
-.add-edit-mode-select {
-  display: flex;
-  gap: 10px;
-}
-
-h3.unselected {
-  color: gray !important;
-}
 
 .module {
   position: relative;
@@ -77,36 +51,5 @@ h3.unselected {
 }
 
 #users-module {
-  /* width: 500px; */
   width: fit-content;
-}
-
-span[class*="-creator"] {
-  color: darkgray;
-  font-size: 10pt;
-  margin-left: 5px;
-}
-
-.details.button {
-  cursor: pointer;
-  margin-top: 20px;
-  align-self: flex-end;
-  display: flex;
-  width: fit-content;
-  padding: 5px 10px;
-  transition: all 100ms;
-}
-
-.details.button:hover {
-  background-color: var(--black);
-  text-decoration: underline;
-}
-
-.details.button:active {
-  color: lightgreen;
-  /* background-color: var(--grey-dark); */
-}
-
-pre.details {
-  margin-top: 15px;
-}
+} */

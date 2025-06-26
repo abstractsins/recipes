@@ -54,6 +54,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
   const activateModule = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     const id = target.closest('.module')?.getAttribute('id');
+    console.log('activate! ' + id);
     let updatedActiveIds = activeModuleIds.slice();
     if (id && !activeModuleIds.includes(id)) {
       updatedActiveIds.push(id);
@@ -73,8 +74,8 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     }
   }
 
-console.log(ingredientTags);
-console.log(recipeTags);
+  console.log(ingredientTags);
+  console.log(recipeTags);
   const value: DashboardContextValue = {
     ingredientTags,
     recipeTags,

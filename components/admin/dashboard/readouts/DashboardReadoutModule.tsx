@@ -8,6 +8,8 @@ import { useEffect } from "react";
 
 import Entries from "./Entries";
 
+import styles from './DashboardReadoutModule.module.css';
+
 function DashboardReadoutModule({ title, id, hookData, isActive }: AdminReadoutModule) {
 
     const {
@@ -15,21 +17,25 @@ function DashboardReadoutModule({ title, id, hookData, isActive }: AdminReadoutM
         deactivateModule: deactivate
     } = useDashboard();
 
-    const isLoading = false;
+    const isLoading = false; // DEBUG?
 
     useEffect(() => {
         console.log("hookData changed:", hookData);
     }, [hookData]);
 
     return (
-        <div className={`module ${isActive ? 'active' : 'inactive'}`} id={id} onClick={activate}>
-            <div className="module-header">
-                <h3>{title}</h3>
+        <div
+            className={`module ${styles['module']} ${isActive ? styles['active'] : styles['inactive']}`}
+            id={id}
+            onClick={activate}
+        >
+            <div className={styles["module-header"]}>
+                <h3>{title}</h3>    
                 <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : hookData.length}</span>
             </div>
             {isActive &&
                 (<>
-                    <div className="module-body">
+                    <div className={styles["module-body"]}>
                         {
                             isLoading
                                 ? <div className="DashboardReadoutModule-skeleton"></div>

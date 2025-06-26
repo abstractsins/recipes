@@ -8,6 +8,7 @@
     background-color: #fff;
     color: #000;
     box-sizing: border-box;
+    padding-left: 15px;
 }
 
 .admin-input:focus {
@@ -15,17 +16,18 @@
     /* example green highlight */
 }
 
-input.add-tag {
+.add-tag {
+  background-color: transparent;
+  color: white;
   display: flex;
   align-items: flex-end;
-  height: 100%;
-  color: white;
-  padding: 10px 0 0 10px !important;
-  background-color: transparent;
+  border: none;
   border-radius: 0 !important;
   border-bottom: 1px solid white !important;
+  padding: 10px 0 0 10px !important;
   margin-left: 15px;
   margin-right: 5px;
+  height: 100%;
   width: 150px;
 }
 
