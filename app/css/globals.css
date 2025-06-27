@@ -1,0 +1,111 @@
+:root {
+  /* ********** */
+  /* * COLORS * */
+  /* ********** */
+  --black: rgb(10, 10, 10);
+  --black2: rgb(15, 15, 15);
+  --grey: rgb(30, 30, 30);
+  --grey-dark: #3f3f3f;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--black);
+  color: white;
+  font-family: var(--font-geist-sans), Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+h3 {
+  font-size: 16pt;
+}
+
+ul {
+  list-style-position: inside;
+}
+
+.light {
+  color: black;
+}
+
+.dark {
+  color: whitesmoke
+}
+
+.link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link.light:hover {
+  color: rgb(0, 0, 255);
+}
+
+.link.dark:hover {
+  color: rgb(138, 255, 255);
+}
+
+.skeleton {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.disabled:hover {
+  cursor: default !important;
+}
+
+
+/* ***************** */
+/** GENERIC HELPERS  */
+/* ***************** */
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.padding-top-20 {
+  padding-top: 20px;
+}
+
+
+
+/* ************ */
+/** ANIMATIONS  */
+/* ************ */
+
+@keyframes pulse {
+  0% {
+    background-color: #414141;
+  }
+
+  50% {
+    background-color: #888888;
+  }
+
+  100% {
+    background-color: #414141;
+  }
+}
+
+
+* {
+  /* border: 1px solid red; */
+}

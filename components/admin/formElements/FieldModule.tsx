@@ -1,5 +1,4 @@
-import { stripSpecialChars } from "@/utils/utils";
-import { toTitleCase } from "@/utils/utils";
+import { toTitleCase, stripSpecialChars } from "@/utils/utils";
 
 import styles from './FieldModule.module.css';
 
@@ -10,7 +9,7 @@ interface FieldModuleProps {
   id?: string
 }
 
-export default function FieldModule({ className, label, children, id }: FieldModuleProps) {
+export default function FieldModule({ className = 'null', label, children, id }: FieldModuleProps) {
 
   let title = 'null';
   if (label) {
@@ -19,7 +18,7 @@ export default function FieldModule({ className, label, children, id }: FieldMod
   }
 
   return (
-    <div className={`${styles['form-module']} ${styles[className]} ${label?.toLowerCase()}`} id={id ?? ''}>
+    <div className={`${styles['form-module']} ${styles[className] ?? ''}`} id={id ?? ''}>
       {label && (
         <div className="field-label">
           <span>{title}</span>

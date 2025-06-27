@@ -13,7 +13,7 @@ export default function DashboardAddEdit() {
 
 
     return (
-        <div className={`${styles['add-data']} ${styles['grand-module']}`}>
+        <div className={`${styles['add-data']}`}>
             <header>
                 <h2>Add or Edit Data</h2>
             </header>

@@ -118,6 +118,7 @@ input.add-edit-ingredient-submit {
   justify-self: flex-end;
   padding: 9px 15px;
   width: 110px;
+  max-height: 41px;
 }
 
 input.add-edit-ingredient-submit:hover {
@@ -149,22 +150,8 @@ select.admin-select[name="user"],
   max-width: 100% !important;
 }
 
-.add-edit-ingredient-submit-module {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .add-edit-ingredient-name-module {
   flex: 2;
-}
-
-.add-edit-ingredient-submit-module {
-  justify-content: flex-end;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  width: 100%;
 }
 
 .add-edit-ingredient-name-module input {

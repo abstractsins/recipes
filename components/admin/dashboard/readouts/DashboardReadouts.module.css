@@ -1,15 +1,12 @@
-/* div.readouts {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-} */
-
 div.readout-modules {
   display: flex;
   flex-wrap: wrap;
 }
 
-.grand-module > header {
+.readouts > header {
   padding-left: 40px;
 }
 
+.readouts {
+  padding: 15px;
+}

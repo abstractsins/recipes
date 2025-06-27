@@ -1,0 +1,39 @@
+/* **************** */
+/** INPUT ELEMENTS  */
+/* **************** */
+
+input {
+  font-family: var(--font-geist-sans), Helvetica, sans-serif;
+}
+
+input::placeholder {
+  font-size: 12pt;
+  font-style: italic;
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
+input[type="checkbox"]:not([disabled]) {
+  cursor: pointer;
+}
+
+select[disabled] {
+  cursor: default;
+}
+
+input.quick-input {
+  background-color: transparent;
+  color: white;
+  display: flex;
+  align-items: flex-end;
+  border: none;
+  border-radius: 0 !important;
+  border-bottom: 1px solid white !important;
+  padding: 10px 0 0 10px !important;
+  margin-left: 15px;
+  margin-right: 5px;
+  height: 100%;
+  width: 150px !important; 
+}

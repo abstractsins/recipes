@@ -2,7 +2,11 @@
   display: flex;
 }
 
-.grand-module > header {
+.add-data > header {
   padding-left: 40px;
+}
+
+.add-data {
+  padding: 15px;
 }
 

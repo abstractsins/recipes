@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./css/globals.css";
+import "./css/inputs.css";
+import "./css/react-select.css";
 
 import {
   Geist,

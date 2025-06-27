@@ -13,10 +13,8 @@
 * Add Brand preferences/field
 
 ## TECH DEBT
-* Break up CSS 
-* component file structure
 * move custom hooks out of components
 * createdBy / user for tags/ingredient types (maybe standardize the key)
 
 ## Modules
-* Refresh button
+* Refresh button or triggered refresh
