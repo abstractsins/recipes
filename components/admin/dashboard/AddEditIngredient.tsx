@@ -1,24 +1,10 @@
 'use client';
 
 import styles from './AddEditIngredient.module.css';
-
 import { FiPlusCircle } from "react-icons/fi";
+import { useState } from "react";
+import { Mode } from "@/types/types";
 
-import {
-    useEffect,
-    useState,
-    useCallback
-} from "react";
-
-import {
-    Ingredient,
-    Mode,
-    IngredientFormState,
-    TagOption,
-    SeasonOption
-} from "@/types/types";
-
-import Loader from "@/components/general/Loader";
 import ScreenGuard from "@/components/general/ScreenGuard";
 
 import FormRow from "@/components/admin/formElements/FormRow";
@@ -32,11 +18,9 @@ import UserSelect from "../formElements/UserSelect";
 import IngredientSelect from "../formElements/IngredientSelect";
 import AddEditIngredientHeader from "./AddEditIngredientHeader";
 
-import { seasonOptions, seasonsIntoOptions, tagsIntoOptions } from "@/utils/utils";
+import { seasonOptions, toTitleCase } from "@/utils/utils";
 
-import { toTitleCase } from "@/utils/utils";
-import IngredientTags from "../IngredientTags";
-
+import { useIngredientForm } from '@/hooks/useIngredientForm';
 
 interface Props {
     id: string;
@@ -45,268 +29,35 @@ interface Props {
     close: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-
 export default function AddEditIngredient({ id, isActive, onClick, close }: Props) {
-
-    //* STATES
-    const [waiting, setWaiting] = useState(false);
-    const [ingredientLoading, setIngredientLoading] = useState(false);
-
-    const [error, setError] = useState<string | null>(null);
-    const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
     const [mode, setMode] = useState<Mode>('add');
 
-    const [userReady, setUserReady] = useState(false);
-    const [ingredientReady, setIngredientReady] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-    const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
-    const [ingredientValue, setIngredientValue] = useState('');
-
-    const [selectedAuthorId, setSelectedAuthorId] = useState<number | null>(null);
-
-    const [userIngredientList, setUserIngredientList] = useState<Ingredient[]>([]);
-    const [ingredientInfo, setIngredientInfo] = useState<Ingredient | null>(null);
-
-    const [userIngredientTagValue, setUserIngredientTagValue] = useState('');
-    const [userTagsRefreshKey, setUserTagsRefreshKey] = useState(0);
-
-    const [formState, setFormState] = useState<IngredientFormState>({
-        name: '',
-        main: '',
-        variety: '',
-        category: '',
-        subcategory: '',
-        seasons: [],
-        selectedDefaultTagIndexes: [],
-        selectedUserTagIndexes: []
-    });
-
-    const isDisabled = mode === 'edit' && !ingredientReady;
-
-
-    //* FUNCTIONS
-
-    const triggerUserTagRefresh = () => setUserTagsRefreshKey(prev => prev + 1);
-
-    // Reset everything
-    const resetAll = (exceptions?: string[]) => {
-        !exceptions?.includes('error') && setError(null);
-        !exceptions?.includes('status') && setStatusMsg(null);
-        !exceptions?.includes('userId') && setSelectedUserId(null);
-        !exceptions?.includes('ingredientList') && setUserIngredientList([]);
-        !exceptions?.includes('ingredientId') && setSelectedIngredientId(null);
-        !exceptions?.includes('ingredient') && setIngredientInfo(null);
-        !exceptions?.includes('authorId') && setSelectedAuthorId(null);
-        !exceptions?.includes('form') && setFormState({ name: '', main: '', variety: '', category: '', subcategory: '', seasons: [], selectedDefaultTagIndexes: [], selectedUserTagIndexes: [] });
-        !exceptions?.includes('userReady') && setUserReady(false);
-        !exceptions?.includes('ingredientReady') && setIngredientReady(false);
-    };
-
-    // Handle Season changes
-    const handleSeasonSelect = (season: SeasonOption, checked: boolean) => {
-        setFormState(prev => ({
-            ...prev,
-            seasons: checked ? [...prev.seasons, season.value] : prev.seasons.filter(s => s !== season.value),
-        }));
-    };
-
-    // Default Tags
-    const handleDefaultTagSelect = (tag: TagOption, checked: boolean) => {
-        console.log(formState.selectedDefaultTagIndexes)
-        setFormState(prev => ({
-            ...prev,
-            selectedDefaultTagIndexes: checked ? [...prev.selectedDefaultTagIndexes, tag.id] : prev.selectedDefaultTagIndexes.filter(s => s !== tag.id),
-        }));
-    };
-
-    const handleUserTagSelect = (tag: TagOption, checked: boolean) => {
-        setFormState(prev => ({
-            ...prev,
-            selectedUserTagIndexes: checked ? [...prev.selectedUserTagIndexes, tag.id] : prev.selectedUserTagIndexes.filter(s => s !== tag.id),
-        }));
-    };
-
-    const handleIngredientSelect = (selectedIngredient: number | null) => {
-        setSelectedIngredientId(selectedIngredient);
-        setIngredientReady(!!selectedIngredient);
-
-        if (!selectedIngredient) {
-            resetAll(['ingredientList', 'userReady', 'userId']);
-        }
-        setStatusMsg(null);
-        setError(null);
-    };
+    const {
+        formState, setFormState,
+        handleSeasonSelect,
+        handleDefaultTagSelect,
+        handleUserTagSelect,
+        handleIngredientSelect,
+        handleUserSelect,
+        handleAuthorSelect,
+        userIngredientTagValue,
+        userIngredientTagInputHandler,
+        addUserIngredientTag,
+        handleSubmit,
+        selectedAuthorId,
+        selectedUserId,
+        selectedIngredientId,
+        userIngredientList,
+        userTagsRefreshKey,
+        statusMsg, error,
+        isDisabled, waiting, resetAll
+    } = useIngredientForm(mode);
 
     const handleModeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMode(e.target.checked ? 'edit' : 'add');
         resetAll();
     };
-
-    // Handle form submit
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setWaiting(true);
-        setError(null);
-        setStatusMsg(null);
-
-        const data = {
-            ...formState,
-            userId: mode === 'add' ? (new FormData(e.currentTarget).get('user')) : selectedUserId,
-            IngredientTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
-        };
-
-        try {
-            const res = await fetch(
-                mode === 'add' ? '/api/ingredient' : `/api/ingredient/${selectedIngredientId}`, {
-                method: mode === 'add' ? 'POST' : 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-                credentials: 'include',
-            });
-
-            if (!res.ok) {
-                const error = await res.json();
-                console.log(error);
-                console.log(error.error);
-                setError(error.error);
-            } else {
-                const json = await res.json(); ``
-                console.log(json);
-                setStatusMsg(mode === 'add' ? 'Ingredient Created!' : 'Ingredient Updated!');
-                if (mode === 'edit') {
-                    fetchUserIngredients();
-                }
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setWaiting(false);
-            resetAll(['userReady', 'status', 'ingredientList', 'error']);
-            setSelectedUserId(selectedUserId);
-            setSelectedIngredientId(null);
-            setIngredientValue('null');
-        }
-
-        document.getElementById('add-edit-ingredient-module')?.scrollIntoView({ behavior: 'smooth' })
-    };
-
-    const userIngredientTagInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e);
-        const inputValue = e.currentTarget.value;
-        console.log(inputValue);
-        setUserIngredientTagValue(inputValue);
-    }
-
-    const userIngredientTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        console.log(e.nativeEvent.key);
-        if (e.nativeEvent.key === 'Enter') {
-            addUserIngredientTag();
-        }
-    }
-
-    const handleAuthorSelect = (id: number) => {
-        if (id) setSelectedAuthorId(id);
-        else setSelectedAuthorId(null);
-
-        triggerUserTagRefresh();
-    };
-
-
-    // User selection (edit mode)
-    const handleUserSelect = async (selectedUser: number | null) => {
-        if (selectedUser !== null) {
-            setSelectedUserId(selectedUser);
-            setUserReady(true);
-            setIngredientReady(false);
-            setSelectedIngredientId(null); 
-            setFormState({
-                name: '',
-                main: '',
-                variety: '',
-                category: '',
-                subcategory: '',
-                seasons: [],
-                selectedDefaultTagIndexes: [],
-                selectedUserTagIndexes: []
-            });
-        } else {
-            setUserReady(false);
-            resetAll();
-        }
-        setStatusMsg(null);
-        triggerUserTagRefresh();
-    };
-
-
-    // Fetch ingredient list for user
-    const fetchUserIngredients = useCallback(async () => {
-        if (selectedUserId) {
-            const res = await fetch(`/api/ingredient/user/${selectedUserId}`);
-            const data = await res.json();
-            setUserIngredientList(data);
-        }
-    }, [selectedUserId]);
-
-    // Fetch individual ingredient
-    const fetchIngredientInfo = useCallback(async () => {
-        if (selectedIngredientId) {
-            setIngredientLoading(true);
-            const res = await fetch(`/api/ingredient/${selectedIngredientId}`);
-            const data: Ingredient = await res.json();
-            setIngredientInfo(data);
-            setIngredientLoading(false);
-        }
-    }, [selectedIngredientId]);
-
-    const addUserIngredientTag = async () => {
-        if (userIngredientTagValue.trim()) {
-            const newTag = await fetch(`/api/tag/ingredient/user/${selectedAuthorId ?? selectedUserId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tagName: userIngredientTagValue.trim() }),
-                credentials: 'include'
-            });
-        }
-            
-        setUserIngredientTagValue('');
-        triggerUserTagRefresh();
-        const input: HTMLInputElement | null = document.querySelector('input[name="add-user-ingredient-tag"]');
-        if (input) input.focus();
-    }
-
-
-    // * EFFECTS
-    // Populate formState when ingredientInfo changes
-    useEffect(() => {
-        if (ingredientInfo) {
-            setFormState({
-                name: ingredientInfo.name ?? '',
-                main: ingredientInfo.main ?? '',
-                variety: ingredientInfo.variety ?? '',
-                category: ingredientInfo.category ?? '',
-                subcategory: ingredientInfo.subcategory ?? '',
-                seasons: seasonsIntoOptions(ingredientInfo.seasons) ?? [],
-                // selectedDefaultTagOptions: tagsIntoOptions(ingredientInfo.defaultTags) ?? [],
-                // selectedUserTagOptions: tagsIntoOptions(ingredientInfo.userTags) ?? []
-                selectedDefaultTagIndexes: ingredientInfo.defaultTags ?? [],
-                selectedUserTagIndexes: ingredientInfo.userTags ?? []
-            });
-        }
-    }, [ingredientInfo]);
-
-    useEffect(() => { fetchUserIngredients(); }, [selectedUserId, fetchUserIngredients]);
-    useEffect(() => { fetchIngredientInfo(); }, [selectedIngredientId, fetchIngredientInfo]);
-
-    useEffect(() => {
-        if (selectedAuthorId || selectedUserId) {
-            setFormState(prev => ({
-                ...prev,
-                selectedUserTagIndexes: []
-            }))
-        }
-    }, [selectedAuthorId, selectedUserId]);
-
 
     return (
         <div
@@ -332,18 +83,18 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
 
                             {mode === 'edit' && (
                                 <>
-                                    <FormRow className={styles['row-0']} >
+                                    <FormRow className={styles['row-0']}>
                                         <FieldModule label="User" id="edit-ingredient-user-module">
                                             <UserSelect onSelect={handleUserSelect} />
                                         </FieldModule>
                                     </FormRow>
 
-                                    <FormRow className={styles['row-00']} >
+                                    <FormRow className={styles['row-00']}>
                                         <FieldModule label="Ingredient" id="edit-ingredient-ingredient-module">
                                             <IngredientSelect
                                                 value={selectedIngredientId}
-                                                data={userReady ? userIngredientList : []}
-                                                ready={userReady}
+                                                data={userIngredientList}
+                                                ready={!!selectedUserId}
                                                 onSelect={handleIngredientSelect}
                                             />
                                         </FieldModule>
@@ -353,8 +104,9 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
 
                             <FormRow id="row-1">
                                 <FieldModule label="Name*">
-                                    <AdminInput name="name"
-                                        required 
+                                    <AdminInput
+                                        name="name"
+                                        required
                                         disabled={isDisabled}
                                         className={`${isDisabled ? 'disabled' : ''}`}
                                         placeholder="e.g. Fingerling Potatoes"
@@ -364,12 +116,12 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow className={styles['row-2']} >
+                            <FormRow className={styles['row-2']}>
                                 <FieldModule className={`tags`} label="Season">
                                     <AdminSelect
                                         name="season"
                                         disabled={isDisabled}
-                                        defaultValue={formState.seasons}
+                                        defaultValue={formState.selectedSeasonIndexes}
                                         multiple
                                         className={`tag`}
                                         onChange={handleSeasonSelect}
@@ -378,7 +130,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow className={styles['row-3']} >
+                            <FormRow className={styles['row-3']}>
                                 <FieldModule label="Main Class">
                                     <AdminInput
                                         name="main"
@@ -386,9 +138,9 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                         value={formState.main}
                                         placeholder="e.g. Potato"
                                         className={`${isDisabled ? 'disabled' : ''}`}
-                                        onChange={e => setFormState({ ...formState, main: e.target.value })} />
+                                        onChange={e => setFormState({ ...formState, main: e.target.value })}
+                                    />
                                 </FieldModule>
-
                                 <FieldModule label="Variety">
                                     <AdminInput
                                         name="variety"
@@ -396,11 +148,12 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                         value={formState.variety}
                                         placeholder="e.g. Fingerling"
                                         className={`${isDisabled ? 'disabled' : ''}`}
-                                        onChange={e => setFormState({ ...formState, variety: e.target.value })} />
+                                        onChange={e => setFormState({ ...formState, variety: e.target.value })}
+                                    />
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow className={styles['row-4']} >
+                            <FormRow className={styles['row-4']}>
                                 <FieldModule label="Category">
                                     <AdminInput
                                         name="category"
@@ -411,17 +164,20 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                         onChange={e => setFormState({ ...formState, category: e.target.value })}
                                     />
                                 </FieldModule>
-
                                 <FieldModule label="Sub Category">
-                                    <AdminInput name="subcategory" disabled={isDisabled} value={formState.subcategory}
+                                    <AdminInput
+                                        name="subcategory"
+                                        disabled={isDisabled}
+                                        value={formState.subcategory}
                                         placeholder="e.g. Root"
                                         className={`${isDisabled ? 'disabled' : ''}`}
-                                        onChange={e => setFormState({ ...formState, subcategory: e.target.value })} />
+                                        onChange={e => setFormState({ ...formState, subcategory: e.target.value })}
+                                    />
                                 </FieldModule>
                             </FormRow>
-                            <div className={styles["tags-module"]}>
 
-                                <FormRow className={styles['row-5']} >
+                            <div className={styles["tags-module"]}>
+                                <FormRow className={styles['row-5']}>
                                     <FieldModule label="Default-Tags">
                                         <TagsSelect
                                             name="default-tags"
@@ -435,10 +191,9 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                     </FieldModule>
                                 </FormRow>
 
-
-                                {(selectedAuthorId || selectedUserId) &&
+                                {(selectedUserId || selectedAuthorId) && (
                                     <>
-                                        <FormRow className={`${styles["user-tags"]}`}>
+                                        <FormRow className={styles["user-tags"]}>
                                             <FieldModule label="User-Tags">
                                                 <TagsSelect
                                                     name="user-tags"
@@ -453,14 +208,13 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                             </FieldModule>
                                         </FormRow>
 
-                                        <FormRow className={`${styles['add-tags']}`}>
+                                        <FormRow className={styles["add-tags"]}>
                                             <FieldModule label="Add-Tags">
                                                 <AdminInput
                                                     name="add-user-ingredient-tag"
-                                                    className={"quick-input"}
+                                                    className="quick-input"
                                                     placeholder="Buy Bulk..."
                                                     onChange={userIngredientTagInputHandler}
-                                                    onKeyDown={userIngredientTagKeyDown}
                                                     value={userIngredientTagValue}
                                                 />
                                                 <div
@@ -472,31 +226,26 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                             </FieldModule>
                                         </FormRow>
                                     </>
-                                }
-
+                                )}
                             </div>
-
 
                             <FormRow className={`${mode === 'edit' ? 'padding-top-20' : ''}`}>
                                 {mode === 'add' && (
-                                    <FieldModule label="User*" className={"add-edit-ingredient-user-module"}>
+                                    <FieldModule label="User*" className="add-edit-ingredient-user-module">
                                         <UserSelect onSelect={handleAuthorSelect} />
                                     </FieldModule>
                                 )}
-
-                                <FieldModule className={"add-edit-ingredient-submit-module"}>
+                                <FieldModule className="add-edit-ingredient-submit-module">
                                     <input disabled={waiting} className={styles["add-edit-ingredient-submit"]} type="submit" value={toTitleCase(mode)} />
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow className={'footnote'} >
+                            <FormRow className='footnote'>
                                 <div className="footnote-container"><span>* Required</span></div>
                             </FormRow>
-
                         </form>
                     </div>
-
-                    <CloseButton onClick={(e) => { close(e); setMode('add'); resetAll(); }} />
+                    <CloseButton onClick={(e) => { close(e); setMode('add'); resetAll()}} />
                 </>
             )}
         </div>

@@ -2,10 +2,10 @@
 // * IMPORTS * 
 // ***********
 
-import { 
-    SeasonOption, 
-    Tag, 
-    TagOption 
+import {
+    SeasonOption,
+    Tag,
+    TagOption
 } from "@/types/types";
 
 
@@ -59,9 +59,9 @@ export const seasonsIntoOptions = (seasons: string[]) => {
     return options;
 }
 
-export const seasonOptions = [
-    { name: 'fall', value: 'fall', label: 'Fall' },
-    { name: 'winter', value: 'winter', label: 'Winter' },
-    { name: 'spring', value: 'spring', label: 'Spring' },
-    { name: 'summer', value: 'summer', label: 'Summer' }
+export const seasonOptions: SeasonOption[] = [
+    { id: 1, value: 'fall', label: 'Fall' },
+    { id: 2, value: 'winter', label: 'Winter' },
+    { id: 3, value: 'spring', label: 'Spring' },
+    { id: 4, value: 'summer', label: 'Summer' }
 ]

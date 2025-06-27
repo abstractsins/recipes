@@ -1,9 +1,36 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, TagType } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 
 async function main() {
+
+    //* 🍁 Create Seasons
+    const fall = await prisma.season.create({
+        data: {
+            name: 'Fall'
+        }
+    })
+
+    const winter = await prisma.season.create({
+        data: {
+            name: 'Winter'
+        }
+    })
+
+    const spring = await prisma.season.create({
+        data: {
+            name: 'Spring'
+        }
+    })
+
+    const summer = await prisma.season.create({
+        data: {
+            name: 'Summer'
+        }
+    })
+
+
 
     //* 👤 Create a user
     const adminUser = await prisma.user.create({
@@ -32,6 +59,7 @@ async function main() {
             nickname: 'Test User 2'
         },
     });
+
 
 
     //* 🧂 Create some default tags
@@ -68,6 +96,7 @@ async function main() {
             createdBy: null,
         },
     });
+
 
     // * INGREDIENT
     const meatTag = await prisma.tag.create({
@@ -122,6 +151,7 @@ async function main() {
 
 
     //* 🧂 Create some user tags
+
     //* * USER RECIPES
     const jewishTag = await prisma.tag.create({
         data: {
@@ -268,6 +298,20 @@ async function main() {
         },
     });
 
+    const tomato = await prisma.ingredient.create({
+        data: {
+            name: 'tomato',
+            variety: 'beefsteak',
+            seasons: {
+                connect: [
+                    { id: spring.id },
+                    { id: summer.id }
+                ]
+            },
+            userId: adminUser.id,
+        }
+    });
+
     const milk = await prisma.ingredient.create({
         data: {
             name: 'milk',
@@ -327,10 +371,6 @@ async function main() {
             userId: regUser2.id,
         },
     });
-
-
-
-
 
 
 

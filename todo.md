@@ -1,10 +1,7 @@
 # TODO
 
-## Tags 
-* Seasonal tag handling (selecting)
-* Ingredient tag default value population
-
 ## Forms
+* Bug in creating new ingredient with tags (editing works)
 * Form validation before submitting or clicking
 * Ingredient selection behavior (right now it stays with "select ingredient")
 * txt field loading skeletons
@@ -13,7 +10,6 @@
 * Add Brand preferences/field
 
 ## TECH DEBT
-* move custom hooks out of components
 * createdBy / user for tags/ingredient types (maybe standardize the key)
 
 ## Modules

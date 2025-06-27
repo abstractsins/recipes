@@ -41,6 +41,7 @@ model Recipe {
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @default(now())
   RecipeTag   RecipeTag[]
+  seasons     Season[]           @relation("RecipeSeasons")
 
   @@unique([userId, name])
 }
@@ -60,21 +61,28 @@ model RecipeIngredient {
   @@unique([recipeId, ingredientId])
 }
 
+model Season {
+  id          Int          @id @default(autoincrement())
+  name        String
+  ingredients Ingredient[] @relation("IngredientSeasons")
+  recipes     Recipe[]     @relation("RecipeSeasons")
+}
+
 model Ingredient {
   id            Int                @id @default(autoincrement())
-  name          String // freeform label
-  main          String? // optional structured base
-  variety       String? // optional variety
-  category      String? // e.g. "vegetable", "spice", "meat"
-  subcategory   String? // e.g. "starch", ""
-  seasons       String[]
-  notes         String? // freeform notes
+  name          String
+  main          String?
+  variety       String?
+  category      String?
+  subcategory   String?
+  notes         String?
   userId        Int
   user          User               @relation(fields: [userId], references: [id])
   recipes       RecipeIngredient[]
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @default(now()) @updatedAt
   IngredientTag IngredientTag[]
+  seasons       Season[]           @relation("IngredientSeasons")
 
   @@unique([userId, name])
 }
@@ -87,7 +95,7 @@ model Tag {
   createdByUser User?   @relation(fields: [createdBy], references: [id])
 
   ingredientTags IngredientTag[]
-  recipeTags     RecipeTag[] // (if you make one—see below)
+  recipeTags     RecipeTag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -113,7 +121,9 @@ model RecipeTag {
   @@id([recipeId, tagId])
 }
 
+
 enum TagType {
   recipe
   ingredient
+  season
 }

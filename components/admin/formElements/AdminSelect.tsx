@@ -18,7 +18,7 @@ export default function AdminSelect({
     isLoading,
     className = '',
     required = false,
-    defaultValue,
+    defaultValue = [],
     multiple = false,
     onChange
 }: AdminSelectProps) {
@@ -45,7 +45,7 @@ export default function AdminSelect({
                         : (
                             options?.map((opt: TagOption | SeasonOption) => {
 
-                                const checked = defaultValue?.includes(opt.id);
+                                const checked = defaultValue.includes(opt.id);
 
                                 return (
                                     < div

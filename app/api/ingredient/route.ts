@@ -1,13 +1,18 @@
 // app/api/ingredient/route.ts
 import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { Tag } from '@/types/types';
 
 const prisma = new PrismaClient();
 
 export async function GET() {
     try {
         const ingredients = await prisma.ingredient.findMany({
-            include: { IngredientTag: true, user: false }
+            include: { 
+                IngredientTag: true, 
+                user: false, 
+                seasons: true 
+            }
         });
         return NextResponse.json(ingredients);
     } catch (err) {
@@ -20,24 +25,37 @@ export async function POST(req: NextRequest) {
     try {
 
         const body = await req.json();
-        const { name, userId, seasons, main, variety, category, subcategory } = body;
+        const { 
+            name, 
+            userId, 
+            selectedSeasonIndexes, 
+            main, 
+            variety, 
+            category, 
+            subcategory, 
+            IngredientTag 
+        } = body;
 
         const user = Number(userId.split(':')[0]);
 
-        console.log(body.IngredientTag)
+        console.log(IngredientTag)
 
         const newingredient = await prisma.ingredient.create({
             data: {
                 name,
                 userId: user,
-                seasons,
+                seasons: {
+                    create: selectedSeasonIndexes.map((seasonId: number) => ({
+                        tag: { connect: { id: seasonId } }
+                    }))
+                },
                 main,
                 variety,
                 category,
                 subcategory,
                 IngredientTag: {
-                    create: body.IngredientTag.map((tagId: number) => ({
-                        tag: { connect: { id: tagId } }
+                    create: IngredientTag.map((tag: Tag) => ({
+                        tag: { connect: { id: tag.id } }
                     }))
                 }
             },

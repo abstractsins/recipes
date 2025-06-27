@@ -1,6 +1,5 @@
 // api/ingredient/[id]/route.ts
 
-import IngredientTags from '@/components/admin/IngredientTags';
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -18,7 +17,11 @@ export async function GET(req: NextRequest, { params }: any) {
 
         const ingredient = await prisma.ingredient.findUnique({
             where: { id: numericId },
-            include: { IngredientTag: true, user: false }
+            include: {
+                IngredientTag: true,
+                user: false,
+                seasons: true
+            }
         });
 
         if (!ingredient) {
@@ -43,7 +46,7 @@ export async function PUT(req: NextRequest, { params }: any) {
 
         const {
             name,
-            seasons,
+            selectedSeasonIndexes,
             main,
             variety,
             category,
@@ -62,16 +65,22 @@ export async function PUT(req: NextRequest, { params }: any) {
             where: { id: numericId },
             data: {
                 name,
-                seasons,
+                seasons: {
+                    set: selectedSeasonIndexes.map((s: number | { id: number }) =>
+                        typeof s === "object" ? { id: s.id } : { id: s }
+                    )
+                },
                 main,
                 variety,
                 category,
                 subcategory,
                 IngredientTag: {
-                    deleteMany: {}, // Remove existing tag links
-                    create: IngredientTag.map((id: number) => ({
-                        tag: { connect: { id } }
-                    }))
+                    deleteMany: {},
+                    create: [...new Set(IngredientTag)]
+                        .filter((id): id is number => typeof id === 'number')
+                        .map((id) => ({
+                            tag: { connect: { id } }
+                        }))
                 }
             }
         });
