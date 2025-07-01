@@ -18,8 +18,10 @@ export default function DashboardReadouts({ activeIds, onClick, close }: Props) 
         users,
         ingredients,
         recipes,
-        ingredientTags,
-        recipeTags,
+        defaultIngredientTags,
+        defaultRecipeTags,
+        allUserIngredientTags,
+        allUserRecipeTags,
         activateModule,
         deactivateModule
     } = useDashboard();
@@ -45,18 +47,30 @@ export default function DashboardReadouts({ activeIds, onClick, close }: Props) 
             Component: DashboardReadoutModule,
         },
         {
-            id: 'ingredient-tags-module',
-            title: 'Ingredient Tags',
-            hookData: ingredientTags,
+            id: 'default-ingredient-tags-module',
+            title: 'Default Ingredient Tags',
+            hookData: defaultIngredientTags,
             Component: DashboardReadoutModule,
         },
         {
-            id: 'recipe-tags-module',
-            title: 'Recipe Tags',
-            hookData: recipeTags,
+            id: 'default-recipe-tags-module',
+            title: 'Default Recipe Tags',
+            hookData: defaultRecipeTags,
+            Component: DashboardReadoutModule,
+        },
+        {
+            id: 'user-ingredient-tags-module',
+            title: 'User Ingredient Tags',
+            hookData: allUserIngredientTags,
+            Component: DashboardReadoutModule,
+        },
+        {
+            id: 'user-recipe-tags-module',
+            title: 'User Recipe Tags',
+            hookData: allUserRecipeTags,
             Component: DashboardReadoutModule,
         }
-    ], [users, ingredients, recipes, ingredientTags, recipeTags]);
+    ], [users, ingredients, recipes, defaultIngredientTags, defaultRecipeTags]);
 
 
     return (

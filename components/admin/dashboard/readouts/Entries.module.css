@@ -6,6 +6,7 @@
 
 .details.button {
   cursor: pointer;
+  color: violet;
   margin-top: 20px;
   align-self: flex-end;
   display: flex;

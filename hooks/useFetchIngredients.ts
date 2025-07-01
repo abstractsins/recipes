@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Ingredient } from "@/types/types";
 
-export function useFetchIngredients() {
+interface Props {
+  refreshKey: number | null;
+}
+
+export function useFetchIngredients({ refreshKey }: Props) {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,7 +23,7 @@ export function useFetchIngredients() {
       }
     }
     fetchUsers();
-  }, []);
+  }, [refreshKey]);
 
   return { ingredients, isLoading };
 }

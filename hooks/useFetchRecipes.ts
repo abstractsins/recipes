@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { Recipe } from "@/types/types";
 
-export function useFetchRecipes() {
+interface Props {
+  refreshKey: number | null;
+}
+
+
+export function useFetchRecipes({ refreshKey }: Props) {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -19,7 +24,7 @@ export function useFetchRecipes() {
         }
 
         fetchRecipes();
-    }, []);
+    }, [refreshKey]);
 
     return { recipes, isLoading }
 }

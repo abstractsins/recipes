@@ -31,7 +31,7 @@ function DashboardReadoutModule({ title, id, hookData, isActive }: AdminReadoutM
         >
             <div className={styles["module-header"]}>
                 <h3>{title}</h3>    
-                <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : hookData.length}</span>
+                <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : hookData?.length}</span>
             </div>
             {isActive &&
                 (<>

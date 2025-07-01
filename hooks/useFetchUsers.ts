@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { User } from "@/types/types";
 import { useMemo } from "react";
 
-export function useFetchUsers() {
+interface Props {
+  refreshKey: number | null;
+}
+
+export function useFetchUsers({ refreshKey }: Props) {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,8 +24,8 @@ export function useFetchUsers() {
       }
     }
     fetchUsers();
-  }, []);
+  }, [refreshKey]);
 
-  
+
   return useMemo(() => ({ users, isLoading }), [users, isLoading]);
 }

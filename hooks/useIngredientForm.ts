@@ -7,16 +7,25 @@ import {
     TagOption,
     SeasonOption
 } from "@/types/types";
-import { seasonsIntoOptions } from "@/utils/utils";
+
 import { useDashboard } from "@/context/DashboardContext";
 
+
+
 export function useIngredientForm(mode: 'add' | 'edit') {
+
     const {
         fetchUserIngredients: contextFetchUserIngredients,
-        fetchIngredientById
+        fetchIngredientById,
+        allUserIngredientTags,
+        loadUserTags,
+        refreshAllTags,
+        refreshIngredientModule
     } = useDashboard();
 
-    const [waiting, setWaiting] = useState(false);
+    console.warn(allUserIngredientTags);
+
+    const [submitWaiting, setSubmitWaiting] = useState(false);
     const [ingredientLoading, setIngredientLoading] = useState(false);
 
     const [error, setError] = useState<string | null>(null);
@@ -33,7 +42,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const [ingredientInfo, setIngredientInfo] = useState<Ingredient | null>(null);
 
     const [userIngredientTagValue, setUserIngredientTagValue] = useState('');
-    const [userTagsRefreshKey, setUserTagsRefreshKey] = useState(0);
 
     const [formState, setFormState] = useState<IngredientFormState>({
         name: '',
@@ -47,8 +55,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     });
 
     const isDisabled = mode === 'edit' && !ingredientReady;
-
-    const triggerUserTagRefresh = () => setUserTagsRefreshKey(k => k + 1);
 
     const resetAll = useCallback((exceptions?: string[]) => {
         !exceptions?.includes('error') && setError(null);
@@ -117,7 +123,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const handleAuthorSelect = (id: number | null) => {
         setSelectedAuthorId(id);
-        triggerUserTagRefresh();
     };
 
     const handleUserSelect = async (id: number | null) => {
@@ -141,7 +146,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
             resetAll();
         }
         setStatusMsg(null);
-        triggerUserTagRefresh();
     };
 
     const fetchUserIngredients = useCallback(async () => {
@@ -161,16 +165,22 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     }, [selectedIngredientId, fetchIngredientById]);
 
     const addUserIngredientTag = async () => {
-        if (userIngredientTagValue.trim()) {
-            await fetch(`/api/tag/ingredient/user/${selectedAuthorId ?? selectedUserId}`, {
+        const uid = selectedAuthorId ?? selectedUserId;
+        if (userIngredientTagValue.trim() && uid) {
+            const res = await fetch(`/api/tag/ingredient/user/${uid}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tagName: userIngredientTagValue.trim() }),
                 credentials: 'include'
             });
+
+            if (res.ok) {
+                console.log('posted');
+                loadUserTags('ingredient', uid, { silent: true });   // instant refresh
+                refreshAllTags(); // module refresh
+            }
         }
         setUserIngredientTagValue('');
-        triggerUserTagRefresh();
         const input = document.querySelector('input[name="add-user-ingredient-tag"]') as HTMLInputElement | null;
         if (input) input.focus();
     };
@@ -181,9 +191,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setWaiting(true);
+        setSubmitWaiting(true);
         setError(null);
         setStatusMsg(null);
+
+        console.log(formState)
 
         const data = {
             ...formState,
@@ -207,12 +219,13 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 const json = await res.json();
                 setStatusMsg(mode === 'add' ? 'Ingredient Created!' : 'Ingredient Updated!');
                 if (mode === 'edit') fetchUserIngredients();
+                refreshIngredientModule();
             }
         } catch (err) {
             console.error(err);
         } finally {
-            setWaiting(false);
-            resetAll(['userReady', 'status', 'ingredientList', 'error']);
+            setSubmitWaiting(false);
+            resetAll(['userReady', 'status', 'ingredientList', 'error', 'authorId']);
             setSelectedUserId(selectedUserId);
             setSelectedIngredientId(null);
             setIngredientValue('null');
@@ -224,6 +237,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     useEffect(() => { fetchIngredientInfo(); }, [selectedIngredientId, fetchIngredientInfo]);
     useEffect(() => {
         if (ingredientInfo) {
+            console.log(ingredientInfo.defaultTags);
+            console.log(ingredientInfo.userTags);
             setFormState({
                 name: ingredientInfo.name ?? '',
                 main: ingredientInfo.main ?? '',
@@ -231,13 +246,14 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 category: ingredientInfo.category ?? '',
                 subcategory: ingredientInfo.subcategory ?? '',
                 selectedSeasonIndexes: ingredientInfo.seasons.map(s => s.id) ?? [],
-                selectedDefaultTagIndexes: ingredientInfo.IngredientTag.map(t => t.tagId) ?? [],
-                selectedUserTagIndexes: ingredientInfo.IngredientTag.map(t => t.tagId) ?? []
-            });
 
-            console.log( ingredientInfo.IngredientTag.filter(t => t.createdBy === null).map(t => t.id));
+                selectedDefaultTagIndexes: ingredientInfo.defaultTags.map(t => t.tagId) ?? [],
+                selectedUserTagIndexes: ingredientInfo.userTags.map(t => t.tagId) ?? []
+            });
         }
     }, [ingredientInfo]);
+
+
 
     useEffect(() => {
         if (selectedAuthorId || selectedUserId) {
@@ -247,6 +263,26 @@ export function useIngredientForm(mode: 'add' | 'edit') {
             }));
         }
     }, [selectedAuthorId, selectedUserId]);
+
+
+
+    useEffect(() => {
+        if (selectedAuthorId) {
+            // get the users tags
+            loadUserTags('ingredient', selectedAuthorId);
+        }
+    }, [selectedAuthorId]);
+
+
+
+    useEffect(() => {
+        if (selectedUserId) {
+            // get the users tags
+            loadUserTags('ingredient', selectedUserId);
+        }
+    }, [selectedUserId]);
+
+
 
     return {
         formState, setFormState,
@@ -266,8 +302,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         error,
         statusMsg,
         isDisabled,
-        waiting,
-        userTagsRefreshKey,
+        submitWaiting,
         selectedAuthorId,
         resetAll
     };

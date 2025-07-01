@@ -1,10 +1,15 @@
 // api/ingredient/[id]/route.ts
 
-import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client';
+import { IngredientDTO } from '@/types/types';
+
 
 const prisma = new PrismaClient();
 
+//********** */
+//* GET      */
+//********** */
 export async function GET(req: NextRequest, { params }: any) {
     // await the promise exactly once
     const { id } = await params;
@@ -18,9 +23,9 @@ export async function GET(req: NextRequest, { params }: any) {
         const ingredient = await prisma.ingredient.findUnique({
             where: { id: numericId },
             include: {
-                IngredientTag: true,
-                user: false,
-                seasons: true
+                seasons: true,
+                defaultTags: true,
+                userTags: true
             }
         });
 
@@ -38,57 +43,76 @@ export async function GET(req: NextRequest, { params }: any) {
 
 
 
-//********** */
-//* PUT      */
-//********** */
-export async function PUT(req: NextRequest, { params }: any) {
+//**********
+//* PUT    * 
+//**********
+export async function PUT(
+    req: NextRequest,
+    { params }: { params: { id: string } },
+) {
     try {
-
-        const {
-            name,
-            selectedSeasonIndexes,
-            main,
-            variety,
-            category,
-            subcategory,
-            IngredientTag
-        } = await req.json();
-
-        const urlParams = await params;
-
-        const numericId = Number(urlParams.id)
-        if (isNaN(numericId)) {
-            return new NextResponse('Invalid ingredient ID; must be a number.', { status: 400 });
+        /* ── 0  Validate route param ─────────────────────────────── */
+        const id = Number(params.id);
+        if (Number.isNaN(id)) {
+            return new NextResponse('Invalid ingredient id', { status: 400 });
         }
 
-        await prisma.ingredient.update({
-            where: { id: numericId },
-            data: {
-                name,
-                seasons: {
-                    set: selectedSeasonIndexes.map((s: number | { id: number }) =>
-                        typeof s === "object" ? { id: s.id } : { id: s }
-                    )
+        /* ── 1  Parse/validate body ──────────────────────────────── */
+        const body = (await req.json()) as IngredientDTO;
+        if (!body?.name || !body?.userId) {
+            return new NextResponse('name and userId are required', { status: 400 });
+        }
+
+        /* ── 2  Transaction: update core row + relation tables ───── */
+        const updatedIngredient = await prisma.$transaction(async (tx) => {
+            /* 2-a  Update the ingredient record itself */
+            const ing = await tx.ingredient.update({
+                where: { id },
+                data: {
+                    name: body.name,
+                    main: body.main,
+                    variety: body.variety,
+                    category: body.category,
+                    subcategory: body.subcategory,
+                    notes: body.notes,
+                    userId: Number(body.userId),
+
+                    // replace season links in one statement
+                    seasons: body.selectedSeasonIndexes
+                        ? { set: body.selectedSeasonIndexes.map((sid) => ({ id: sid })) }
+                        : { set: [] },
                 },
-                main,
-                variety,
-                category,
-                subcategory,
-                IngredientTag: {
-                    deleteMany: {},
-                    create: [...new Set(IngredientTag)]
-                        .filter((id): id is number => typeof id === 'number')
-                        .map((id) => ({
-                            tag: { connect: { id } }
-                        }))
-                }
+            });
+
+            /* 2-b  Refresh default-tag junction rows */
+            await tx.ingredientDefaultTag.deleteMany({ where: { ingredientId: id } });
+            if (body.selectedDefaultTagIndexes?.length) {
+                await tx.ingredientDefaultTag.createMany({
+                    data: body.selectedDefaultTagIndexes.map((tagId) => ({
+                        ingredientId: id,
+                        tagId,
+                    })),
+                });
             }
+
+            /* 2-c  Refresh user-tag junction rows */
+            await tx.ingredientUserTag.deleteMany({ where: { ingredientId: id } });
+            if (body.selectedUserTagIndexes?.length) {
+                await tx.ingredientUserTag.createMany({
+                    data: body.selectedUserTagIndexes.map((tagId) => ({
+                        ingredientId: id,
+                        tagId,
+                    })),
+                });
+            }
+
+            return ing;
         });
 
-        return NextResponse.json({ message: "Ingredient updated." });
-    } catch (err: any) {
-
-        console.error('Error editing ingredient:', err);
-        return new NextResponse(JSON.stringify({ error: 'Server error editing recipe' }), { status: 500 });
+        /* ── 3  Success ──────────────────────────────────────────── */
+        return NextResponse.json(updatedIngredient, { status: 200 });
+    } catch (err) {
+        console.error('[ingredient PUT]', err);
+        return new NextResponse('Failed to update ingredient', { status: 500 });
     }
 }

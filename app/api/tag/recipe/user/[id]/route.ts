@@ -7,19 +7,19 @@ export async function GET(req: NextRequest, { params }: any) {
 
         const [userTags] = await Promise.all([
             prisma.userTag.findMany({
-                where: { type: 'ingredient', createdBy: Number(id) },
+                where: { type: 'recipe', createdBy: Number(id) },
                 orderBy: { name: 'asc' },
             })
         ]);
 
         return NextResponse.json({ userTags });
     } catch (error) {
-        console.error('Error fetching user ingredient tags: ', error);
-        return new NextResponse('Failed to fetch user ingredient tags', { status: 500 });
+        console.error('Error fetching user recipe tags: ', error);
+        return new NextResponse('Failed to fetch user recipe tags', { status: 500 });
     }
 }
 
-// * Create new user ingredient tag
+// * Create new user recipe tag
 export async function POST(req: NextRequest, { params }: any) {
     try {
         const { id } = await params || null;
@@ -32,13 +32,13 @@ export async function POST(req: NextRequest, { params }: any) {
         const tag = await prisma.userTag.create({
             data: {
                 name: tagName,
-                type: 'ingredient',
+                type: 'recipe',
                 createdBy: Number(id)
             }
         });
         return NextResponse.json(tag, { status: 201 });
     } catch (error) {
-        console.error('Error posting user ingredient tag:', error);
-        return new NextResponse('Failed to post user ingredient tag', { status: 500 });
+        console.error('Error posting user recipe tag:', error);
+        return new NextResponse('Failed to post user recipe tag', { status: 500 });
     }
 }

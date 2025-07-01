@@ -1,7 +1,6 @@
 import { getUser } from "@/lib/auth";
 
 import PrimeHeader from "@/components/prime/PrimeHeader";
-import { useFetchTags } from "@/hooks/useFetchTags";
 
 import '@/components/admin/dashboard/dashboard.css';
 import { DashboardProvider } from "@/context/DashboardContext";

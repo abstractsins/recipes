@@ -11,12 +11,22 @@ export async function GET() {
     try {
         const recipes = await prisma.recipe.findMany({
             include: {
-                user: true,
-                RecipeTag: true,
-                ingredients: {
-                    include: {
-                        ingredient: true
+                userTags: {
+                    select: {
+                        tag: {
+                            select: {
+                                id: true,
+                                name: true,
+                                owner: { select: { id: true, username: true } }
+                            }
+                        }
                     }
+                },
+                defaultTags: {
+                    select: { tag: { select: { id: true, name: true } } }
+                },
+                ingredients: {
+                    include: { ingredient: true }
                 }
             }
         });

@@ -1,17 +1,22 @@
 // app/api/ingredient/route.ts
 import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { Tag } from '@/types/types';
+import { IngredientDTO } from '@/types/types';
+
 
 const prisma = new PrismaClient();
 
+//********** */
+//* GET      */
+//********** */
 export async function GET() {
     try {
         const ingredients = await prisma.ingredient.findMany({
-            include: { 
-                IngredientTag: true, 
-                user: false, 
-                seasons: true 
+            include: {
+                userTags: true,
+                defaultTags: true,
+                user: false,
+                seasons: true
             }
         });
         return NextResponse.json(ingredients);
@@ -21,58 +26,64 @@ export async function GET() {
     }
 }
 
+//********** */
+//* POST     */
+//********** */
 export async function POST(req: NextRequest) {
     try {
+        const body = (await req.json()) as IngredientDTO;
 
-        const body = await req.json();
-        const { 
-            name, 
-            userId, 
-            selectedSeasonIndexes, 
-            main, 
-            variety, 
-            category, 
-            subcategory, 
-            IngredientTag 
-        } = body;
+        console.log(body);
 
-        const user = Number(userId.split(':')[0]);
-
-        console.log(IngredientTag)
-
-        const newingredient = await prisma.ingredient.create({
-            data: {
-                name,
-                userId: user,
-                seasons: {
-                    create: selectedSeasonIndexes.map((seasonId: number) => ({
-                        tag: { connect: { id: seasonId } }
-                    }))
-                },
-                main,
-                variety,
-                category,
-                subcategory,
-                IngredientTag: {
-                    create: IngredientTag.map((tag: Tag) => ({
-                        tag: { connect: { id: tag.id } }
-                    }))
-                }
-            },
-            include: { recipes: true, IngredientTag: true },
-        });
-
-        return NextResponse.json(newingredient, { status: 201 });
-
-    } catch (err: any) {
-
-        if (err.code === 'P2002') {
-            return new Response(JSON.stringify({ error: 'An ingredient with that name already exists for this user' }), {
-                status: 409, // Conflict
-            });
+        /* Basic validation */
+        if (!body?.name || !body?.userId) {
+            return new NextResponse('name and userId are required', { status: 400 });
         }
 
-        console.error('Error creating ingredient:', err);
-        return new NextResponse('Server error creating ingredient', { status: 500 });
+        /* Transaction keeps all-or-nothing */
+        const ingredient = await prisma.$transaction(async (tx) => {
+            /* 1 ── create the ingredient itself */
+            const newIng = await tx.ingredient.create({
+                data: {
+                    name: body.name,
+                    main: body.main,
+                    variety: body.variety,
+                    category: body.category,
+                    subcategory: body.subcategory,
+                    notes: body.notes,
+                    userId: Number(body.userId),
+                    seasons: body.selectedSeasonIndexes?.length
+                        ? { connect: body.selectedSeasonIndexes.map(id => ({ id })) }
+                        : undefined,
+                },
+            });
+
+            /* 2 ── attach default tags if provided */
+            if (body.selectedDefaultTagIndexes?.length) {
+                await tx.ingredientDefaultTag.createMany({
+                    data: body.selectedDefaultTagIndexes.map(tagId => ({
+                        ingredientId: newIng.id,
+                        tagId,
+                    })),
+                });
+            }
+
+            /* 3 ── attach user tags if provided */
+            if (body.selectedUserTagIndexes?.length) {
+                await tx.ingredientUserTag.createMany({
+                    data: body.selectedUserTagIndexes.map(tagId => ({
+                        ingredientId: newIng.id,
+                        tagId,
+                    })),
+                });
+            }
+
+            return newIng;
+        });
+
+        return NextResponse.json(ingredient, { status: 201 });
+    } catch (err) {
+        console.error('[ingredient POST]', err);
+        return new NextResponse('Failed to create ingredient', { status: 500 });
     }
 }

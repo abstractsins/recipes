@@ -23,12 +23,13 @@
 }
 
 div.module-header {
-  margin-bottom: 5px;
+  margin: 0;
+  margin-right: 25px;
+  /* margin-bottom: 11px; */
 }
 
 div.module-header h2 {
   font-size: 20pt;
-  margin-bottom: 5px;
 }
 
 span.cat-data-label {
@@ -47,7 +48,7 @@ span.cat-data-label {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 15px 30px 15px 30px;
   margin: 15px;
   border: 3px solid gray;
   border-radius: 15px;

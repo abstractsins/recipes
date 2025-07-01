@@ -4,7 +4,7 @@
 import React, { BlockquoteHTMLAttributes } from 'react';
 import { AdminSelectProps, SeasonOption } from '@/types/types';
 
-import { TagOption, Option } from '@/types/types';
+import { TagOption } from '@/types/types';
 
 import styles from './AdminSelect.module.css';
 
@@ -23,8 +23,8 @@ export default function AdminSelect({
     onChange
 }: AdminSelectProps) {
 
-    const toValue = (v: string | Option): string | undefined => typeof v === 'string' ? v : v.value;
-
+    // const toValue = (v: string | TagOption): string | undefined => typeof v === 'string' ? v : v.value;
+    console.log('isLoading?: ' + isLoading);
     return (
         <>
             {!multiple

@@ -21,6 +21,7 @@ import AddEditIngredientHeader from "./AddEditIngredientHeader";
 import { seasonOptions, toTitleCase } from "@/utils/utils";
 
 import { useIngredientForm } from '@/hooks/useIngredientForm';
+import { useDashboard } from '@/context/DashboardContext';
 
 interface Props {
     id: string;
@@ -34,7 +35,8 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
     const [mode, setMode] = useState<Mode>('add');
 
     const {
-        formState, setFormState,
+        formState,
+        setFormState,
         handleSeasonSelect,
         handleDefaultTagSelect,
         handleUserTagSelect,
@@ -49,10 +51,19 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
         selectedUserId,
         selectedIngredientId,
         userIngredientList,
-        userTagsRefreshKey,
-        statusMsg, error,
-        isDisabled, waiting, resetAll
+        statusMsg,
+        error,
+        isDisabled,
+        resetAll
     } = useIngredientForm(mode);
+
+    const { 
+        defaultIngredientTagOptions, 
+        selectedUserIngredientTagOptions,
+        userTagsWaiting,
+        submitWaiting
+    } = useDashboard();
+    console.log(defaultIngredientTagOptions);
 
     const handleModeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMode(e.target.checked ? 'edit' : 'add');
@@ -75,7 +86,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                 />
             </header>
 
-            {waiting && <ScreenGuard />}
+            {submitWaiting && <ScreenGuard />}
             {isActive && (
                 <>
                     <div className={styles['add-edit-ingredient-body']}>
@@ -187,6 +198,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                             multiple
                                             type="ingredient"
                                             user={null}
+                                            options={defaultIngredientTagOptions}
                                         />
                                     </FieldModule>
                                 </FormRow>
@@ -200,10 +212,11 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                                     defaultValue={formState.selectedUserTagIndexes}
                                                     disabled={isDisabled}
                                                     onChange={handleUserTagSelect}
+                                                    isLoading={userTagsWaiting}
                                                     multiple
                                                     type="ingredient"
                                                     user={selectedAuthorId ?? selectedUserId}
-                                                    refreshKey={userTagsRefreshKey}
+                                                    options={selectedUserIngredientTagOptions}
                                                 />
                                             </FieldModule>
                                         </FormRow>
@@ -236,7 +249,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                     </FieldModule>
                                 )}
                                 <FieldModule className="add-edit-ingredient-submit-module">
-                                    <input disabled={waiting} className={styles["add-edit-ingredient-submit"]} type="submit" value={toTitleCase(mode)} />
+                                    <input disabled={submitWaiting} className={styles["add-edit-ingredient-submit"]} type="submit" value={toTitleCase(mode)} />
                                 </FieldModule>
                             </FormRow>
 
@@ -245,7 +258,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                             </FormRow>
                         </form>
                     </div>
-                    <CloseButton onClick={(e) => { close(e); setMode('add'); resetAll()}} />
+                    <CloseButton onClick={(e) => { close(e); setMode('add'); resetAll() }} />
                 </>
             )}
         </div>

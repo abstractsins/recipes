@@ -10,7 +10,6 @@ import AdminSelect from "./formElements/AdminSelect";
 interface Props extends AdminSelectProps {
     type: TagType;
     user: number | null;
-    refreshKey?: number | null,
     onSelect?: (tag: TagOption) => void;
 }
 
@@ -22,11 +21,10 @@ export default function TagsSelect({
     multiple,
     type,
     user,
-    refreshKey = 0,
-    onSelect
+    onSelect,
+    isLoading,
+    options
 }: Props) {
-
-    const { tagOptions, isLoading } = useFetchTags({ type, user, refreshKey });
 
     return (
         <AdminSelect
@@ -36,7 +34,7 @@ export default function TagsSelect({
             defaultValue={defaultValue}
             onChange={onChange}
             multiple={multiple}
-            options={tagOptions}
+            options={options}
             className={`tag`}
         />
     );

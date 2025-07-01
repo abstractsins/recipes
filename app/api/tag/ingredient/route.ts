@@ -1,28 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // your Prisma client
+import { prisma } from '@/lib/prisma';
+import { TagType } from '@prisma/client';
+import { INGREDIENT_RECIPE_TAG_GET as GET } from '@/utils/utils';
 
-export async function GET() {
-    const tags = await prisma.tag.findMany({
-        where: { type: 'ingredient' },
-        orderBy: { createdBy: 'desc' },
-        include: {
-            createdByUser: false
-        }
-    });
-
-    return NextResponse.json(tags);
-}
+// GET /api/tags/ingredients
+export { INGREDIENT_RECIPE_TAG_GET as GET } from '@/utils/utils';
 
 export async function POST(req: NextRequest) {
+  try {
     const body = await req.json();
     const { name, createdBy } = body;
 
-    const tag = await prisma.tag.create({
-        data: {
-            name,
-            type: 'ingredient',
-        },
-    });
+    if (!name) {
+      return new NextResponse('Tag name is required', { status: 400 });
+    }
 
-    return NextResponse.json(tag, { status: 201 });
+    let newTag;
+
+    if (createdBy) {
+      newTag = await prisma.userTag.create({
+        data: {
+          name,
+          type: 'ingredient',
+          createdBy,
+        },
+      });
+    } else {
+      newTag = await prisma.defaultTag.create({
+        data: {
+          name,
+          type: 'ingredient',
+        },
+      });
+    }
+
+    return NextResponse.json(newTag, { status: 201 });
+  } catch (error) {
+    console.error('Error creating ingredient tag:', error);
+    return new NextResponse('Failed to create tag', { status: 500 });
+  }
 }

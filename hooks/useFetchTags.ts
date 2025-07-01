@@ -1,9 +1,13 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Tag, TagOption } from "@/types/types";
+import { Tag } from "@/types/types";
 import { TagType } from "@prisma/client";
-import { tagsIntoOptions } from "@/utils/utils";
+
+interface IncomingTags {
+    defaultTags: Tag[];
+    userTags: Tag[]
+}
 
 interface Props {
     type: TagType,
@@ -12,20 +16,27 @@ interface Props {
 }
 
 export function useFetchTags({ type, user, refreshKey }: Props) {
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [tagOptions, setTagOptions] = useState<TagOption[]>([]);
+    const [defaultTags, setDefaultTags] = useState<Tag[]>([]);
+    const [userTags, setUserTags] = useState<Tag[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchString = user === 0 ? 'api/tag/'+type : '/api/tag/'+type+'/user/'+user;
+    const fetchString = user != null
+        ? `/api/tag/${type}/user/${user}`
+        : `/api/tag/${type}`;
 
     useEffect(() => {
-        console.log(user);
         async function fetchTags() {
+
+            setIsLoading(true);
+
             try {
                 const res = await fetch(fetchString);
-                const data: Tag[] = await res.json();
-                console.log(data);
-                setTags(data);
+                const { defaultTags, userTags }: IncomingTags = await res.json();
+                console.log(defaultTags);
+                console.log(userTags);
+
+                setDefaultTags(defaultTags);
+                setUserTags(userTags);
             } catch (err) {
                 console.error("Failed to fetch tags:", err);
             } finally {
@@ -34,9 +45,8 @@ export function useFetchTags({ type, user, refreshKey }: Props) {
         }
 
         fetchTags();
-    }, [refreshKey]);
+    }, [fetchString, user, refreshKey]);
 
-    useEffect(() => { if (tags) setTagOptions(tagsIntoOptions(tags)) }, [tags]);
 
-    return { tagOptions, tags, isLoading };
+    return { defaultTags, userTags, isLoading };
 }
