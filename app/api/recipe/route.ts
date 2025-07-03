@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
         const newRecipe = await prisma.recipe.create({
             data: {
                 name,
-                userId
+                userId: Number(userId)
             },
         });
 

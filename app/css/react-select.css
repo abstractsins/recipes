@@ -2,7 +2,7 @@
 /* * REACT-SELECT  */
 /* *************** */
 
-/* * Add / Edit -- User / Ingredient */
+/* * Add-Edit: User / Ingredient / Recipe */
 
 .add-edit-user__control {
   border: 2px solid transparent !important;
@@ -17,6 +17,7 @@
   width: fit-content;
 }
 
+.add-edit-recipe__control,
 .add-edit-ingredient__control {
   border: 2px solid transparent !important;
   border-radius: 7px !important;
@@ -24,18 +25,20 @@
   /* background-color: blue; */
 }
 
+.add-edit-recipe__control--is-disabled,
 .add-edit-ingredient__control--is-disabled {
   background-color: darkgray !important;
   color: gray;
 }
 
 .add-edit-user__control--is-focused,
+.add-edit-recipe__control--is-focused,
 .add-edit-ingredient__control--is-focused {
   border: 2px solid lightgreen !important;
 }
 
+.add-edit-recipe__option,
 .add-edit-ingredient__option {
   color: black !important;
   width: fit-content;
 }
-

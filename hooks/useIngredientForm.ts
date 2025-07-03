@@ -157,13 +157,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const userIngredientTagInputHandler = createInputHandler(setUserIngredientTagValue);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleIngredientSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSubmitWaiting(true);
         setError(null);
         setStatusMsg(null);
-
-        console.log(formState)
 
         const data = {
             ...formState,
@@ -249,7 +247,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         userIngredientTagValue,
         userIngredientTagInputHandler,
         addUserIngredientTag,
-        handleSubmit,
+        handleSubmit: handleIngredientSubmit,
         selectedIngredientUserId,
         selectedIngredientId,
         userIngredientList,

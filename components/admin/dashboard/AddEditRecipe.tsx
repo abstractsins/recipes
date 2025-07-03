@@ -50,8 +50,8 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
         defaultRecipeTagOptions,
         recipeListWaiting,
     } = useDashboard();
-    
-    
+
+
     const {
         formState,
         setFormState,
@@ -72,8 +72,7 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
         userTagsWaiting,
         resetAll,
     } = useRecipeForm(mode);
-    
-    console.warn(userTagsWaiting);
+
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
     const onSeasonChange = handleSeasonSelect(setFormState);
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
@@ -133,6 +132,20 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                         placeholder="e.g. Baked Penne"
                                         value={formState.name}
                                         onChange={e => setFormState({ ...formState, name: e.target.value })}
+                                    />
+                                </FieldModule>
+                            </FormRow>
+
+                            <FormRow className={styles['row-2']}>
+                                <FieldModule className={`tags`} label="Season">
+                                    <AdminSelect
+                                        name="season"
+                                        disabled={isDisabled}
+                                        defaultValue={formState.selectedSeasonIndexes}
+                                        multiple
+                                        className={`tag`}
+                                        onChange={onSeasonChange}
+                                        options={seasonOptions}
                                     />
                                 </FieldModule>
                             </FormRow>
@@ -199,7 +212,12 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                     </FieldModule>
                                 )}
                                 <FieldModule className="add-edit-recipe-submit-module">
-                                    <input disabled={submitWaiting} className={styles["add-edit-recipe-submit"]} type="submit" value={toTitleCase(mode)} />
+                                    <input
+                                        disabled={submitWaiting}
+                                        className={styles["add-edit-recipe-submit"]}
+                                        type="submit"
+                                        value={toTitleCase(mode)}
+                                    />
                                 </FieldModule>
                             </FormRow>
 

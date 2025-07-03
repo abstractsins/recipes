@@ -32,7 +32,8 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const {
         loadUserTags,
         fetchUserRecipes: contextFetchUserRecipes,
-        refreshAllTags
+        refreshAllTags,
+        refreshRecipeModule
     } = useDashboard();
 
     const emptyRecipeForm: RecipeFormState = {
@@ -81,8 +82,6 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const [formState, setFormState] = useState<RecipeFormState>(emptyRecipeForm);
 
     const handleRecipeSelect = () => { };
-
-    const handleSubmit = () => { };
 
     const handleAuthorSelect = () => { };
 
@@ -142,10 +141,55 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const [userRecipeTags, setUserRecipeTags] = useState<Tag[]>([]);
     const selectedUserRecipeTagOptions = useMemo(() => tagsIntoOptions(userRecipeTags), [userRecipeTags]);
 
+    const handleRecipeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setSubmitWaiting(true);
+        setError(null);
+        setStatusMsg(null);
+
+        console.log(formState);
+
+        const data = {
+            ...formState,
+            userId: mode === 'add' ? new FormData(e.currentTarget).get('user') : selectedRecipeUserId,
+            RecipeTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
+        }
+
+        try {
+            const res = await fetch(
+                mode === 'add' ? '/api/recipe' : `/api/recipe/${selectedRecipeId}`, {
+                method: mode === 'add' ? 'POST' : 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+                credentials: 'include',
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                console.log(error);
+                setError(error.message);
+            } else {
+                const json = await res.json();
+                setStatusMsg(mode === 'add' ? 'Recipe Created!' : 'Recipe Updated!');
+                if (mode === 'edit') fetchUserRecipes();
+                refreshRecipeModule();
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setSubmitWaiting(false);
+            resetAll(['userReady', 'status', 'recipeList', 'error', 'authorId']);
+            setSelectedRecipeUserId(selectedRecipeUserId);
+            setSelectedRecipeId(null);
+            setRecipeValue('null');
+            document.getElementById('add-edit-recipe-module')?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+    };
 
     useSyncUserTags<RecipeFormState>({
         type: 'recipe',
-        uid: selectedAuthorId ?? selectedRecipeUserId,   // 👈 single param now
+        uid: selectedAuthorId ?? selectedRecipeUserId,
         loadUserTags,
         setFormState,
         tagResetKey: 'selectedUserTagIndexes',
@@ -178,7 +222,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
         selectedUserRecipeTagOptions,
         userTagsWaiting,
         userRecipeList,
-        handleSubmit,
+        handleSubmit: handleRecipeSubmit,
         submitWaiting,
         selectedRecipeId,
         selectedAuthorId,

@@ -54,7 +54,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
   // READOUT MODULE REFRESH TRIGGERS
   const refreshUsers = useCallback(() => setUsersRefreshKey(k => k + 1), []);
-  const refreshRecipes = useCallback(() => setRecipesRefreshKey(k => k + 1), []);
+  const refreshRecipeModule = useCallback(() => setRecipesRefreshKey(k => k + 1), []);
   const refreshAllTags = useCallback(() => setTagsRefreshKey(k => k + 1), []);
   const refreshIngredientModule = useCallback(() => setIngredientsRefreshKey(k => k + 1), []);
 
@@ -84,7 +84,6 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     setRecipeListWaiting(true);
     const res = await fetch(`/api/recipe/user/${userId}`);
     const data = await res.json();
-    console.warn(data);
     setRecipeListWaiting(false);
     return data;
   }, []);
@@ -158,6 +157,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     fetchUserIngredients,
     fetchIngredientById,
     refreshIngredientModule,
+    refreshRecipeModule,
     fetchUserRecipes,
     fetchRecipeById,
 
