@@ -21,6 +21,17 @@ import { prisma } from '@/lib/prisma';
 // * EXPORTS * 
 // ***********
 
+//* INPUT HANDLER */
+export function createInputHandler(
+    setValue: (val: string) => void
+) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.currentTarget.value);
+    };
+}
+
+
+//* GENERAL STRING MANIPULATION */
 // 'to title case' => 'To Title Case'
 export const toTitleCase = (text: string | undefined) => {
     if (text !== undefined) {
@@ -29,7 +40,6 @@ export const toTitleCase = (text: string | undefined) => {
         return '';
     }
 }
-
 // 'user-module' => 'user module'
 export const stripSpecialChars = (text: string, exceptions?: string[]) => {
     let chars: string[] = '-.,;:/*+%$#@^&\\\\'.split('');
@@ -39,6 +49,8 @@ export const stripSpecialChars = (text: string, exceptions?: string[]) => {
     return text.replace(reg, ' ');
 }
 
+
+//* FETCHED DATA => UI ELEMENT CONVERSION */
 export const tagsIntoOptions = (tags: Tag[]) => {
     const options: TagOption[] = tags?.map(el => {
         const option = {
@@ -49,10 +61,12 @@ export const tagsIntoOptions = (tags: Tag[]) => {
         }
         return option;
     });
-    
+
     return options;
 }
 
+
+//* STANDARD DATA */
 export const seasonOptions: SeasonOption[] = [
     { id: 1, value: 'fall', label: 'Fall' },
     { id: 2, value: 'winter', label: 'Winter' },
@@ -60,6 +74,9 @@ export const seasonOptions: SeasonOption[] = [
     { id: 4, value: 'summer', label: 'Summer' }
 ]
 
+
+
+//* API */
 // GET INGREDIENT/RECIPE TAGS
 export async function INGREDIENT_RECIPE_TAG_GET(req: NextRequest) {
     try {
@@ -100,3 +117,136 @@ export async function INGREDIENT_RECIPE_TAG_GET(req: NextRequest) {
         return new NextResponse('Failed to fetch tags', { status: 500 });
     }
 }
+
+
+//* ERROR HANDLING */
+export function mapPrismaCodeToStatus(code: string): number {
+    switch (code) {
+        case 'P2002':            // unique-constraint failed
+            return 409;            // Conflict
+        case 'P2003':            // FK constraint failed
+            return 400;            // Bad Request
+        // add the ones you care about …
+        default:
+            return 400;
+    }
+}
+export function humanMessage(code: string, element: string): string {
+
+    const vowels = 'aeiou'.split('');
+    let editedEl;
+
+    if (vowels.includes(element[0])) {
+        editedEl = 'an ' + element;
+    } else {
+        editedEl = 'a ' + element;
+    }
+
+    switch (code) {
+        case 'P2002':
+            return `This user already has ${editedEl} with that name.`;
+        case 'P2003':
+            return 'Referenced record does not exist.';
+        default:
+            return 'Database error.';
+    }
+}
+
+
+
+//******************************* */
+//* COMMON ADMIN MODULE FUNCTIONS */
+//******************************* */
+
+//* ADD/EDIT INGREDIENT or RECIPE
+export function handleModeSelectFactory(
+    setMode: (mode: 'edit' | 'add') => void,
+    resetAll: () => void
+) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+        setMode(e.target.checked ? 'edit' : 'add');
+        resetAll();
+    };
+}
+
+// 🍁
+export function handleSeasonSelect(
+    setFormState: (fn: (prev: any) => any) => void
+) {
+    return (season: SeasonOption, checked: boolean) => {
+        setFormState(prev => ({
+            ...prev,
+            selectedSeasonIndexes: checked
+                ? [...prev.selectedSeasonIndexes, season.id]
+                : prev.selectedSeasonIndexes.filter(s => s !== season.id),
+        }));
+    };
+}
+
+// 🏷️
+export function handleTagSelectFactory<T extends { id: number }>(
+    setFormState: (fn: (prev: any) => any) => void,
+    key: 'selectedDefaultTagIndexes' | 'selectedUserTagIndexes'
+) {
+    return (tag: T, checked: boolean) => {
+        setFormState(prev => ({
+            ...prev,
+            [key]: checked
+                ? [...prev[key], tag.id]
+                : prev[key].filter((id: number) => id !== tag.id),
+        }));
+    };
+}
+
+// 👤
+export function handleRecipeUserSelectFactory(
+    setSelectedUserId: (id: number | null) => void,
+    setUserReady: (ready: boolean) => void,
+    setIngredientReady: (ready: boolean) => void,
+    setSelectedItemId: (id: number | null) => void, // works for ingredientId or recipeId
+    setFormState: (form: any) => void,
+    resetAll: (exceptions?: string[]) => void,
+    setStatusMsg: (msg: string | null) => void,
+    emptyFormState: object
+) {
+    return async (id: number | null) => {
+        if (id !== null) {
+            setSelectedUserId(id);
+            setUserReady(true);
+            setIngredientReady(false);
+            setSelectedItemId(null);
+            setFormState(emptyFormState);
+        } else {
+            setUserReady(false);
+            resetAll();
+        }
+        setStatusMsg(null);
+    };
+}
+
+// 👤
+export function handleIngredientUserSelectFactory(
+    setSelectedUserId: (id: number | null) => void,
+    setUserReady: (ready: boolean) => void,
+    setIngredientReady: (ready: boolean) => void,
+    setSelectedItemId: (id: number | null) => void, // works for ingredientId or recipeId
+    setFormState: (form: any) => void,
+    resetAll: (exceptions?: string[]) => void,
+    setStatusMsg: (msg: string | null) => void,
+    emptyFormState: object
+) {
+    return async (id: number | null) => {
+        if (id !== null) {
+            setSelectedUserId(id);
+            setUserReady(true);
+            setIngredientReady(false);
+            setSelectedItemId(null);
+            setFormState(emptyFormState);
+        } else {
+            setUserReady(false);
+            resetAll();
+        }
+        setStatusMsg(null);
+    };
+}
+

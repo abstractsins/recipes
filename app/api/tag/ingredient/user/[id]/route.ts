@@ -1,6 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // your Prisma client
+import { NextResponse, NextRequest } from 'next/server';
+import { PrismaClient, Prisma } from '@prisma/client';
+import { mapPrismaCodeToStatus, humanMessage } from '@/utils/utils';
 
+const prisma = new PrismaClient();
+
+//********** */
+//* GET      */
+//********** */
 export async function GET(req: NextRequest, { params }: any) {
     try {
         const { id } = await params;
@@ -19,12 +25,15 @@ export async function GET(req: NextRequest, { params }: any) {
     }
 }
 
+//********** */
+//* POST     */
+//********** */
 // * Create new user ingredient tag
 export async function POST(req: NextRequest, { params }: any) {
     try {
         const { id } = await params || null;
         console.log(id);
-        
+
         const body = await req.json();
         const { tagName } = body;
         console.log(tagName);
@@ -37,8 +46,26 @@ export async function POST(req: NextRequest, { params }: any) {
             }
         });
         return NextResponse.json(tag, { status: 201 });
-    } catch (error) {
-        console.error('Error posting user ingredient tag:', error);
-        return new NextResponse('Failed to post user ingredient tag', { status: 500 });
+    } catch (err) {
+        
+        /* --------- Prisma branch ---------- */
+        if (err instanceof Prisma.PrismaClientKnownRequestError) {
+            const status = mapPrismaCodeToStatus(err.code);
+            return NextResponse.json(
+                {
+                    error: 'PRISMA_ERROR',
+                    code: err.code,                 // e.g. P2002
+                    message: humanMessage(err.code, 'tag') // e.g. “That name is already taken.”
+                },
+                { status }
+            );
+        }
+
+        /* --------- Generic branch --------- */
+        console.error('[ingredient POST]', err);
+        return NextResponse.json(
+            { error: 'UNKNOWN_ERROR', message: 'Failed to create tag' },
+            { status: 500 }
+        );
     }
 }

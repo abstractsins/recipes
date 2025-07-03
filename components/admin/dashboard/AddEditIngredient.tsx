@@ -16,59 +16,69 @@ import AdminSelect from "../formElements/AdminSelect";
 import TagsSelect from "../TagsSelect";
 import UserSelect from "../formElements/UserSelect";
 import IngredientSelect from "../formElements/IngredientSelect";
-import AddEditIngredientHeader from "./AddEditIngredientHeader";
+import AddEditHeader from "./AddEditHeader";
 
-import { seasonOptions, toTitleCase } from "@/utils/utils";
+import {
+    seasonOptions,
+    toTitleCase,
+    handleModeSelectFactory,
+    handleSeasonSelect,
+    handleTagSelectFactory
+} from "@/utils/utils";
 
 import { useIngredientForm } from '@/hooks/useIngredientForm';
 import { useDashboard } from '@/context/DashboardContext';
 
+
+
 interface Props {
     id: string;
     isActive: boolean;
+    title: string;
     onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
     close: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function AddEditIngredient({ id, isActive, onClick, close }: Props) {
+
+export default function AddEditIngredient({ id, title, isActive, onClick, close }: Props) {
 
     const [mode, setMode] = useState<Mode>('add');
 
     const {
         formState,
         setFormState,
-        handleSeasonSelect,
-        handleDefaultTagSelect,
-        handleUserTagSelect,
         handleIngredientSelect,
-        handleUserSelect,
+        handleIngredientUserSelect,
         handleAuthorSelect,
         userIngredientTagValue,
         userIngredientTagInputHandler,
+        selectedUserIngredientTagOptions,
         addUserIngredientTag,
         handleSubmit,
         selectedAuthorId,
-        selectedUserId,
+        selectedIngredientUserId,
         selectedIngredientId,
         userIngredientList,
         statusMsg,
         error,
         isDisabled,
-        resetAll
-    } = useIngredientForm(mode);
-
-    const { 
-        defaultIngredientTagOptions, 
-        selectedUserIngredientTagOptions,
+        resetAll,
         userTagsWaiting,
         submitWaiting
-    } = useDashboard();
-    console.log(defaultIngredientTagOptions);
+    } = useIngredientForm(mode);
 
-    const handleModeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMode(e.target.checked ? 'edit' : 'add');
-        resetAll();
-    };
+    const {
+        defaultIngredientTagOptions,
+        ingredientListWaiting,
+    } = useDashboard();
+
+
+    const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
+    const onSeasonChange = handleSeasonSelect(setFormState);
+    const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
+    const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIndexes');
+
+
 
     return (
         <div
@@ -77,7 +87,8 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
             id={id}
         >
             <header className={`${styles['module-header']} ${styles['header']}`}>
-                <AddEditIngredientHeader
+                <AddEditHeader
+                    title={title}
                     active={isActive}
                     mode={mode}
                     error={error}
@@ -96,7 +107,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                 <>
                                     <FormRow className={styles['row-0']}>
                                         <FieldModule label="User" id="edit-ingredient-user-module">
-                                            <UserSelect onSelect={handleUserSelect} />
+                                            <UserSelect onSelect={handleIngredientUserSelect} />
                                         </FieldModule>
                                     </FormRow>
 
@@ -105,7 +116,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                             <IngredientSelect
                                                 value={selectedIngredientId}
                                                 data={userIngredientList}
-                                                ready={!!selectedUserId}
+                                                ready={!ingredientListWaiting && !!selectedIngredientUserId}
                                                 onSelect={handleIngredientSelect}
                                             />
                                         </FieldModule>
@@ -135,7 +146,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                         defaultValue={formState.selectedSeasonIndexes}
                                         multiple
                                         className={`tag`}
-                                        onChange={handleSeasonSelect}
+                                        onChange={onSeasonChange}
                                         options={seasonOptions}
                                     />
                                 </FieldModule>
@@ -148,7 +159,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                         disabled={isDisabled}
                                         value={formState.main}
                                         placeholder="e.g. Potato"
-                                        className={`${isDisabled ? 'disabled' : ''}`}
+                                        className={`${isDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, main: e.target.value })}
                                     />
                                 </FieldModule>
@@ -158,8 +169,18 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                         disabled={isDisabled}
                                         value={formState.variety}
                                         placeholder="e.g. Fingerling"
-                                        className={`${isDisabled ? 'disabled' : ''}`}
+                                        className={`${isDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, variety: e.target.value })}
+                                    />
+                                </FieldModule>
+                                <FieldModule className={`tags`} label="Preferred Brand">
+                                    <AdminInput
+                                        name="brand"
+                                        disabled={isDisabled}
+                                        value={formState.brand}
+                                        placeholder='e.g. Heinz'
+                                        className={`${isDisabled ? 'disabled' : ''} optional`}
+                                        onChange={e => setFormState({ ...formState, brand: e.target.value })}
                                     />
                                 </FieldModule>
                             </FormRow>
@@ -171,7 +192,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                         disabled={isDisabled}
                                         value={formState.category}
                                         placeholder="e.g. Vegetable"
-                                        className={`${isDisabled ? 'disabled' : ''}`}
+                                        className={`${isDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, category: e.target.value })}
                                     />
                                 </FieldModule>
@@ -181,7 +202,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                         disabled={isDisabled}
                                         value={formState.subcategory}
                                         placeholder="e.g. Root"
-                                        className={`${isDisabled ? 'disabled' : ''}`}
+                                        className={`${isDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, subcategory: e.target.value })}
                                     />
                                 </FieldModule>
@@ -194,7 +215,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                             name="default-tags"
                                             defaultValue={formState.selectedDefaultTagIndexes}
                                             disabled={isDisabled}
-                                            onChange={handleDefaultTagSelect}
+                                            onChange={onDefaultTagChange}
                                             multiple
                                             type="ingredient"
                                             user={null}
@@ -203,7 +224,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                     </FieldModule>
                                 </FormRow>
 
-                                {(selectedUserId || selectedAuthorId) && (
+                                {(selectedIngredientUserId || selectedAuthorId) && (
                                     <>
                                         <FormRow className={styles["user-tags"]}>
                                             <FieldModule label="User-Tags">
@@ -211,11 +232,11 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                                                     name="user-tags"
                                                     defaultValue={formState.selectedUserTagIndexes}
                                                     disabled={isDisabled}
-                                                    onChange={handleUserTagSelect}
+                                                    onChange={onUserTagChange}
                                                     isLoading={userTagsWaiting}
                                                     multiple
                                                     type="ingredient"
-                                                    user={selectedAuthorId ?? selectedUserId}
+                                                    user={selectedAuthorId ?? selectedIngredientUserId}
                                                     options={selectedUserIngredientTagOptions}
                                                 />
                                             </FieldModule>
@@ -256,6 +277,7 @@ export default function AddEditIngredient({ id, isActive, onClick, close }: Prop
                             <FormRow className='footnote'>
                                 <div className="footnote-container"><span>* Required</span></div>
                             </FormRow>
+
                         </form>
                     </div>
                     <CloseButton onClick={(e) => { close(e); setMode('add'); resetAll() }} />

@@ -22,6 +22,7 @@
   justify-content: center;
 }
 
+.add-edit-recipe-submit-module,
 .add-edit-ingredient-submit-module {
   display: flex;
   flex-direction: column;

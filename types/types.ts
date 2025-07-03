@@ -17,7 +17,12 @@ export interface User {
 export interface Recipe {
     id: number,
     name: string,
-    user?: User
+    user?: User,
+    seasons: Season[],
+    defaultTags: IngredientTag[],
+    userTags: IngredientTag[],
+    createdAt?: Date,
+    updatedAt?: Date
 }
 
 export interface Ingredient {
@@ -33,6 +38,7 @@ export interface Ingredient {
     subcategory?: string,
     defaultTags: IngredientTag[],
     userTags: IngredientTag[],
+    brand?: string,
     createdAt?: Date,
     updatedAt?: Date
 }
@@ -75,6 +81,7 @@ export interface IngredientDTO {
     selectedDefaultTagIndexes?: number[];
     selectedUserTagIndexes?: number[];
 };
+
 
 
 // ***************
@@ -120,22 +127,29 @@ export interface SeasonOption {
 }
 
 
+
 // ***************
 // * FORM STATES *
 // ***************
 
-export type IngredientFormState = {
+export interface IngredientFormState {
     name: string;
     main: string;
     variety: string;
     category: string;
+    brand: string;
     subcategory: string;
     selectedSeasonIndexes: number[];
     selectedDefaultTagIndexes: number[];
     selectedUserTagIndexes: number[];
 };
 
-
+export interface RecipeFormState {
+    name: string;
+    selectedSeasonIndexes: number[];
+    selectedDefaultTagIndexes: number[];
+    selectedUserTagIndexes: number[];
+}
 
 
 // ************
@@ -148,8 +162,11 @@ export interface DashboardContextValue {
     ingredients: Ingredient[];
     recipes: Recipe[];
     fetchUserIngredients: (userId: number) => Promise<Ingredient[]>;
+    fetchUserRecipes: (userId: number) => Promise<Ingredient[]>;
     fetchIngredientById: (id: number) => Promise<Ingredient>;
+    fetchRecipeById: (id: number) => Promise<Ingredient>;
     refreshIngredientModule: () => void,
+    refreshRecipeModule: () => void,
 
     /* default tags always available */
     defaultIngredientTags: Tag[];
@@ -159,7 +176,8 @@ export interface DashboardContextValue {
 
     /* Loader States */
     userTagsWaiting?: boolean,
-    submitWaiting?: boolean;
+    ingredientListWaiting?: boolean,
+    recipeListWaiting?: boolean,
 
     /* Admin Access for all tags at once */
     allUserIngredientTags: Tag[],
@@ -167,11 +185,11 @@ export interface DashboardContextValue {
     refreshAllTags: () => void,
 
     /* user-specific tags */
-    userIngredientTags: Tag[],
-    userRecipeTags: Tag[],
+    // userIngredientTags: Tag[],
+    // userRecipeTags: Tag[],
     selectedUserIngredientTagOptions: TagOption[],
     selectedUserRecipeTagOptions: TagOption[],
-    loadUserTags: (type: string, user: number, options: loadUserTagOptions) => void;
+    loadUserTags: (type: 'ingredient' | 'recipe', userId: number) => Promise<Tag[]>;
 
     /* UI state */
     activeModuleIds: string[];

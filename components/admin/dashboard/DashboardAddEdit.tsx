@@ -1,15 +1,31 @@
-import { useDashboard } from "@/context/DashboardContext";
-import AddEditIngredient from "./AddEditIngredient"
 import styles from './DashboardAddEdit.module.css';
 
+import AddEditIngredient from "./AddEditIngredient"
+import AddEditRecipe from "./AddEditRecipe";
 
-export default function DashboardAddEdit() {
+import { useDashboard } from "@/context/DashboardContext";
 
-    const {
-        activateModule,
-        deactivateModule,
-        activeModuleIds
-    } = useDashboard();
+
+interface Props {
+    activeIds: string[];
+    onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+    close: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+export default function DashboardAddEdit({activeIds, onClick, close}: Props) {
+
+    const moduleConfigs = [
+        {
+            id: 'add-edit-ingredient-module',
+            title: 'Ingredient',
+            Component: AddEditIngredient,
+        },
+        {
+            id: 'add-edit-recipe-module',
+            title: 'Recipe',
+            Component: AddEditRecipe,
+        },
+    ];
 
 
     return (
@@ -20,12 +36,16 @@ export default function DashboardAddEdit() {
 
             <div className={`${styles["add-data-modules"]}`}>
 
-                <AddEditIngredient
-                    id={'add-edit-ingredient-module'}
-                    onClick={activateModule}
-                    isActive={activeModuleIds.includes('add-edit-ingredient-module')}
-                    close={deactivateModule}
-                />
+                {moduleConfigs.map(({ id, title, Component }) => (
+                    <Component
+                        key={id}
+                        id={id}
+                        title={title}
+                        isActive={activeIds.includes(id)}
+                        onClick={onClick}
+                        close={close}
+                    />
+                ))}
 
             </div>
 

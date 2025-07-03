@@ -4,6 +4,7 @@ import Toggle from "../../general/Toggle";
 import styles from './AddEditIngredient.module.css'
 
 interface Props {
+    title: string;
     active: boolean;
     mode: string;
     statusMsg: string | null | undefined;
@@ -11,11 +12,11 @@ interface Props {
     handleModeSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function AddEditIngredientHeader({ active, mode, error, statusMsg, handleModeSelect }: Props) {
+export default function AddEditHeader({ title, active, mode, error, statusMsg, handleModeSelect }: Props) {
     return (
         <>
             <FormRow id="row-1">
-                <h3>Ingredient</h3>
+                <h3>{title}</h3>
                 {active &&
                     <div className={styles["add-edit-mode-select"]}>
                         <h3 className={mode === 'add' ? '' : styles['unselected']}>

@@ -1,8 +1,12 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
+import { mapPrismaCodeToStatus, humanMessage } from '@/utils/utils';
 
 const prisma = new PrismaClient();
 
+//********** */
+//* GET      */
+//********** */
 export async function GET() {
     try {
         const [defaultTags, userTags] = await Promise.all([
@@ -18,6 +22,9 @@ export async function GET() {
     }
 }
 
+//********** */
+//* POST     */
+//********** */
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
@@ -45,7 +52,25 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(newTag, { status: 201 });
 
     } catch (err) {
-        console.error('Error creating tag:', err);
-        return new NextResponse('Server error creating tag', { status: 500 });
+        console.error('>>>>>%>%>%>%>%>%>%%>%>%> ERRORR');
+        /* --------- Prisma branch ---------- */
+        if (err instanceof Prisma.PrismaClientKnownRequestError) {
+            const status = mapPrismaCodeToStatus(err.code);
+            return NextResponse.json(
+                {
+                    error: 'PRISMA_ERROR',
+                    code: err.code,                 // e.g. P2002
+                    message: humanMessage(err.code, 'tag') // e.g. “That name is already taken.”
+                },
+                { status }
+            );
+        }
+
+        /* --------- Generic branch --------- */
+        console.error('[ingredient POST]', err);
+        return NextResponse.json(
+            { error: 'UNKNOWN_ERROR', message: 'Failed to create tag' },
+            { status: 500 }
+        );
     }
 }

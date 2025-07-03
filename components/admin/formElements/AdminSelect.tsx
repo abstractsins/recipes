@@ -24,7 +24,6 @@ export default function AdminSelect({
 }: AdminSelectProps) {
 
     // const toValue = (v: string | TagOption): string | undefined => typeof v === 'string' ? v : v.value;
-    console.log('isLoading?: ' + isLoading);
     return (
         <>
             {!multiple

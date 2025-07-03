@@ -37,12 +37,16 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
   // READOUT MODULE DATA
   const { users } = useFetchUsers({ refreshKey: usersRefreshKey });
+
   const { ingredients } = useFetchIngredients({ refreshKey: ingredientsRefreshKey });
+
   const { recipes } = useFetchRecipes({ refreshKey: recipesRefreshKey });
+
   const {
     defaultTags: defaultIngredientTags,
     userTags: allUserIngredientTags,
   } = useFetchTags({ type: 'ingredient', user: null, refreshKey: tagsRefreshKey });
+
   const {
     defaultTags: defaultRecipeTags,
     userTags: allUserRecipeTags,
@@ -57,9 +61,13 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
 
   // FETCHING INGREDIENT INFORMATION
+  const [ingredientListWaiting, setIngredientListWaiting] = useState<boolean>(false);
+
   const fetchUserIngredients = useCallback(async (userId: number): Promise<Ingredient[]> => {
+    setIngredientListWaiting(true);
     const res = await fetch(`/api/ingredient/user/${userId}`);
     const data = await res.json();
+    setIngredientListWaiting(false);
     return data;
   }, []);
 
@@ -69,30 +77,30 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     return data;
   }, []);
 
+  // FETCHING RECIPE INFORMATION
+  const [recipeListWaiting, setRecipeListWaiting] = useState<boolean>(false);
 
+  const fetchUserRecipes = useCallback(async (userId: number): Promise<Ingredient[]> => {
+    setRecipeListWaiting(true);
+    const res = await fetch(`/api/recipe/user/${userId}`);
+    const data = await res.json();
+    console.warn(data);
+    setRecipeListWaiting(false);
+    return data;
+  }, []);
+
+  const fetchRecipeById = useCallback(async (id: number): Promise<Ingredient> => {
+    const res = await fetch(`/api/recipe/${id}`);
+    const data = await res.json();
+    return data;
+  }, []);
 
   /* —  USER TAGS (lazy-loaded) — */
-  const [userIngredientTags, setUserIngredientTags] = useState<Tag[]>([]);
-  const [selectedUserRecipeTags, setSelectedUserRecipeTags] = useState<Tag[]>([]);
-  const [userTagsWaiting, setUserTagsWaiting] = useState<boolean>();
-
   const loadUserTags = useCallback(
-    async (type: 'ingredient' | 'recipe', user: number, opts?: { silent?: boolean }) => {
-      const noisy = !opts?.silent;               
-      if (noisy) setUserTagsWaiting(true);
-      try {
-        if (type === 'ingredient') {
-          const res = await fetch(`/api/tag/ingredient/user/${user}`);
-          const { userTags } = await res.json();
-          setUserIngredientTags(userTags);
-        } else {
-          const res = await fetch(`/api/tag/recipe/user/${user}`);
-          const { userTags } = await res.json();
-          setSelectedUserRecipeTags(userTags);
-        }
-      } finally {
-        if (noisy) setUserTagsWaiting(false);
-      }
+    async (type: 'ingredient' | 'recipe', user: number): Promise<Tag[]> => {
+      const res = await fetch(`/api/tag/${type}/user/${user}`);
+      const { userTags } = await res.json();
+      return userTags;
     },
     []
   );
@@ -104,14 +112,11 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     () => tagsIntoOptions(defaultIngredientTags ?? []),
     [defaultIngredientTags]
   );
-  const selectedUserIngredientTagOptions = useMemo(
-    () => tagsIntoOptions(userIngredientTags ?? []),
-    [userIngredientTags]
-  );
   const defaultRecipeTagOptions = useMemo(
     () => tagsIntoOptions(defaultRecipeTags ?? []),
     [defaultRecipeTags]
   );
+
   const selectedUserRecipeTagOptions = useMemo(
     () => tagsIntoOptions(allUserRecipeTags ?? []),
     [allUserRecipeTags]
@@ -153,6 +158,8 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     fetchUserIngredients,
     fetchIngredientById,
     refreshIngredientModule,
+    fetchUserRecipes,
+    fetchRecipeById,
 
     /* default tags always available */
     defaultIngredientTags,
@@ -161,7 +168,8 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     defaultRecipeTagOptions,
 
     /* Loader States */
-    userTagsWaiting,
+    ingredientListWaiting,
+    recipeListWaiting,
 
     /* Admin Access for all tags at once */
     allUserIngredientTags,
@@ -169,9 +177,9 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     refreshAllTags,
 
     /* user-specific tags */
-    userIngredientTags,
+    // userIngredientTags,
     userRecipeTags: allUserRecipeTags,
-    selectedUserIngredientTagOptions,
+    // selectedUserIngredientTagOptions,
     selectedUserRecipeTagOptions,
     loadUserTags,
 
@@ -190,9 +198,10 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     allUserRecipeTags,
     defaultIngredientTagOptions,
     defaultRecipeTagOptions,
-    selectedUserIngredientTagOptions,
+    // selectedUserIngredientTagOptions,
     selectedUserRecipeTagOptions,
-    userTagsWaiting
+    ingredientListWaiting,
+    recipeListWaiting
   ]);
 
   return (

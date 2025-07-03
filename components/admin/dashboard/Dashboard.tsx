@@ -10,7 +10,11 @@ import { useDashboard } from "@/context/DashboardContext";
 export default function Dashboard() {
 
 
-    const { activateModule, deactivateModule, activeModuleIds: activeIds } = useDashboard();
+    const { 
+        activateModule, 
+        deactivateModule, 
+        activeModuleIds: activeIds 
+    } = useDashboard();
 
 
     return (

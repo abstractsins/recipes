@@ -1,14 +1,29 @@
 'use client';
 
-import { useState, useEffect, useCallback } from "react";
+import {
+    useState,
+    useEffect,
+    useCallback,
+    useMemo
+} from "react";
+
 import {
     Ingredient,
     IngredientFormState,
     TagOption,
-    SeasonOption
+    SeasonOption,
+    Tag
 } from "@/types/types";
 
 import { useDashboard } from "@/context/DashboardContext";
+
+import {
+    handleIngredientUserSelectFactory,
+    createInputHandler,
+    tagsIntoOptions
+} from "@/utils/utils";
+
+import { useSyncUserTags } from "@/hooks/useSyncUserTags";
 
 
 
@@ -23,7 +38,19 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         refreshIngredientModule
     } = useDashboard();
 
-    console.warn(allUserIngredientTags);
+    const emptyIngredientForm: IngredientFormState = {
+        name: '',
+        main: '',
+        variety: '',
+        category: '',
+        subcategory: '',
+        brand: '',
+        selectedSeasonIndexes: [],
+        selectedDefaultTagIndexes: [],
+        selectedUserTagIndexes: []
+    };
+
+    const [formState, setFormState] = useState<IngredientFormState>(emptyIngredientForm);
 
     const [submitWaiting, setSubmitWaiting] = useState(false);
     const [ingredientLoading, setIngredientLoading] = useState(false);
@@ -33,7 +60,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const [userReady, setUserReady] = useState(false);
     const [ingredientReady, setIngredientReady] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+    const [selectedIngredientUserId, setSelectedIngredientUserId] = useState<number | null>(null);
     const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
     const [ingredientValue, setIngredientValue] = useState('');
 
@@ -43,75 +70,22 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const [userIngredientTagValue, setUserIngredientTagValue] = useState('');
 
-    const [formState, setFormState] = useState<IngredientFormState>({
-        name: '',
-        main: '',
-        variety: '',
-        category: '',
-        subcategory: '',
-        selectedSeasonIndexes: [],
-        selectedDefaultTagIndexes: [],
-        selectedUserTagIndexes: []
-    });
-
     const isDisabled = mode === 'edit' && !ingredientReady;
+
 
     const resetAll = useCallback((exceptions?: string[]) => {
         !exceptions?.includes('error') && setError(null);
         !exceptions?.includes('status') && setStatusMsg(null);
-        !exceptions?.includes('userId') && setSelectedUserId(null);
+        !exceptions?.includes('userId') && setSelectedIngredientUserId(null);
         !exceptions?.includes('ingredientList') && setUserIngredientList([]);
         !exceptions?.includes('ingredientId') && setSelectedIngredientId(null);
         !exceptions?.includes('ingredient') && setIngredientInfo(null);
         !exceptions?.includes('authorId') && setSelectedAuthorId(null);
-        !exceptions?.includes('form') && setFormState({
-            name: '',
-            main: '',
-            variety: '',
-            category: '',
-            subcategory: '',
-            selectedSeasonIndexes: [],
-            selectedDefaultTagIndexes: [],
-            selectedUserTagIndexes: []
-        });
+        !exceptions?.includes('form') && setFormState(emptyIngredientForm);
         !exceptions?.includes('userReady') && setUserReady(false);
         !exceptions?.includes('ingredientReady') && setIngredientReady(false);
     }, []);
 
-    // 🍁
-    const handleSeasonSelect = (season: SeasonOption, checked: boolean) => {
-        console.log(season, checked);
-        console.log(formState.selectedSeasonIndexes);
-
-        setFormState(prev => ({
-            ...prev,
-            selectedSeasonIndexes: checked
-                ? [...prev.selectedSeasonIndexes, season.id]
-                : prev.selectedSeasonIndexes.filter(s => s !== season.id),
-        }));
-    };
-
-    const handleDefaultTagSelect = (tag: TagOption, checked: boolean) => {
-        console.log(formState.selectedDefaultTagIndexes);
-        setFormState(prev => ({
-            ...prev,
-            selectedDefaultTagIndexes: checked
-                ? [...prev.selectedDefaultTagIndexes, tag.id]
-                : prev.selectedDefaultTagIndexes.filter(id => id !== tag.id)
-
-        }));
-
-    };
-
-    const handleUserTagSelect = (tag: TagOption, checked: boolean) => {
-        console.log(tag);
-        setFormState(prev => ({
-            ...prev,
-            selectedUserTagIndexes: checked
-                ? [...prev.selectedUserTagIndexes, tag.id]
-                : prev.selectedUserTagIndexes.filter(id => id !== tag.id)
-        }));
-    };
 
     const handleIngredientSelect = (id: number | null) => {
         setSelectedIngredientId(id);
@@ -125,35 +99,23 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         setSelectedAuthorId(id);
     };
 
-    const handleUserSelect = async (id: number | null) => {
-        if (id !== null) {
-            setSelectedUserId(id);
-            setUserReady(true);
-            setIngredientReady(false);
-            setSelectedIngredientId(null);
-            setFormState({
-                name: '',
-                main: '',
-                variety: '',
-                category: '',
-                subcategory: '',
-                selectedSeasonIndexes: [],
-                selectedDefaultTagIndexes: [],
-                selectedUserTagIndexes: []
-            });
-        } else {
-            setUserReady(false);
-            resetAll();
-        }
-        setStatusMsg(null);
-    };
+    const handleIngredientUserSelect = handleIngredientUserSelectFactory(
+        setSelectedIngredientUserId,
+        setUserReady,
+        setIngredientReady,
+        setSelectedIngredientId,
+        setFormState,
+        resetAll,
+        setStatusMsg,
+        emptyIngredientForm
+    );
 
     const fetchUserIngredients = useCallback(async () => {
-        if (selectedUserId) {
-            const data = await contextFetchUserIngredients(selectedUserId);
+        if (selectedIngredientUserId) {
+            const data = await contextFetchUserIngredients(selectedIngredientUserId);
             setUserIngredientList(data);
         }
-    }, [selectedUserId, contextFetchUserIngredients]);
+    }, [selectedIngredientUserId, contextFetchUserIngredients]);
 
     const fetchIngredientInfo = useCallback(async () => {
         if (selectedIngredientId) {
@@ -164,8 +126,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         }
     }, [selectedIngredientId, fetchIngredientById]);
 
+    // ➕👤🏷️
     const addUserIngredientTag = async () => {
-        const uid = selectedAuthorId ?? selectedUserId;
+        const uid = selectedAuthorId ?? selectedIngredientUserId;
+        setError(null);
+        setStatusMsg(null);
         if (userIngredientTagValue.trim() && uid) {
             const res = await fetch(`/api/tag/ingredient/user/${uid}`, {
                 method: 'POST',
@@ -176,8 +141,13 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
             if (res.ok) {
                 console.log('posted');
-                loadUserTags('ingredient', uid, { silent: true });   // instant refresh
+                const newTags = await loadUserTags('ingredient', uid);    // instant refresh
+                setUserIngredientTags(newTags);
                 refreshAllTags(); // module refresh
+            } else {
+                const err = await res.json();
+                setError(err.message);
+                document.getElementById('add-edit-ingredient-module')?.scrollIntoView({ behavior: 'smooth' });
             }
         }
         setUserIngredientTagValue('');
@@ -185,9 +155,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         if (input) input.focus();
     };
 
-    const userIngredientTagInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserIngredientTagValue(e.currentTarget.value);
-    };
+    const userIngredientTagInputHandler = createInputHandler(setUserIngredientTagValue);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -199,7 +167,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
         const data = {
             ...formState,
-            userId: mode === 'add' ? new FormData(e.currentTarget).get('user') : selectedUserId,
+            userId: mode === 'add' ? new FormData(e.currentTarget).get('user') : selectedIngredientUserId,
             IngredientTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
         };
 
@@ -214,7 +182,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
             if (!res.ok) {
                 const error = await res.json();
-                setError(error.error);
+                console.log(error);
+                setError(error.message);
             } else {
                 const json = await res.json();
                 setStatusMsg(mode === 'add' ? 'Ingredient Created!' : 'Ingredient Updated!');
@@ -226,14 +195,29 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         } finally {
             setSubmitWaiting(false);
             resetAll(['userReady', 'status', 'ingredientList', 'error', 'authorId']);
-            setSelectedUserId(selectedUserId);
+            setSelectedIngredientUserId(selectedIngredientUserId);
             setSelectedIngredientId(null);
             setIngredientValue('null');
             document.getElementById('add-edit-ingredient-module')?.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
-    useEffect(() => { fetchUserIngredients(); }, [selectedUserId, fetchUserIngredients]);
+    const [userTagsWaiting, setUserTagsWaiting] = useState(false);
+    const [userIngredientTags, setUserIngredientTags] = useState<Tag[]>([]);
+    const selectedUserIngredientTagOptions = useMemo(() => tagsIntoOptions(userIngredientTags), [userIngredientTags]);
+
+
+    useSyncUserTags<IngredientFormState>({
+        type: 'ingredient',
+        uid: selectedAuthorId ?? selectedIngredientUserId,
+        loadUserTags,
+        setFormState,
+        tagResetKey: 'selectedUserTagIndexes',
+        setUserTagsWaiting,
+        setUserTags: setUserIngredientTags,
+    });
+
+    useEffect(() => { fetchUserIngredients(); }, [selectedIngredientUserId, fetchUserIngredients]);
     useEffect(() => { fetchIngredientInfo(); }, [selectedIngredientId, fetchIngredientInfo]);
     useEffect(() => {
         if (ingredientInfo) {
@@ -245,6 +229,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 variety: ingredientInfo.variety ?? '',
                 category: ingredientInfo.category ?? '',
                 subcategory: ingredientInfo.subcategory ?? '',
+                brand: ingredientInfo.brand ?? '',
                 selectedSeasonIndexes: ingredientInfo.seasons.map(s => s.id) ?? [],
 
                 selectedDefaultTagIndexes: ingredientInfo.defaultTags.map(t => t.tagId) ?? [],
@@ -255,50 +240,20 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
 
 
-    useEffect(() => {
-        if (selectedAuthorId || selectedUserId) {
-            setFormState(prev => ({
-                ...prev,
-                selectedUserTagIndexes: []
-            }));
-        }
-    }, [selectedAuthorId, selectedUserId]);
-
-
-
-    useEffect(() => {
-        if (selectedAuthorId) {
-            // get the users tags
-            loadUserTags('ingredient', selectedAuthorId);
-        }
-    }, [selectedAuthorId]);
-
-
-
-    useEffect(() => {
-        if (selectedUserId) {
-            // get the users tags
-            loadUserTags('ingredient', selectedUserId);
-        }
-    }, [selectedUserId]);
-
-
-
     return {
         formState, setFormState,
-        handleSeasonSelect,
-        handleDefaultTagSelect,
-        handleUserTagSelect,
         handleIngredientSelect,
-        handleUserSelect,
+        handleIngredientUserSelect,
+        selectedUserIngredientTagOptions,
         handleAuthorSelect,
         userIngredientTagValue,
         userIngredientTagInputHandler,
         addUserIngredientTag,
         handleSubmit,
-        selectedUserId,
+        selectedIngredientUserId,
         selectedIngredientId,
         userIngredientList,
+        userTagsWaiting,
         error,
         statusMsg,
         isDisabled,

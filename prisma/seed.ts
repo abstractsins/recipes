@@ -65,6 +65,7 @@ async function main() {
             { name: 'spicy', type: TagType.ingredient },
             { name: 'dried', type: TagType.ingredient },
             { name: 'canned', type: TagType.ingredient },
+            { name: 'kosher', type: TagType.ingredient },
         ].map(t => prisma.defaultTag.create({ data: t }))
     );
 
@@ -83,12 +84,14 @@ async function main() {
     ] = await Promise.all(
         [
             { name: 'Jewish', type: TagType.recipe, createdBy: adminUser.id },
+            { name: 'trayfe', type: TagType.recipe, createdBy: adminUser.id },
             { name: 'freezable', type: TagType.recipe, createdBy: adminUser.id },
             { name: 'freezable', type: TagType.recipe, createdBy: regUser2.id },
             { name: 'make ahead', type: TagType.recipe, createdBy: regUser2.id },
             { name: 'very dairy', type: TagType.recipe, createdBy: regUser.id },
             { name: 'Amber approved', type: TagType.recipe, createdBy: regUser.id },
             { name: 'expensive', type: TagType.ingredient, createdBy: adminUser.id },
+            { name: 'trayfe', type: TagType.ingredient, createdBy: adminUser.id },
             { name: 'get at WF', type: TagType.ingredient, createdBy: regUser.id },
             { name: 'better fresh', type: TagType.ingredient, createdBy: regUser2.id },
             { name: 'better canned', type: TagType.ingredient, createdBy: regUser2.id },
@@ -112,6 +115,18 @@ async function main() {
                 create: [{ tag: { connect: { id: getAtWFTag.id } } }],
             },
         },
+    });
+
+    const beerMustard = await prisma.ingredient.create({
+        data: {
+            name: 'beer mustard',
+            main: 'mustard',
+            variety: 'beer',
+            category: 'condiments',
+            subcategory: 'mustard',
+            userId: adminUser.id,
+            brand: 'Kosciusko',
+        }
     });
 
     /* remaining ingredients */

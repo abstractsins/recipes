@@ -1,0 +1,192 @@
+'use client';
+
+import {
+    useState,
+    useEffect,
+    useCallback,
+    useMemo
+} from "react";
+
+import {
+    Recipe,
+    RecipeFormState,
+    TagOption,
+    SeasonOption,
+    Tag
+} from "@/types/types";
+
+import { useDashboard } from "@/context/DashboardContext";
+
+import {
+    handleRecipeUserSelectFactory,
+    createInputHandler,
+    tagsIntoOptions
+} from "@/utils/utils";
+
+import { useSyncUserTags } from "@/hooks/useSyncUserTags";
+
+
+
+export default function useRecipeForm(mode: 'add' | 'edit') {
+
+    const {
+        loadUserTags,
+        fetchUserRecipes: contextFetchUserRecipes,
+        refreshAllTags
+    } = useDashboard();
+
+    const emptyRecipeForm: RecipeFormState = {
+        name: '',
+        selectedSeasonIndexes: [],
+        selectedDefaultTagIndexes: [],
+        selectedUserTagIndexes: []
+    };
+
+    const [submitWaiting, setSubmitWaiting] = useState(false);
+
+    const [userReady, setUserReady] = useState(false);
+    const [recipeReady, setRecipeReady] = useState(false);
+
+    const [selectedRecipeUserId, setSelectedRecipeUserId] = useState<number | null>(null);
+    const [selectedRecipeId, setSelectedRecipeId] = useState<number | null>(null);
+    const [recipeValue, setRecipeValue] = useState('');
+
+    const [selectedAuthorId, setSelectedAuthorId] = useState<number | null>(null);
+    const [userRecipeList, setUserRecipeList] = useState<Recipe[]>([]);
+    const [recipeInfo, setRecipeInfo] = useState<Recipe | null>(null);
+
+    const [userRecipeTagValue, setUserRecipeTagValue] = useState('');
+
+    const isDisabled = mode === 'edit' && !recipeReady;
+
+
+    const [error, setError] = useState<string | null>(null);
+    const [statusMsg, setStatusMsg] = useState<string | null>(null);
+
+
+
+    const resetAll = useCallback((exceptions?: string[]) => {
+        !exceptions?.includes('error') && setError(null);
+        !exceptions?.includes('status') && setStatusMsg(null);
+        !exceptions?.includes('userId') && setSelectedRecipeUserId(null);
+        !exceptions?.includes('recipeList') && setUserRecipeList([]);
+        !exceptions?.includes('recipeId') && setSelectedRecipeId(null);
+        !exceptions?.includes('recipe') && setRecipeInfo(null);
+        !exceptions?.includes('authorId') && setSelectedAuthorId(null);
+        !exceptions?.includes('form') && setFormState(emptyRecipeForm);
+        !exceptions?.includes('userReady') && setUserReady(false);
+        !exceptions?.includes('recipeReady') && setRecipeReady(false);
+    }, []);
+
+    const [formState, setFormState] = useState<RecipeFormState>(emptyRecipeForm);
+
+    const handleRecipeSelect = () => { };
+
+    const handleSubmit = () => { };
+
+    const handleAuthorSelect = () => { };
+
+    const userRecipeTagInputHandler = createInputHandler(setUserRecipeTagValue);
+
+    const handleRecipeUserSelect = handleRecipeUserSelectFactory(
+        setSelectedRecipeUserId,
+        setUserReady,
+        setRecipeReady,
+        setSelectedRecipeId,
+        setFormState,
+        resetAll,
+        setStatusMsg,
+        emptyRecipeForm
+    );
+
+    const fetchUserRecipes = useCallback(async () => {
+        if (selectedRecipeUserId) {
+            console.log(selectedRecipeUserId);
+            const data = await contextFetchUserRecipes(selectedRecipeUserId);
+            setUserRecipeList(data);
+        }
+    }, [selectedRecipeUserId, contextFetchUserRecipes]);
+
+    const fetchRecipeInfo = useCallback(async () => { }, []);
+
+    const addUserRecipeTag = async () => {
+        const uid = selectedAuthorId ?? selectedRecipeUserId;
+        setError(null);
+        setStatusMsg(null);
+        if (userRecipeTagValue.trim() && uid) {
+            const res = await fetch(`/api/tag/recipe/user/${uid}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tagName: userRecipeTagValue.trim() }),
+                credentials: 'include'
+            });
+
+            if (res.ok) {
+                console.log('posted');
+                const newTags = await loadUserTags('recipe', uid);    // instant refresh
+                setUserRecipeTags(newTags);
+                refreshAllTags();   // module refresh
+            } else {
+                const err = await res.json();
+                setError(err.message);
+                document.getElementById('add-edit-recipe-module')?.scrollIntoView({ behavior: 'smooth' });
+            }
+
+        }
+        setUserRecipeTagValue('');
+        const input = document.querySelector('input[name="add-user-recipe-tag"]') as HTMLInputElement | null;
+        if (input) input.focus();
+    }
+
+    const [userTagsWaiting, setUserTagsWaiting] = useState(false);
+    const [userRecipeTags, setUserRecipeTags] = useState<Tag[]>([]);
+    const selectedUserRecipeTagOptions = useMemo(() => tagsIntoOptions(userRecipeTags), [userRecipeTags]);
+
+
+    useSyncUserTags<RecipeFormState>({
+        type: 'recipe',
+        uid: selectedAuthorId ?? selectedRecipeUserId,   // 👈 single param now
+        loadUserTags,
+        setFormState,
+        tagResetKey: 'selectedUserTagIndexes',
+        setUserTagsWaiting,
+        setUserTags: setUserRecipeTags,
+    });
+
+    useEffect(() => { fetchUserRecipes(); }, [selectedRecipeUserId, fetchUserRecipes]);
+    useEffect(() => { fetchRecipeInfo(); }, [selectedRecipeId, fetchRecipeInfo]);
+    useEffect(() => {
+        if (recipeInfo) {
+            console.log(recipeInfo.defaultTags);
+            console.log(recipeInfo.userTags);
+            setFormState({
+                name: recipeInfo.name ?? '',
+                selectedSeasonIndexes: recipeInfo.seasons.map(s => s.id) ?? [],
+                selectedDefaultTagIndexes: recipeInfo.defaultTags.map(t => t.tagId) ?? [],
+                selectedUserTagIndexes: recipeInfo.userTags.map(t => t.tagId) ?? []
+            });
+        }
+    }, [recipeInfo]);
+
+
+    return {
+        formState,
+        setFormState,
+        handleAuthorSelect,
+        resetAll,
+        isDisabled,
+        selectedUserRecipeTagOptions,
+        userTagsWaiting,
+        userRecipeList,
+        handleSubmit,
+        submitWaiting,
+        selectedRecipeId,
+        selectedAuthorId,
+        userRecipeTagValue,
+        addUserRecipeTag,
+        selectedRecipeUserId,
+        handleRecipeSelect,
+        handleRecipeUserSelect,
+        userRecipeTagInputHandler
+    }
+}

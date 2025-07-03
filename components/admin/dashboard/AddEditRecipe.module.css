@@ -95,10 +95,10 @@ h3.unselected {
 
 
 
-form.add-edit-ingredient select,
+form.add-edit-recipe select,
 select.admin-select[name="user"],
-select.admin-select[name="ingredient"],
-form.add-edit-ingredient input[type="text"] {
+select.admin-select[name="recipe"],
+form.add-edit-recipe input[type="text"] {
   padding: 10px 15px;
   border-radius: 10px;
   font-size: 14pt;
@@ -107,11 +107,11 @@ form.add-edit-ingredient input[type="text"] {
 }
 
 select.admin-select[name="user"],
-select.admin-select[name="ingredient"] {
+select.admin-select[name="recipe"] {
   min-width: 400px;
 }
 
-input.add-edit-ingredient-submit {
+input.add-edit-recipe-submit {
   background-color: rgb(188, 226, 249);
   border: none;
   font-size: 14pt;
@@ -122,40 +122,40 @@ input.add-edit-ingredient-submit {
   max-height: 41px;
 }
 
-input.add-edit-ingredient-submit:hover {
+input.add-edit-recipe-submit:hover {
   cursor: pointer;
 }
 
-input.add-edit-ingredient-submit:active {
+input.add-edit-recipe-submit:active {
   background-color: whitesmoke !important;
 }
 
-input.add-edit-ingredient-submit:hover:not([class*="disabled"]) {
+input.add-edit-recipe-submit:hover:not([class*="disabled"]) {
   background-color: lightskyblue;
 }
 
-form.add-edit-ingredient input[name="name"] {
+form.add-edit-recipe input[name="name"] {
   width: 100%;
 }
 
-.add-edit-ingredient-name-module input[name="name"] {
+.add-edit-recipe-name-module input[name="name"] {
   max-width: 100% !important;
 }
 
-.add-edit-ingredient-user-module {
+.add-edit-recipe-user-module {
   flex: 4;
 }
 
 select.admin-select[name="user"],
-.add-edit-ingredient-user-module select {
+.add-edit-recipe-user-module select {
   max-width: 100% !important;
 }
 
-.add-edit-ingredient-name-module {
+.add-edit-recipe-name-module {
   flex: 2;
 }
 
-.add-edit-ingredient-name-module input {
+.add-edit-recipe-name-module input {
   max-width: 380px;
 }
 

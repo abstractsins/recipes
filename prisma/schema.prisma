@@ -141,6 +141,7 @@ model Ingredient {
   variety     String?
   category    String?
   subcategory String?
+  brand       String?
   notes       String?
   userId      Int
   user        User     @relation(fields: [userId], references: [id])

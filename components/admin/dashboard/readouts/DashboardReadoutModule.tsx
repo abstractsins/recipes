@@ -19,10 +19,6 @@ function DashboardReadoutModule({ title, id, hookData, isActive }: AdminReadoutM
 
     const isLoading = false; // DEBUG?
 
-    useEffect(() => {
-        console.log("hookData changed:", hookData);
-    }, [hookData]);
-
     return (
         <div
             className={`module ${styles['module']} ${isActive ? styles['active'] : styles['inactive']}`}

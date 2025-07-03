@@ -37,3 +37,9 @@ input.quick-input {
   height: 100%;
   width: 150px !important; 
 }
+
+input[type="text"].optional,
+input[type="text"].optional::placeholder {
+  font-size: 10pt;
+  height: 32px;
+}

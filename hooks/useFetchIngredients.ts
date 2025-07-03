@@ -10,7 +10,8 @@ export function useFetchIngredients({ refreshKey }: Props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchUsers() {
+    setIsLoading(true);
+    (async function fetchUsers() {
       try {
         const res = await fetch('/api/ingredient');
         const data: Ingredient[] = await res.json();
@@ -21,8 +22,7 @@ export function useFetchIngredients({ refreshKey }: Props) {
       } finally {
         setIsLoading(false);
       }
-    }
-    fetchUsers();
+    })()
   }, [refreshKey]);
 
   return { ingredients, isLoading };

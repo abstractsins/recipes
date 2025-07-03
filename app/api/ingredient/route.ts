@@ -1,8 +1,8 @@
 // app/api/ingredient/route.ts
 import { NextResponse, NextRequest } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';   // ← pull in Prisma types
 import { IngredientDTO } from '@/types/types';
-
+import { mapPrismaCodeToStatus, humanMessage } from '@/utils/utils';
 
 const prisma = new PrismaClient();
 
@@ -16,8 +16,8 @@ export async function GET() {
                 userTags: true,
                 defaultTags: true,
                 user: false,
-                seasons: true
-            }
+                seasons: true,
+            },
         });
         return NextResponse.json(ingredients);
     } catch (err) {
@@ -33,16 +33,11 @@ export async function POST(req: NextRequest) {
     try {
         const body = (await req.json()) as IngredientDTO;
 
-        console.log(body);
-
-        /* Basic validation */
         if (!body?.name || !body?.userId) {
             return new NextResponse('name and userId are required', { status: 400 });
         }
 
-        /* Transaction keeps all-or-nothing */
         const ingredient = await prisma.$transaction(async (tx) => {
-            /* 1 ── create the ingredient itself */
             const newIng = await tx.ingredient.create({
                 data: {
                     name: body.name,
@@ -53,25 +48,23 @@ export async function POST(req: NextRequest) {
                     notes: body.notes,
                     userId: Number(body.userId),
                     seasons: body.selectedSeasonIndexes?.length
-                        ? { connect: body.selectedSeasonIndexes.map(id => ({ id })) }
+                        ? { connect: body.selectedSeasonIndexes.map((id) => ({ id })) }
                         : undefined,
                 },
             });
 
-            /* 2 ── attach default tags if provided */
             if (body.selectedDefaultTagIndexes?.length) {
                 await tx.ingredientDefaultTag.createMany({
-                    data: body.selectedDefaultTagIndexes.map(tagId => ({
+                    data: body.selectedDefaultTagIndexes.map((tagId) => ({
                         ingredientId: newIng.id,
                         tagId,
                     })),
                 });
             }
 
-            /* 3 ── attach user tags if provided */
             if (body.selectedUserTagIndexes?.length) {
                 await tx.ingredientUserTag.createMany({
-                    data: body.selectedUserTagIndexes.map(tagId => ({
+                    data: body.selectedUserTagIndexes.map((tagId) => ({
                         ingredientId: newIng.id,
                         tagId,
                     })),
@@ -83,7 +76,24 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(ingredient, { status: 201 });
     } catch (err) {
+        /* --------- Prisma branch ---------- */
+        if (err instanceof Prisma.PrismaClientKnownRequestError) {
+            const status = mapPrismaCodeToStatus(err.code);
+            return NextResponse.json(
+                {
+                    error: 'PRISMA_ERROR',
+                    code: err.code,                 // e.g. P2002
+                    message: humanMessage(err.code, 'ingredient') // e.g. “That name is already taken.”
+                },
+                { status }
+            );
+        }
+
+        /* --------- Generic branch --------- */
         console.error('[ingredient POST]', err);
-        return new NextResponse('Failed to create ingredient', { status: 500 });
+        return NextResponse.json(
+            { error: 'UNKNOWN_ERROR', message: 'Failed to create ingredient' },
+            { status: 500 }
+        );
     }
 }
