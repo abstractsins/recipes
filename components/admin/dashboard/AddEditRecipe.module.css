@@ -41,7 +41,8 @@ div.plus-circle-container.dark:hover {
   color: rgb(138, 255, 255);
 }
 
-div.tags-module {
+div.tags-module,
+div.ingredients-module {
   border: 2px solid gray;
   border-radius: 10px;
   padding: 10px;

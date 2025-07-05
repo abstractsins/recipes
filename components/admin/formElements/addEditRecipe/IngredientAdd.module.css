@@ -1,0 +1,10 @@
+div.plus-circle-container.dark:hover {
+    color: rgb(138, 255, 255);
+}
+
+div.plus-circle-container {
+    cursor: pointer;
+    align-items: center;
+    font-size: 16pt;
+    display: flex;
+}

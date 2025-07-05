@@ -30,6 +30,7 @@ import {
 
 import { useDashboard } from '@/context/DashboardContext';
 import useRecipeForm from '@/hooks/useRecipeForm';
+import IngredientAdd from '../formElements/addEditRecipe/IngredientAdd';
 
 
 
@@ -50,7 +51,6 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
         defaultRecipeTagOptions,
         recipeListWaiting,
     } = useDashboard();
-
 
     const {
         formState,
@@ -149,6 +149,14 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                     />
                                 </FieldModule>
                             </FormRow>
+
+                            <div className={styles["ingredients-module"]}>
+                                <FormRow className={styles['row-3']}>
+                                    <FieldModule className={`ingredients`} label="Ingredients">
+                                        <IngredientAdd />
+                                    </FieldModule>
+                                </FormRow>
+                            </div>
 
                             <div className={styles["tags-module"]}>
                                 <FormRow className={styles['row-5']}>
