@@ -49,6 +49,9 @@ export const stripSpecialChars = (text: string, exceptions?: string[]) => {
     return text.replace(reg, ' ');
 }
 
+export const isPrintableAsciiOnly = (text: string): boolean => /^[\x20-\x7E]+$/.test(text);
+
+
 
 //* FETCHED DATA => UI ELEMENT CONVERSION */
 export const tagsIntoOptions = (tags: Tag[]) => {
@@ -73,7 +76,6 @@ export const seasonOptions: SeasonOption[] = [
     { id: 3, value: 'spring', label: 'Spring' },
     { id: 4, value: 'summer', label: 'Summer' }
 ]
-
 
 
 //* API */
@@ -197,56 +199,3 @@ export function handleTagSelectFactory<T extends { id: number }>(
         }));
     };
 }
-
-// 👤
-export function handleRecipeUserSelectFactory(
-    setSelectedUserId: (id: number | null) => void,
-    setUserReady: (ready: boolean) => void,
-    setIngredientReady: (ready: boolean) => void,
-    setSelectedItemId: (id: number | null) => void, // works for ingredientId or recipeId
-    setFormState: (form: any) => void,
-    resetAll: (exceptions?: string[]) => void,
-    setStatusMsg: (msg: string | null) => void,
-    emptyFormState: object
-) {
-    return async (id: number | null) => {
-        if (id !== null) {
-            setSelectedUserId(id);
-            setUserReady(true);
-            setIngredientReady(false);
-            setSelectedItemId(null);
-            setFormState(emptyFormState);
-        } else {
-            setUserReady(false);
-            resetAll();
-        }
-        setStatusMsg(null);
-    };
-}
-
-// 👤
-export function handleIngredientUserSelectFactory(
-    setSelectedUserId: (id: number | null) => void,
-    setUserReady: (ready: boolean) => void,
-    setIngredientReady: (ready: boolean) => void,
-    setSelectedItemId: (id: number | null) => void, // works for ingredientId or recipeId
-    setFormState: (form: any) => void,
-    resetAll: (exceptions?: string[]) => void,
-    setStatusMsg: (msg: string | null) => void,
-    emptyFormState: object
-) {
-    return async (id: number | null) => {
-        if (id !== null) {
-            setSelectedUserId(id);
-            setUserReady(true);
-            setIngredientReady(false);
-            setSelectedItemId(null);
-            setFormState(emptyFormState);
-        } else {
-            setUserReady(false);
-            resetAll();
-        }
-        setStatusMsg(null);
-    };
-}
-

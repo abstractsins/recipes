@@ -4,21 +4,21 @@ import {
     useState,
     useEffect,
     useCallback,
-    useMemo
+    useMemo,
 } from "react";
 
 import {
     Recipe,
     RecipeFormState,
-    TagOption,
     SeasonOption,
+    UserOption,
+    TagOption,
     Tag
 } from "@/types/types";
 
 import { useDashboard } from "@/context/DashboardContext";
 
 import {
-    handleRecipeUserSelectFactory,
     createInputHandler,
     tagsIntoOptions
 } from "@/utils/utils";
@@ -49,31 +49,29 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const [recipeReady, setRecipeReady] = useState(false);
 
     const [selectedRecipeUserId, setSelectedRecipeUserId] = useState<number | null>(null);
+    const [selectedRecipeUserValue, setSelectedRecipeUserValue] = useState<UserOption | null>(null);
+
     const [selectedRecipeId, setSelectedRecipeId] = useState<number | null>(null);
     const [recipeValue, setRecipeValue] = useState('');
 
-    const [selectedAuthorId, setSelectedAuthorId] = useState<number | null>(null);
     const [userRecipeList, setUserRecipeList] = useState<Recipe[]>([]);
     const [recipeInfo, setRecipeInfo] = useState<Recipe | null>(null);
 
     const [userRecipeTagValue, setUserRecipeTagValue] = useState('');
 
-    const isDisabled = mode === 'edit' && !recipeReady;
-
+    const isDisabled = !recipeReady;
 
     const [error, setError] = useState<string | null>(null);
     const [statusMsg, setStatusMsg] = useState<string | null>(null);
-
-
 
     const resetAll = useCallback((exceptions?: string[]) => {
         !exceptions?.includes('error') && setError(null);
         !exceptions?.includes('status') && setStatusMsg(null);
         !exceptions?.includes('userId') && setSelectedRecipeUserId(null);
+        !exceptions?.includes('userId') && setSelectedRecipeUserValue(null);
         !exceptions?.includes('recipeList') && setUserRecipeList([]);
         !exceptions?.includes('recipeId') && setSelectedRecipeId(null);
         !exceptions?.includes('recipe') && setRecipeInfo(null);
-        !exceptions?.includes('authorId') && setSelectedAuthorId(null);
         !exceptions?.includes('form') && setFormState(emptyRecipeForm);
         !exceptions?.includes('userReady') && setUserReady(false);
         !exceptions?.includes('recipeReady') && setRecipeReady(false);
@@ -83,20 +81,25 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
     const handleRecipeSelect = () => { };
 
-    const handleAuthorSelect = () => { };
-
     const userRecipeTagInputHandler = createInputHandler(setUserRecipeTagValue);
 
-    const handleRecipeUserSelect = handleRecipeUserSelectFactory(
-        setSelectedRecipeUserId,
-        setUserReady,
-        setRecipeReady,
-        setSelectedRecipeId,
-        setFormState,
-        resetAll,
-        setStatusMsg,
-        emptyRecipeForm
-    );
+    const handleRecipeUserSelect = (user: UserOption | null) => {
+        if (user !== null) {
+            if (user.value !== null) {
+                setSelectedRecipeUserId(user.value);
+                setUserReady(true);
+                setError(null);
+                setStatusMsg(null);
+                setRecipeReady(true);
+                setFormState(emptyRecipeForm);
+            }
+        } else {
+            setRecipeReady(false);
+            setSelectedRecipeUserId(null);
+
+        }
+        setSelectedRecipeUserValue(user);
+    }
 
     const fetchUserRecipes = useCallback(async () => {
         if (selectedRecipeUserId) {
@@ -109,7 +112,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const fetchRecipeInfo = useCallback(async () => { }, []);
 
     const addUserRecipeTag = async () => {
-        const uid = selectedAuthorId ?? selectedRecipeUserId;
+        const uid = selectedRecipeUserId;
         setError(null);
         setStatusMsg(null);
         if (userRecipeTagValue.trim() && uid) {
@@ -189,7 +192,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
     useSyncUserTags<RecipeFormState>({
         type: 'recipe',
-        uid: selectedAuthorId ?? selectedRecipeUserId,
+        uid: selectedRecipeUserId,
         loadUserTags,
         setFormState,
         tagResetKey: 'selectedUserTagIndexes',
@@ -216,7 +219,6 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     return {
         formState,
         setFormState,
-        handleAuthorSelect,
         resetAll,
         isDisabled,
         selectedUserRecipeTagOptions,
@@ -225,12 +227,12 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
         handleSubmit: handleRecipeSubmit,
         submitWaiting,
         selectedRecipeId,
-        selectedAuthorId,
         userRecipeTagValue,
         addUserRecipeTag,
         selectedRecipeUserId,
+        selectedRecipeUserValue,
         handleRecipeSelect,
         handleRecipeUserSelect,
-        userRecipeTagInputHandler
+        userRecipeTagInputHandler,
     }
 }

@@ -38,8 +38,26 @@ input.quick-input {
   width: 150px !important; 
 }
 
+input.condensed {
+  margin: 0;
+  max-width: 25px;
+}
+
 input[type="text"].optional,
 input[type="text"].optional::placeholder {
   font-size: 10pt;
   height: 32px;
+}
+
+input[type="number"] {
+  width: 75px !important;
+}
+
+input[type="number"].condensed {
+  -moz-appearance: textfield;
+}
+input[type="number"].condensed::-webkit-inner-spin-button,
+input[type="number"].condensed::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

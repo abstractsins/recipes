@@ -27,3 +27,6 @@ div.error span {
   padding-top: 10px;
 }
 
+.nested {
+  padding: 0 15px;
+}

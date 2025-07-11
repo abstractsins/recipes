@@ -82,6 +82,12 @@ export interface IngredientDTO {
     selectedUserTagIndexes?: number[];
 };
 
+export interface RecipeIngredientOption {
+    value: number;       
+    label: string;       
+    __isNew__?: boolean;
+}
+
 
 
 // ***************
@@ -97,9 +103,9 @@ export interface AdminReadoutModule {
     close: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export interface AdminSelectProps {
+export interface AdminMultiSelectProps {
     name: string;
-    options?: TagOption[] | SeasonOption[];
+    options?: TagOption[] | SeasonOption[] | UomOption[];
     className?: string;
     required?: boolean;
     isLoading?: boolean;
@@ -107,30 +113,79 @@ export interface AdminSelectProps {
     multiple?: boolean;
     disabled?: boolean;
     id?: string;
-    onChange: (tag: TagOption | SeasonOption, checked: boolean) => void;
+    onChange: (tag: AdminOption | null, checked: boolean) => void;
+}
+
+export interface AdminDropDownSelectProps {
+    name: string;
+    options?: UomOption[];
+    className?: string;
+    required?: boolean;
+    isLoading?: boolean;
+    value?: string;
+    defaultValue?: number;
+    disabled?: boolean;
+    id?: string;
+    isClearable?: boolean;
+    onChange: (option: UomOption | null) => void;
+}
+
+export interface AdminInputProps {
+    name: string;
+    placeholder?: string;
+    type?: string;
+    maxLength?: number;
+    required?: boolean;
+    disabled?: boolean;
+    className?: string;
+    min?: string;
+    max?: string;
+    value?: string | string[] | number;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export type Mode = 'add' | 'edit';
 
-export type TagOption = {
+export interface AdminOption {
     id: number;
-    name: string;
     label: string;
-    value: string;
-}
-
-export interface SeasonOption {
-    id: number;
+    value?: string;
     name?: string;
-    label: string;
-    value: string;
 }
 
+export interface TagOption extends AdminOption { }
 
+export interface SeasonOption extends AdminOption { }
+
+export interface UomOption extends AdminOption {
+    abbr: string;
+    metric: boolean;
+    type: 'mass' | 'volume' | 'count' | 'length' | 'other';
+}
+
+export interface UserOption {
+    value: number | null;
+    label: string;
+};
+
+export interface RecipeIngredientSelectorProps {
+    userId: number;
+    onIngredientChosen: (ingredient: RecipeIngredientOption) => void;
+}
 
 // ***************
 // * FORM STATES *
 // ***************
+
+export interface UserFormState {
+    email: string;
+    username?: string;
+    nickname?: string;
+    password: string;
+    confirmPassword: string;
+    admin?: boolean;
+}
 
 export interface IngredientFormState {
     name: string;
@@ -152,6 +207,24 @@ export interface RecipeFormState {
 }
 
 
+// ***************
+// * VALIDATIONS *
+// ***************
+
+// PASSWORD
+interface Valid {
+  isValid: true;
+}
+
+interface Invalid {
+  isValid: false;
+  conditionFailed: string;
+  message: string;
+}
+
+export type ValidationObj = Valid | Invalid;
+
+
 // ************
 // * CONTEXTS *
 // ************
@@ -167,6 +240,7 @@ export interface DashboardContextValue {
     fetchRecipeById: (id: number) => Promise<Ingredient>;
     refreshIngredientModule: () => void,
     refreshRecipeModule: () => void,
+    refreshUsersModule: () => void,
 
     /* default tags always available */
     defaultIngredientTags: Tag[];

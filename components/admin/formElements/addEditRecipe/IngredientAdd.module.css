@@ -8,3 +8,12 @@ div.plus-circle-container {
     font-size: 16pt;
     display: flex;
 }
+
+div.new-ingredient-info {
+    background-color: rgb(30, 30, 30);
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}

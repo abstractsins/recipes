@@ -12,7 +12,7 @@ import FieldModule from "@/components/admin/formElements/FieldModule";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 
 import AdminInput from "../formElements/AdminInput";
-import AdminSelect from "../formElements/AdminSelect";
+import AdminMultiSelect from "../formElements/AdminMultiSelect";
 import TagsSelect from "../TagsSelect";
 import UserSelect from "../formElements/UserSelect";
 import IngredientSelect from "../formElements/IngredientSelect";
@@ -57,6 +57,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
         handleSubmit,
         selectedAuthorId,
         selectedIngredientUserId,
+        selectedIngredientUserValue,
         selectedIngredientId,
         userIngredientList,
         statusMsg,
@@ -107,7 +108,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                 <>
                                     <FormRow className={styles['row-0']}>
                                         <FieldModule label="User" id="edit-ingredient-user-module">
-                                            <UserSelect onSelect={handleIngredientUserSelect} />
+                                            <UserSelect value={selectedIngredientUserValue} onSelect={handleIngredientUserSelect} />
                                         </FieldModule>
                                     </FormRow>
 
@@ -140,7 +141,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
 
                             <FormRow className={styles['row-2']}>
                                 <FieldModule className={`tags`} label="Season">
-                                    <AdminSelect
+                                    <AdminMultiSelect
                                         name="season"
                                         disabled={isDisabled}
                                         defaultValue={formState.selectedSeasonIndexes}

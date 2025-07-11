@@ -2,7 +2,7 @@
 
 import styles from './AddEditRecipe.module.css';
 import { FiPlusCircle } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Mode } from "@/types/types";
 
 import ScreenGuard from "@/components/general/ScreenGuard";
@@ -12,13 +12,16 @@ import FieldModule from "@/components/admin/formElements/FieldModule";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 
 import AdminInput from "../formElements/AdminInput";
-import AdminSelect from "../formElements/AdminSelect";
+import AdminMultiSelect from "../formElements/AdminMultiSelect";
 import TagsSelect from "../TagsSelect";
 import UserSelect from "../formElements/UserSelect";
+import RecipeIngredientsModule from '../formElements/addEditRecipe/RecipeIngredientsModule';
 // import RecipeSelect from "../formElements/RecipeSelect";
 import AddEditHeader from "./AddEditHeader";
 
 import RecipeSelect from '../formElements/RecipeSelect';
+
+
 
 import {
     seasonOptions,
@@ -55,11 +58,10 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
     const {
         formState,
         setFormState,
-        handleAuthorSelect,
         selectedRecipeId,
         selectedRecipeUserId,
+        selectedRecipeUserValue,
         selectedUserRecipeTagOptions,
-        selectedAuthorId,
         userRecipeList,
         handleRecipeUserSelect,
         handleRecipeSelect,
@@ -101,25 +103,23 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                     <div className={styles['add-edit-recipe-body']}>
                         <form id="add-edit-recipe" className="add-edit-recipe" onSubmit={handleSubmit}>
 
-                            {mode === 'edit' && (
-                                <>
-                                    <FormRow className={styles['row-0']}>
-                                        <FieldModule label="User" id="edit-recipe-user-module">
-                                            <UserSelect onSelect={handleRecipeUserSelect} />
-                                        </FieldModule>
-                                    </FormRow>
+                            <FormRow className={styles['row-0']}>
+                                <FieldModule label="User" id="edit-recipe-user-module">
+                                    <UserSelect onSelect={handleRecipeUserSelect} value={selectedRecipeUserValue}/>
+                                </FieldModule>
+                            </FormRow>
 
-                                    <FormRow className={styles['row-00']}>
-                                        <FieldModule label="Recipe" id="edit-recipe-recipe-module">
-                                            <RecipeSelect
-                                                value={selectedRecipeId}
-                                                data={userRecipeList}
-                                                ready={!recipeListWaiting && !!selectedRecipeUserId}
-                                                onSelect={handleRecipeSelect}
-                                            />
-                                        </FieldModule>
-                                    </FormRow>
-                                </>
+                            {mode === 'edit' && (
+                                <FormRow className={styles['row-00']}>
+                                    <FieldModule label="Recipe" id="edit-recipe-recipe-module">
+                                        <RecipeSelect
+                                            value={selectedRecipeId}
+                                            data={userRecipeList}
+                                            ready={!recipeListWaiting && !!selectedRecipeUserId}
+                                            onSelect={handleRecipeSelect}
+                                        />
+                                    </FieldModule>
+                                </FormRow>
                             )}
 
                             <FormRow id="row-1">
@@ -138,7 +138,7 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
 
                             <FormRow className={styles['row-2']}>
                                 <FieldModule className={`tags`} label="Season">
-                                    <AdminSelect
+                                    <AdminMultiSelect
                                         name="season"
                                         disabled={isDisabled}
                                         defaultValue={formState.selectedSeasonIndexes}
@@ -150,13 +150,12 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                 </FieldModule>
                             </FormRow>
 
-                            <div className={styles["ingredients-module"]}>
-                                <FormRow className={styles['row-3']}>
-                                    <FieldModule className={`ingredients`} label="Ingredients">
-                                        <IngredientAdd />
-                                    </FieldModule>
-                                </FormRow>
-                            </div>
+
+                            {!isDisabled &&
+                                <div className={styles["ingredients-module"]}>
+                                    <RecipeIngredientsModule />
+                                </div>
+                            }
 
                             <div className={styles["tags-module"]}>
                                 <FormRow className={styles['row-5']}>
@@ -174,7 +173,7 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                     </FieldModule>
                                 </FormRow>
 
-                                {(selectedRecipeUserId || selectedAuthorId) && (
+                                {(selectedRecipeUserId) && (
                                     <>
                                         <FormRow className={styles["user-tags"]}>
                                             <FieldModule label="User-Tags">
@@ -186,7 +185,7 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                                     isLoading={userTagsWaiting}
                                                     multiple
                                                     type="recipe"
-                                                    user={selectedAuthorId ?? selectedRecipeUserId}
+                                                    user={selectedRecipeUserId}
                                                     options={selectedUserRecipeTagOptions}
                                                 />
                                             </FieldModule>
@@ -213,12 +212,8 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                 )}
                             </div>
 
-                            <FormRow className={`${mode === 'edit' ? 'padding-top-20' : ''}`}>
-                                {mode === 'add' && (
-                                    <FieldModule label="User*" className="add-edit-recipe-user-module">
-                                        <UserSelect onSelect={handleAuthorSelect} />
-                                    </FieldModule>
-                                )}
+                            <FormRow className='footnote'>
+                                <div className="footnote-container"><span>* Required</span></div>
                                 <FieldModule className="add-edit-recipe-submit-module">
                                     <input
                                         disabled={submitWaiting}
@@ -227,10 +222,6 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                         value={toTitleCase(mode)}
                                     />
                                 </FieldModule>
-                            </FormRow>
-
-                            <FormRow className='footnote'>
-                                <div className="footnote-container"><span>* Required</span></div>
                             </FormRow>
 
                         </form>

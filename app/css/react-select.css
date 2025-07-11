@@ -5,21 +5,17 @@
 /* * Add-Edit: User / Ingredient / Recipe */
 
 .add-edit-user__control {
-  border: 2px solid transparent !important;
+  border: 3px solid transparent !important;
   border-radius: 7px !important;
   min-width: 400px !important;
   /* width: 100% !important; */
   max-width: 450px !important;
 }
 
-.add-edit-user__option {
-  color: black !important;
-  width: fit-content;
-}
 
 .add-edit-recipe__control,
 .add-edit-ingredient__control {
-  border: 2px solid transparent !important;
+  border: 3px solid transparent !important;
   border-radius: 7px !important;
   min-width: 400px !important;
   /* background-color: blue; */
@@ -31,14 +27,64 @@
   color: gray;
 }
 
-.add-edit-user__control--is-focused,
-.add-edit-recipe__control--is-focused,
-.add-edit-ingredient__control--is-focused {
-  border: 2px solid lightgreen !important;
-}
-
+.add-edit-user__option,
 .add-edit-recipe__option,
-.add-edit-ingredient__option {
+.add-edit-ingredient__option,
+.recipe-ingredient-select__option {
   color: black !important;
   width: fit-content;
+}
+
+.recipe-ingredient-select__menu {
+  z-index: 2;
+}
+
+.recipe-ingredient-select__control {
+  width: 400px;
+  border: 3px solid transparent !important;
+  border-radius: 7px !important;
+}
+
+.recipe-ingredient-uom__control {
+  border: 1px solid rgba(128, 128, 128, 0.35) !important;
+  background-color: transparent !important;
+  min-width: 150px !important;
+}
+
+.recipe-ingredient-uom__single-value {
+  color: whitesmoke !important;
+}
+
+.recipe-ingredient-uom__menu {
+  background-color: black !important;
+}
+
+.recipe-ingredient-uom__option {
+  color: whitesmoke;
+}
+
+.recipe-ingredient-uom__option--is-focused {
+  color: black !important;
+}
+
+.recipe-ingredient-uom__option--is-selected {
+  background-color: black !important;
+  color: whitesmoke !important;
+}
+
+.recipe-ingredient-uom__option--is-selected:hover {
+  background-color: lightgreen !important;
+  color: black !important
+}
+
+.add-edit-user__control:focus-within,
+.add-edit-recipe__control:focus-within,
+.add-edit-ingredient__control:focus-within,
+.recipe-ingredient-select__control:focus-within {
+  outline: none !important;
+  border: 3px solid lightgreen !important;
+}
+
+[class*="recipe-ingredient-uom"] {
+  cursor: pointer !important;
 }

@@ -1,5 +1,5 @@
 import { Recipe } from "@/types/types";
-import styles from './AdminSelect.module.css';
+import styles from './AdminMultiSelect.module.css';
 import Select from 'react-select';
 
 

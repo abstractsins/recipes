@@ -1,7 +1,8 @@
+import styles from './AddEditIngredient.module.css'
+
 import FormRow from "@/components/admin/formElements/FormRow";
 import Toggle from "../../general/Toggle";
 
-import styles from './AddEditIngredient.module.css'
 
 interface Props {
     title: string;
@@ -11,6 +12,7 @@ interface Props {
     error: string | null | undefined;
     handleModeSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
 
 export default function AddEditHeader({ title, active, mode, error, statusMsg, handleModeSelect }: Props) {
     return (
@@ -45,7 +47,7 @@ export default function AddEditHeader({ title, active, mode, error, statusMsg, h
                         <span>🥒 {statusMsg}</span>
                     </div>
                 }
-                
+
             </FormRow>
 
         </>

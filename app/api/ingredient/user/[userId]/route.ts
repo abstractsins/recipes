@@ -1,15 +1,28 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(req: Request, { params }: { params: { userId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
     try {
-        const urlParams = await params;
-        const userId = parseInt(urlParams.userId);
+        const userId = Number(params.userId);
+        const searchParams = req.nextUrl.searchParams;
+        const query = searchParams.get('query') || '';
+
+        if (!userId) {
+            return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
+        }
 
         const ingredients = await prisma.ingredient.findMany({
-            where: { userId: userId }
+            where: {
+                userId,
+                name: {
+                    contains: query,
+                    mode: 'insensitive',
+                },
+            },
+            orderBy: { name: 'asc' },
+            take: 15, // optional limit
         });
 
         return NextResponse.json(ingredients);

@@ -72,6 +72,10 @@ ul {
   cursor: default !important;
 }
 
+.condensed {
+  margin: 0;
+  padding: 0;
+}
 
 /* ***************** */
 /** GENERIC HELPERS  */

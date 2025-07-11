@@ -2,18 +2,7 @@ import React from 'react';
 
 import styles from './AdminInput.module.css';
 
-interface AdminInputProps {
-    name: string;
-    placeholder?: string;
-    type?: string;
-    maxLength?: number;
-    required?: boolean;
-    disabled?: boolean;
-    className?: string;
-    value?: string | string[];
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-}
+import { AdminInputProps } from '@/types/types';
 
 export default function AdminInput({
     name,
@@ -24,9 +13,11 @@ export default function AdminInput({
     required = false,
     disabled = false,
     value,
+    min, max,
     onChange,
     onKeyDown
 }: AdminInputProps) {
+
     return (
         <input
             type={type}
@@ -37,6 +28,8 @@ export default function AdminInput({
             disabled={disabled}
             className={`${styles['admin-input']} ${className}`}
             value={value}
+            min={min}
+            max={max}
             onChange={onChange}
             onKeyDown={onKeyDown}
         />

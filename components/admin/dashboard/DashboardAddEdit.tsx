@@ -2,6 +2,7 @@ import styles from './DashboardAddEdit.module.css';
 
 import AddEditIngredient from "./AddEditIngredient"
 import AddEditRecipe from "./AddEditRecipe";
+import AddEditUser from './AddEditUser';
 
 import { useDashboard } from "@/context/DashboardContext";
 
@@ -12,9 +13,14 @@ interface Props {
     close: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function DashboardAddEdit({activeIds, onClick, close}: Props) {
+export default function DashboardAddEdit({ activeIds, onClick, close }: Props) {
 
     const moduleConfigs = [
+        {
+            id: 'add-edit-user',
+            title: 'User',
+            Component: AddEditUser,
+        },
         {
             id: 'add-edit-ingredient-module',
             title: 'Ingredient',
@@ -24,7 +30,7 @@ export default function DashboardAddEdit({activeIds, onClick, close}: Props) {
             id: 'add-edit-recipe-module',
             title: 'Recipe',
             Component: AddEditRecipe,
-        },
+        }
     ];
 
 

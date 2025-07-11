@@ -13,7 +13,6 @@ interface Props {
 }
 
 export default function Entries({ data }: Props) {
-    console.log(data);
 
     const [dataStr, setDataStr] = useState('');
     const [showDetails, setShowDetails] = useState(false);
@@ -28,13 +27,13 @@ export default function Entries({ data }: Props) {
             <ul>
                 {data.map((entry) => {
                     if ('nickname' in entry) {
-                        return (<li key={entry.id}>{entry.nickname} --<span className={styles["creator"]}>{entry.username}</span></li>)
+                        return (<li key={entry.id}>{entry.nickname} -- <span className={styles["creator"]}>{entry.username}</span></li>)
                     } else if ('userId' in entry) {
-                        return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}> user: {String(entry.userId)}</span></li>)
+                        return (<li key={entry.id}>{entry.name} -- <span className={styles["creator"]}> user: {String(entry.userId)}</span></li>)
                     } else if ('createdBy' in entry) {
-                        return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}> user: {String(entry.createdBy)}, {entry.owner.username}</span></li>)
+                        return (<li key={entry.id}>{entry.name} -- <span className={styles["creator"]}> user: {String(entry.createdBy)}, {entry.owner?.username}</span></li>)
                     } else if ('name' in entry) {
-                        return (<li key={entry.id}>{entry.name} --<span className={styles["creator"]}> user: {'Default'}</span></li>)
+                        return (<li key={entry.id}>{entry.name} -- <span className={styles["creator"]}> user: {'Default'}</span></li>)
                     }
                 })}
             </ul>

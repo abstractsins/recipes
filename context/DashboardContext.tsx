@@ -53,7 +53,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
   } = useFetchTags({ type: 'recipe', user: null, refreshKey: tagsRefreshKey });
 
   // READOUT MODULE REFRESH TRIGGERS
-  const refreshUsers = useCallback(() => setUsersRefreshKey(k => k + 1), []);
+  const refreshUsersModule = useCallback(() => setUsersRefreshKey(k => k + 1), []);
   const refreshRecipeModule = useCallback(() => setRecipesRefreshKey(k => k + 1), []);
   const refreshAllTags = useCallback(() => setTagsRefreshKey(k => k + 1), []);
   const refreshIngredientModule = useCallback(() => setIngredientsRefreshKey(k => k + 1), []);
@@ -158,6 +158,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     fetchIngredientById,
     refreshIngredientModule,
     refreshRecipeModule,
+    refreshUsersModule,
     fetchUserRecipes,
     fetchRecipeById,
 

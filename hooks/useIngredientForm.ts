@@ -12,13 +12,13 @@ import {
     IngredientFormState,
     TagOption,
     SeasonOption,
-    Tag
+    Tag,
+    UserOption
 } from "@/types/types";
 
 import { useDashboard } from "@/context/DashboardContext";
 
 import {
-    handleIngredientUserSelectFactory,
     createInputHandler,
     tagsIntoOptions
 } from "@/utils/utils";
@@ -61,6 +61,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const [userReady, setUserReady] = useState(false);
     const [ingredientReady, setIngredientReady] = useState(false);
     const [selectedIngredientUserId, setSelectedIngredientUserId] = useState<number | null>(null);
+    const [selectedIngredientUserValue, setSelectedIngredientUserValue] = useState<UserOption | null>(null);
     const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
     const [ingredientValue, setIngredientValue] = useState('');
 
@@ -77,6 +78,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         !exceptions?.includes('error') && setError(null);
         !exceptions?.includes('status') && setStatusMsg(null);
         !exceptions?.includes('userId') && setSelectedIngredientUserId(null);
+        !exceptions?.includes('userId') && setSelectedIngredientUserValue(null);
         !exceptions?.includes('ingredientList') && setUserIngredientList([]);
         !exceptions?.includes('ingredientId') && setSelectedIngredientId(null);
         !exceptions?.includes('ingredient') && setIngredientInfo(null);
@@ -95,20 +97,31 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         setStatusMsg(null);
     };
 
-    const handleAuthorSelect = (id: number | null) => {
-        setSelectedAuthorId(id);
+    const handleAuthorSelect = (user: UserOption | null) => {
+        if (user !== null) {
+            if (user.value !== null) {
+                setSelectedAuthorId(user.value);
+            }
+        }
     };
 
-    const handleIngredientUserSelect = handleIngredientUserSelectFactory(
-        setSelectedIngredientUserId,
-        setUserReady,
-        setIngredientReady,
-        setSelectedIngredientId,
-        setFormState,
-        resetAll,
-        setStatusMsg,
-        emptyIngredientForm
-    );
+    const handleIngredientUserSelect = (user: UserOption | null) => {
+        if (user !== null) {
+            if (user.value !== null) {
+                setSelectedIngredientUserId(user.value);
+                setUserReady(true);
+            }
+        } else {
+            setIngredientReady(false);
+            setUserReady(false);
+            setSelectedIngredientId(null);
+            setSelectedIngredientUserId(null)
+        }
+        setStatusMsg(null);
+        setError(null);
+        setSelectedIngredientUserValue(user);
+        setFormState(emptyIngredientForm);
+    }
 
     const fetchUserIngredients = useCallback(async () => {
         if (selectedIngredientUserId) {
@@ -249,6 +262,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         addUserIngredientTag,
         handleSubmit: handleIngredientSubmit,
         selectedIngredientUserId,
+        selectedIngredientUserValue,
         selectedIngredientId,
         userIngredientList,
         userTagsWaiting,

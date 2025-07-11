@@ -1,0 +1,9 @@
+.container {
+    display: flex;
+    padding-bottom: 10px;
+}
+
+.operator-container {
+    display: flex;
+    align-items: flex-end;
+}

@@ -8,13 +8,13 @@
 }
 
 .module.inactive:hover {
-  border-color: white;
+  border-color: cadetblue;
   background-color: var(--black);
 }
 
 .module.active {
   background-color: var(--black);
-  border-color: silver;
+  border-color: rgba(95, 158, 160, 0.65);
 }
 
 .module.active h3 {
