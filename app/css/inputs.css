@@ -61,3 +61,7 @@ input[type="number"].condensed::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+input[disabled] {
+  pointer-events: none;
+}

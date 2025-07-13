@@ -56,7 +56,9 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const [ingredientLoading, setIngredientLoading] = useState(false);
 
     const [error, setError] = useState<string | null>(null);
-    const [statusMsg, setStatusMsg] = useState<string | null>(null);
+    const [sucessMsg, setSuccessMsg] = useState<string | null>(null);
+    const [warningMsg, setWarningMsg] = useState<string | null>(null);
+    const [instructionMsg, setInstructionMsg] = useState<string | null>(null);
 
     const [userReady, setUserReady] = useState(false);
     const [ingredientReady, setIngredientReady] = useState(false);
@@ -76,7 +78,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const resetAll = useCallback((exceptions?: string[]) => {
         !exceptions?.includes('error') && setError(null);
-        !exceptions?.includes('status') && setStatusMsg(null);
+        !exceptions?.includes('status') && setSuccessMsg(null);
         !exceptions?.includes('userId') && setSelectedIngredientUserId(null);
         !exceptions?.includes('userId') && setSelectedIngredientUserValue(null);
         !exceptions?.includes('ingredientList') && setUserIngredientList([]);
@@ -94,7 +96,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         setIngredientReady(!!id);
         if (!id) resetAll(['ingredientList', 'userReady', 'userId']);
         setError(null);
-        setStatusMsg(null);
+        setSuccessMsg(null);
     };
 
     const handleAuthorSelect = (user: UserOption | null) => {
@@ -117,7 +119,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
             setSelectedIngredientId(null);
             setSelectedIngredientUserId(null)
         }
-        setStatusMsg(null);
+        setSuccessMsg(null);
         setError(null);
         setSelectedIngredientUserValue(user);
         setFormState(emptyIngredientForm);
@@ -143,7 +145,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const addUserIngredientTag = async () => {
         const uid = selectedAuthorId ?? selectedIngredientUserId;
         setError(null);
-        setStatusMsg(null);
+        setSuccessMsg(null);
         if (userIngredientTagValue.trim() && uid) {
             const res = await fetch(`/api/tag/ingredient/user/${uid}`, {
                 method: 'POST',
@@ -174,7 +176,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         e.preventDefault();
         setSubmitWaiting(true);
         setError(null);
-        setStatusMsg(null);
+        setSuccessMsg(null);
 
         const data = {
             ...formState,
@@ -197,7 +199,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 setError(error.message);
             } else {
                 const json = await res.json();
-                setStatusMsg(mode === 'add' ? 'Ingredient Created!' : 'Ingredient Updated!');
+                setSuccessMsg(mode === 'add' ? 'Ingredient Created!' : 'Ingredient Updated!');
                 if (mode === 'edit') fetchUserIngredients();
                 refreshIngredientModule();
             }
@@ -267,7 +269,9 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         userIngredientList,
         userTagsWaiting,
         error,
-        statusMsg,
+        sucessMsg,
+        warningMsg,
+        instructionMsg,
         isDisabled,
         submitWaiting,
         selectedAuthorId,

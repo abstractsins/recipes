@@ -63,6 +63,9 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
     const [error, setError] = useState<string | null>(null);
     const [statusMsg, setStatusMsg] = useState<string | null>(null);
+    const [warningMsg, setWarningMsg] = useState<string | null>(null);
+    const [instructionMsg, setInstructionMsg] = useState<string | null>(null);
+
 
     const resetAll = useCallback((exceptions?: string[]) => {
         !exceptions?.includes('error') && setError(null);

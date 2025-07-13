@@ -60,7 +60,9 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
         selectedIngredientUserValue,
         selectedIngredientId,
         userIngredientList,
-        statusMsg,
+        successMsg,
+        warningMsg,
+        instructionMsg,
         error,
         isDisabled,
         resetAll,
@@ -93,7 +95,9 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                     active={isActive}
                     mode={mode}
                     error={error}
-                    statusMsg={statusMsg}
+                    successMsg={successMsg}
+                    warningMsg={warningMsg}
+                    instructionMsg={instructionMsg}
                     handleModeSelect={handleModeSelect}
                 />
             </header>

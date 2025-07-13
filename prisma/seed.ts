@@ -18,6 +18,7 @@ async function main() {
             username: 'abstractsins',
             password: await bcrypt.hash('berlin', 10),
             nickname: 'superUser',
+            role: 'admin'
         }
     });
 
@@ -270,11 +271,6 @@ async function main() {
         },
     });
 
-    /* promote admin role */
-    await prisma.user.update({
-        where: { id: adminUser.id },
-        data: { role: 'admin' },
-    });
 
     console.log('Seeded successfully!');
 }

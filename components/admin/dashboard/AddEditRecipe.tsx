@@ -92,7 +92,9 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                     active={isActive}
                     mode={mode}
                     error={undefined}
-                    statusMsg={undefined}
+                    successMsg={undefined}
+                    warningMsg={undefined}
+                    instructionMsg={undefined}
                     handleModeSelect={handleModeSelect}
                 />
             </header>

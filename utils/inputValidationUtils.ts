@@ -1,7 +1,21 @@
 import { ValidationObj } from "@/types/types";
 
 
-//* PASSWORDS
+//*----------------------------------------------//
+//*-------------------PASSWORD-------------------//
+//*----------------------------------------------//
+
+export const comparePasswords = (p1: string, p2: string): ValidationObj => {
+    if (p1 !== p2) {
+        return {
+            isValid: false,
+            conditionFailed: 'match',
+            message: 'Passwords do not match'
+        }
+    }
+    return { isValid: true }
+}
+
 export const containsSpecChar = (pass: string): boolean => {
     const specChars = '!@#$%^&*{}[]()<>:;+-/\\'.split('');
     if (specChars.some(char => pass.indexOf(char) > -1)) {
@@ -62,10 +76,12 @@ export const validatePassword = (pass: string): ValidationObj => {
 
 
 
-//* EMAIL
+//*-----------------------------------------------//
+//*---------------------EMAIL---------------------//
+//*-----------------------------------------------//
 
-function endsInTLD(pass: string): boolean {
-    if (pass.match(/\.[a-z]{2,}$/i)) {
+function domainFormatted(pass: string): boolean {
+    if (pass.match(/\w+\.[a-z]{2,}$/i)) {
         return true;
     }
     return false;
@@ -81,11 +97,11 @@ export const validateEmail = (pass: string): ValidationObj => {
         }
     }
 
-    if (!endsInTLD(pass)) {
+    if (!domainFormatted(pass)) {
         return {
             isValid: false,
             conditionFailed: 'syntax',
-            message: 'Email address needs a domain suffix'
+            message: 'Email domain is not properly formatted'
         }
     }
 

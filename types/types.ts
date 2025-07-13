@@ -2,7 +2,7 @@
 // * DATA TYPES *
 // **************
 
-import { TagType } from "@prisma/client"
+import { Role, TagType } from "@prisma/client"
 
 export interface User {
     id: number,
@@ -83,8 +83,8 @@ export interface IngredientDTO {
 };
 
 export interface RecipeIngredientOption {
-    value: number;       
-    label: string;       
+    value: number;
+    label: string;
     __isNew__?: boolean;
 }
 
@@ -93,6 +93,14 @@ export interface RecipeIngredientOption {
 // ***************
 // * UI ELEMENTS *
 // ***************
+
+export interface AdminAddEditModule {
+    id: string;
+    isActive: boolean;
+    title: string;
+    onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+    close: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
 
 export interface AdminReadoutModule {
     title: string;
@@ -141,6 +149,7 @@ export interface AdminInputProps {
     min?: string;
     max?: string;
     value?: string | string[] | number;
+    autoComplete?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
@@ -184,7 +193,14 @@ export interface UserFormState {
     nickname?: string;
     password: string;
     confirmPassword: string;
-    admin?: boolean;
+    admin: boolean;
+}
+
+export interface UserFormStateEdit {
+    email: string;
+    username?: string;
+    nickname?: string;
+    role: Role;
 }
 
 export interface IngredientFormState {
@@ -213,13 +229,13 @@ export interface RecipeFormState {
 
 // PASSWORD
 interface Valid {
-  isValid: true;
+    isValid: true;
 }
 
 interface Invalid {
-  isValid: false;
-  conditionFailed: string;
-  message: string;
+    isValid: false;
+    conditionFailed: string;
+    message: string;
 }
 
 export type ValidationObj = Valid | Invalid;

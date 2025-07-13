@@ -8,13 +8,15 @@ interface Props {
     title: string;
     active: boolean;
     mode: string;
-    statusMsg: string | null | undefined;
+    successMsg: string | null | undefined;
+    warningMsg?: string | null | undefined;
+    instructionMsg?: string | null | undefined;
     error: string | null | undefined;
     handleModeSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 
-export default function AddEditHeader({ title, active, mode, error, statusMsg, handleModeSelect }: Props) {
+export default function AddEditHeader({ title, active, mode, error, successMsg, warningMsg, instructionMsg, handleModeSelect }: Props) {
     return (
         <>
             <FormRow id="row-1">
@@ -42,9 +44,21 @@ export default function AddEditHeader({ title, active, mode, error, statusMsg, h
                     </div>
                 }
 
-                {active && statusMsg &&
-                    <div className={styles["status"]}>
-                        <span>🥒 {statusMsg}</span>
+                {active && successMsg &&
+                    <div className={styles["success"]}>
+                        <span>🥒 {successMsg}</span>
+                    </div>
+                }
+                
+                {active && warningMsg &&
+                    <div className={styles["warning"]}>
+                        <span>🍋 {warningMsg}</span>
+                    </div>
+                }
+                
+                {active && instructionMsg &&
+                    <div className={styles["instruction"]}>
+                        <span>🍄 {instructionMsg}</span>
                     </div>
                 }
 

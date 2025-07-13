@@ -1,5 +1,12 @@
+//*--------------------------------------------//
+//*------------------IMPORT--------------------//
+//*--------------------------------------------//
+
 import styles from './AddEditUser.module.css';
 
+import { useEffect, useState } from 'react';
+
+//* COMPONENTS
 import AddEditHeader from './AddEditHeader';
 import FormRow from "@/components/admin/formElements/FormRow";
 import FieldModule from "@/components/admin/formElements/FieldModule";
@@ -8,52 +15,65 @@ import UserSelect from "../formElements/UserSelect";
 
 import CloseButton from './CloseButton';
 import ScreenGuard from '@/components/general/ScreenGuard';
+import Toggle2 from '@/components/general/Toggle2';
 
+//* CONTEXTS, HOOKS, TYPES, UTILS
 import { useDashboard } from '@/context/DashboardContext';
-import { useEffect, useState } from 'react';
+
 import useUserForm from '@/hooks/useUserForm';
-import { Mode } from '@/types/types';
+
+import { Mode, AdminAddEditModule } from '@/types/types';
 
 import {
     toTitleCase,
     handleModeSelectFactory,
 } from "@/utils/utils";
-import Toggle2 from '@/components/general/Toggle2';
 
 
-interface Props {
-    id: string;
-    isActive: boolean;
-    title: string;
-    onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
-    close: (e: React.MouseEvent<HTMLDivElement>) => void;
-}
+
+//*--------------------------------------------//
+//*------------------EXPORT--------------------//
+//*--------------------------------------------//
+
+export default function AddEditUser({ id, isActive, onClick, title, close }: AdminAddEditModule) {
 
 
-export default function AddEditUser({ id, isActive, onClick, title, close }: Props) {
 
-    const { } = useDashboard();
+    //*----------------------------------------------//
+    //*--------------------states--------------------//
+    //*----------------------------------------------//
 
     const [mode, setMode] = useState<Mode>('add');
+
+    const { } = useDashboard();
 
     const {
         formState,
         setFormState,
         resetAll,
         error,
-        statusMsg,
+        successMsg,
+        warningMsg,
+        instructionMsg,
         submitWaiting,
+        validationWaiting,
         confirmPasswordReady,
         handlePasswordKeyDown,
         handlePasswordInput,
-        selectedUserValue,
         handleUserSelect,
         handleAdminSelect,
+        handleConfirmPasswordInput,
         isDisabled,
         handleSubmit
     } = useUserForm(mode)
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
+
+
+
+    //*--------------------------------------------//
+    //*-------------------return-------------------//
+    //*--------------------------------------------//
 
     return (
         <div
@@ -67,7 +87,9 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Pro
                     active={isActive}
                     mode={mode}
                     error={error}
-                    statusMsg={statusMsg}
+                    successMsg={successMsg}
+                    warningMsg={warningMsg}
+                    instructionMsg={instructionMsg}
                     handleModeSelect={handleModeSelect}
                 />
             </header>
@@ -82,7 +104,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Pro
                             {mode === 'edit' && (
                                 <FormRow className={styles['row-0']}>
                                     <FieldModule label="User" id="edit-ingredient-user-module">
-                                        <UserSelect value={selectedUserValue} onSelect={handleUserSelect} />
+                                        <UserSelect onSelect={handleUserSelect} />
                                     </FieldModule>
                                 </FormRow>
                             )}
@@ -124,29 +146,65 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Pro
                                 </FieldModule>
                             </FormRow>
 
-                            <FormRow>
-                                <FieldModule label='Password*'>
-                                    <AdminInput
-                                        name='password'
-                                        type='password'
-                                        required={true}
-                                        disabled={isDisabled}
-                                        className={`${isDisabled ? 'disabled' : ''}`}
-                                        onChange={handlePasswordInput}
-                                        onKeyDown={handlePasswordKeyDown}
-                                    />
-                                </FieldModule>
-                                <FieldModule label='Confirm Password*'>
-                                    <AdminInput
-                                        name='confirmPassword'
-                                        type='password'
-                                        required={true}
-                                        disabled={!confirmPasswordReady}
-                                        className={`${isDisabled ? 'disabled' : ''}`}
-                                        onChange={e => setFormState({ ...formState, password: e.target.value })}
-                                    />
-                                </FieldModule>
-                            </FormRow>
+                            {mode === 'add' &&
+                                <FormRow>
+                                    <FieldModule label='Password*'>
+                                        <AdminInput
+                                            name='password'
+                                            type='password'
+                                            required={true}
+                                            value={formState.password}
+                                            autoComplete="new-password"
+                                            disabled={isDisabled}
+                                            className={`${isDisabled ? 'disabled' : ''}`}
+                                            onKeyDown={handlePasswordKeyDown}
+                                            onChange={handlePasswordInput}
+                                        />
+                                    </FieldModule>
+                                    <FieldModule label='Confirm Password*'>
+                                        <AdminInput
+                                            name='confirmPassword'
+                                            type='password'
+                                            required={true}
+                                            value={formState.confirmPassword}
+                                            disabled={!confirmPasswordReady}
+                                            className={`${isDisabled ? 'disabled' : ''}`}
+                                            onKeyDown={handlePasswordKeyDown}
+                                            onChange={handleConfirmPasswordInput}
+                                        />
+                                    </FieldModule>
+                                </FormRow>
+                            }
+
+                            {mode === 'edit' &&
+                                <FormRow>
+                                    <FieldModule label='New Password*'>
+                                        <AdminInput
+                                            name='newPassword'
+                                            type='password'
+                                            required={true}
+                                            value={formState.password}
+                                            autoComplete="new-password"
+                                            disabled={isDisabled}
+                                            className={`${isDisabled ? 'disabled' : ''}`}
+                                            onKeyDown={handlePasswordKeyDown}
+                                            onChange={handlePasswordInput}
+                                        />
+                                    </FieldModule>
+                                    <FieldModule label='Confirm New Password*'>
+                                        <AdminInput
+                                            name='confirmNewPassword'
+                                            type='password'
+                                            required={true}
+                                            value={formState.confirmPassword}
+                                            disabled={!confirmPasswordReady}
+                                            className={`${isDisabled ? 'disabled' : ''}`}
+                                            onKeyDown={handlePasswordKeyDown}
+                                            onChange={handleConfirmPasswordInput}
+                                        />
+                                    </FieldModule>
+                                </FormRow>
+                            }
 
                             <FormRow>
                                 <FieldModule label='Permissions'>
@@ -154,6 +212,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Pro
                                         id='user-admin-assign'
                                         pos1='Admin'
                                         pos2='Regular'
+                                        value={formState.admin}
                                         onChange={handleAdminSelect}
                                     />
                                 </FieldModule>
@@ -162,8 +221,8 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Pro
                             <FormRow>
                                 <FieldModule>
                                     <input
-                                        disabled={submitWaiting}
-                                        className={styles["add-edit-user-submit"]}
+                                        disabled={submitWaiting || validationWaiting}
+                                        className={`${styles["add-edit-user-submit"]} ${submitWaiting || validationWaiting ? 'disabled' : ''}`}
                                         type="submit"
                                         value={toTitleCase(mode)}
                                     />

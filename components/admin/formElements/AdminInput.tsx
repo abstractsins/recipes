@@ -15,7 +15,8 @@ export default function AdminInput({
     value,
     min, max,
     onChange,
-    onKeyDown
+    onKeyDown,
+    autoComplete
 }: AdminInputProps) {
 
     return (
@@ -30,6 +31,7 @@ export default function AdminInput({
             value={value}
             min={min}
             max={max}
+            autoComplete={autoComplete}
             onChange={onChange}
             onKeyDown={onKeyDown}
         />

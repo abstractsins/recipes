@@ -1,5 +1,6 @@
 .add-data-modules {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .add-data > header {
