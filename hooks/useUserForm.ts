@@ -158,6 +158,7 @@ export default function useUserForm(mode: Mode) {
         !exceptions?.includes('userId') && setSelectedUserUserId(null);
     }, []);
 
+    //* SUBMIT
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSubmitWaiting(true);
@@ -188,6 +189,7 @@ export default function useUserForm(mode: Mode) {
                 setSuccessMsg('New user created!');
                 refreshUsersModule();
                 setFormState(emptyUserForm);
+                setConfirmPasswordReady(false);
             }
 
         } else if (mode === 'edit') {
@@ -209,6 +211,7 @@ export default function useUserForm(mode: Mode) {
                     setSuccessMsg('User updated!');
                     refreshUsersModule();
                     setFormState(emptyUserForm);
+                    setConfirmPasswordReady(false);
                 }
             }
         }
@@ -274,6 +277,11 @@ export default function useUserForm(mode: Mode) {
             handleCompareUserForm(formState, currentUserData);
         }
     }, [formState.email, formState.username, formState.nickname, formState.admin])
+
+
+    useEffect(() => {
+        confirmPasswordReady ? setValidationWaiting(false) : setValidationWaiting(true);
+    }, [confirmPasswordReady])
 
 
     //*--------------------------------------------//
