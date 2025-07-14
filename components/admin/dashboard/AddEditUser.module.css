@@ -31,7 +31,6 @@
 .module.active {
   background-color: var(--black);
   border-color: rgba(218, 165, 32, 0.65);
-
 }
 
 .module-body {

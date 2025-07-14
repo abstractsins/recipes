@@ -178,7 +178,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
 
                             {mode === 'edit' &&
                                 <FormRow>
-                                    <FieldModule label='New Password*'>
+                                    <FieldModule label='New Password'>
                                         <AdminInput
                                             name='newPassword'
                                             type='password'
@@ -191,7 +191,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                             onChange={handlePasswordInput}
                                         />
                                     </FieldModule>
-                                    <FieldModule label='Confirm New Password*'>
+                                    <FieldModule label='Confirm New Password'>
                                         <AdminInput
                                             name='confirmNewPassword'
                                             type='password'

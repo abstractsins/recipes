@@ -82,7 +82,7 @@ export default function useUserForm(mode: Mode) {
     const [confirmPasswordReady, setConfirmPasswordReady] = useState(false);
     const [passwordInvalidCondition, setPasswordInvalidCondition] = useState('');
 
-
+    const [currentUserData, setCurrentUserData] = useState<UserFormStateEdit>();
 
     //*-----------------------------------------------//
     //*-------------------functions-------------------//
@@ -97,7 +97,7 @@ export default function useUserForm(mode: Mode) {
 
     const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        if (isPrintableAsciiOnly(value)) {
+        if (isPrintableAsciiOnly(value) || value === '') {
             setFormState(prev => ({ ...prev, password: value }));
             const validity = validatePassword(value);
 
@@ -235,6 +235,7 @@ export default function useUserForm(mode: Mode) {
             }
 
             const data: UserFormStateEdit = await res.json();
+            setCurrentUserData(data);
             setFormState({
                 email: data.email,
                 username: data.username || '',
@@ -245,12 +246,34 @@ export default function useUserForm(mode: Mode) {
             })
         }
 
-        if (selectedUserUserId) { 
-            getUserData(); 
+        if (selectedUserUserId) {
+            getUserData();
         }
         clearStatuses();
     }, [selectedUserUserId]);
 
+
+    // COMPARE USER INFO TO VALIDATE THE SUBMIT BUTTON => no change, no edit
+    useEffect(() => {
+        const handleCompareUserForm = (updatedUserData: UserFormState, currentUserData: UserFormStateEdit) => {
+            console.log(currentUserData.role === 'admin' ? true : false);
+            console.log(updatedUserData.admin);
+            if (
+                updatedUserData.email !== currentUserData.email
+                || updatedUserData.nickname !== currentUserData.nickname
+                || updatedUserData.username !== currentUserData.username
+                || updatedUserData.admin !== (currentUserData.role === 'admin' ? true : false)
+            ) {
+                setValidationWaiting(false);
+            } else {
+                setValidationWaiting(true);
+            }
+        }
+
+        if (currentUserData) {
+            handleCompareUserForm(formState, currentUserData);
+        }
+    }, [formState.email, formState.username, formState.nickname, formState.admin])
 
 
     //*--------------------------------------------//
