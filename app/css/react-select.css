@@ -5,6 +5,7 @@
 /* * Add-Edit: User / Ingredient / Recipe */
 
 .add-edit-user__control {
+  position: relative !important;
   border: 3px solid transparent !important;
   border-radius: 7px !important;
   min-width: 400px !important;

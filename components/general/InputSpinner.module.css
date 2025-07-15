@@ -1,0 +1,11 @@
+.spinner-text-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.spinner-text {
+    color: whitesmoke;
+    letter-spacing: 8;
+    font-size: 32pt;
+}

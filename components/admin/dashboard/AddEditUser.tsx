@@ -28,6 +28,7 @@ import {
     toTitleCase,
     handleModeSelectFactory,
 } from "@/utils/utils";
+import InputSpinner from '@/components/general/InputSpinner';
 
 
 
@@ -64,6 +65,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
         handleAdminSelect,
         handleConfirmPasswordInput,
         isDisabled,
+        isUserInfoLoading,
         handleSubmit
     } = useUserForm(mode)
 
@@ -94,6 +96,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                 />
             </header>
 
+
             {submitWaiting && <ScreenGuard />}
 
             {isActive && (
@@ -105,9 +108,11 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                 <FormRow className={styles['row-0']}>
                                     <FieldModule label="User" id="edit-ingredient-user-module">
                                         <UserSelect onSelect={handleUserSelect} />
+                                        {isUserInfoLoading && <InputSpinner />}
                                     </FieldModule>
                                 </FormRow>
                             )}
+
 
                             <FormRow>
                                 <FieldModule label='Email*'>

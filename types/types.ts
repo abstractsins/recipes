@@ -232,7 +232,6 @@ export interface RecipeFormState {
 // * VALIDATIONS *
 // ***************
 
-// PASSWORD
 interface Valid {
     isValid: true;
 }

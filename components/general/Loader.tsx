@@ -21,7 +21,7 @@ export default function Loader({ msg }: Props) {
                 case msg + '...': setLoadText(cap); break;
             }
         }, 250);
-    });
+    }, []);
 
     return (
         <div className={styles["loader"]}>

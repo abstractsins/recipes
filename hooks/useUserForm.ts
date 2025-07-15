@@ -65,6 +65,8 @@ export default function useUserForm(mode: Mode) {
         admin: false
     };
 
+    const [isUserInfoLoading, setUserInfoLoading] = useState<boolean>(false);
+
     const [formState, setFormState] = useState<UserFormState>(emptyUserForm);
 
     const [submitWaiting, setSubmitWaiting] = useState(false);
@@ -141,11 +143,11 @@ export default function useUserForm(mode: Mode) {
     }
 
     const handleUserSelect = (option: UserOption | null) => {
+        resetAll();
         if (option) {
             setSelectedUserUserId(option.value);
         } else {
             setSelectedUserUserId(null);
-            resetAll();
         }
     }
 
@@ -234,6 +236,7 @@ export default function useUserForm(mode: Mode) {
         console.log(selectedUserUserId);
         clearStatuses();
         const getUserData = async () => {
+            setUserInfoLoading(true);
             const res = await fetch(`api/user/${selectedUserUserId}`);
 
             if (!res.ok) {
@@ -253,6 +256,7 @@ export default function useUserForm(mode: Mode) {
                 confirmPassword: '',
                 admin: data.role === 'admin' ? true : false
             });
+            setUserInfoLoading(false);
         }
 
         if (selectedUserUserId) {
@@ -313,6 +317,7 @@ export default function useUserForm(mode: Mode) {
         handleUserSelect,
         handleConfirmPasswordInput,
         handleSubmit,
-        isDisabled
+        isDisabled,
+        isUserInfoLoading
     }
 }
