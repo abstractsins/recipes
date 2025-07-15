@@ -84,6 +84,8 @@ export default function useUserForm(mode: Mode) {
 
     const [currentUserData, setCurrentUserData] = useState<UserFormStateEdit>();
 
+    const [isDisabled, setIsDisabled] = useState<boolean>();
+
     //*-----------------------------------------------//
     //*-------------------functions-------------------//
     //*-----------------------------------------------//
@@ -106,7 +108,6 @@ export default function useUserForm(mode: Mode) {
                 ? setWarningMsg(validity.message)
                 : setInstructionMsg('Confirm password');
             setConfirmPasswordReady(validity.isValid);
-
         }
     };
 
@@ -139,7 +140,7 @@ export default function useUserForm(mode: Mode) {
         setFormState(prev => ({ ...prev, admin: e.target.checked }));
     }
 
-    const handleUserSelect = (option: UserOption) => {
+    const handleUserSelect = (option: UserOption | null) => {
         if (option) {
             setSelectedUserUserId(option.value);
         } else {
@@ -156,6 +157,8 @@ export default function useUserForm(mode: Mode) {
         !exceptions?.includes('userReady') && setUserReady(false);
         !exceptions?.includes('form') && setFormState(emptyUserForm);
         !exceptions?.includes('userId') && setSelectedUserUserId(null);
+        !exceptions?.includes('validation') && setValidationWaiting(true);
+        setConfirmPasswordReady(false);
     }, []);
 
     //* SUBMIT
@@ -190,6 +193,7 @@ export default function useUserForm(mode: Mode) {
                 refreshUsersModule();
                 setFormState(emptyUserForm);
                 setConfirmPasswordReady(false);
+                setSelectedUserUserId(null);
             }
 
         } else if (mode === 'edit') {
@@ -208,10 +212,11 @@ export default function useUserForm(mode: Mode) {
                     console.log(error);
                     setError('error, check console');
                 } else {
-                    setSuccessMsg('User updated!');
-                    refreshUsersModule();
                     setFormState(emptyUserForm);
+                    setSelectedUserUserId(null);
+                    refreshUsersModule();
                     setConfirmPasswordReady(false);
+                    setSuccessMsg('User updated!');
                 }
             }
         }
@@ -226,6 +231,7 @@ export default function useUserForm(mode: Mode) {
     //*------------------------------------------------//
 
     useEffect(() => {
+        console.log(selectedUserUserId);
         clearStatuses();
         const getUserData = async () => {
             const res = await fetch(`api/user/${selectedUserUserId}`);
@@ -246,12 +252,18 @@ export default function useUserForm(mode: Mode) {
                 password: '',
                 confirmPassword: '',
                 admin: data.role === 'admin' ? true : false
-            })
+            });
         }
 
         if (selectedUserUserId) {
             getUserData();
+            setIsDisabled(false);
+        } else {
+            console.warn('disabling');
+            setValidationWaiting(true);
+            setIsDisabled(true);
         }
+
         clearStatuses();
     }, [selectedUserUserId]);
 
@@ -259,29 +271,25 @@ export default function useUserForm(mode: Mode) {
     // COMPARE USER INFO TO VALIDATE THE SUBMIT BUTTON => no change, no edit
     useEffect(() => {
         const handleCompareUserForm = (updatedUserData: UserFormState, currentUserData: UserFormStateEdit) => {
-            console.log(currentUserData.role === 'admin' ? true : false);
-            console.log(updatedUserData.admin);
             if (
                 updatedUserData.email !== currentUserData.email
                 || updatedUserData.nickname !== currentUserData.nickname
                 || updatedUserData.username !== currentUserData.username
                 || updatedUserData.admin !== (currentUserData.role === 'admin' ? true : false)
             ) {
+                console.warn('enabling');
                 setValidationWaiting(false);
             } else {
                 setValidationWaiting(true);
             }
         }
 
-        if (currentUserData) {
+        if (currentUserData && mode === 'edit' && selectedUserUserId) {
+            console.warn('comparing');
             handleCompareUserForm(formState, currentUserData);
         }
-    }, [formState.email, formState.username, formState.nickname, formState.admin])
+    }, [formState.email, formState.username, formState.nickname, formState.admin]);
 
-
-    useEffect(() => {
-        confirmPasswordReady ? setValidationWaiting(false) : setValidationWaiting(true);
-    }, [confirmPasswordReady])
 
 
     //*--------------------------------------------//
@@ -304,6 +312,7 @@ export default function useUserForm(mode: Mode) {
         handleAdminSelect,
         handleUserSelect,
         handleConfirmPasswordInput,
-        handleSubmit
+        handleSubmit,
+        isDisabled
     }
 }

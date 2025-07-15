@@ -6,7 +6,7 @@ import { UserOption } from '@/types/types';
 
 interface Props {
     onSelect: (value: UserOption | null) => void;
-    value: UserOption | null;
+    value?: UserOption | null;
 }
 
 export default function UserSelect({ onSelect, value }: Props) {

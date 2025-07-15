@@ -114,8 +114,8 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                     <AdminInput
                                         name='email'
                                         required={true}
-                                        disabled={isDisabled}
-                                        className={`${isDisabled ? 'disabled' : ''}`}
+                                        disabled={mode === 'edit' && isDisabled}
+                                        className={`${mode === 'edit' && isDisabled ? 'disabled' : ''}`}
                                         value={formState.email}
                                         onChange={e => setFormState({ ...formState, email: e.target.value })}
                                     />
@@ -127,8 +127,8 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                     <AdminInput
                                         name='username'
                                         required={false}
-                                        disabled={isDisabled}
-                                        className={`${isDisabled ? 'disabled' : ''}`}
+                                        disabled={mode === 'edit' && isDisabled}
+                                        className={`${mode === 'edit' && isDisabled ? 'disabled' : ''}`}
                                         value={formState.username}
                                         onChange={e => setFormState({ ...formState, username: e.target.value })}
                                     />
@@ -138,8 +138,8 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                     <AdminInput
                                         name='nickname'
                                         required={false}
-                                        disabled={isDisabled}
-                                        className={`${isDisabled ? 'disabled' : ''}`}
+                                        disabled={mode === 'edit' && isDisabled}
+                                        className={`${mode === 'edit' && isDisabled ? 'disabled' : ''}`}
                                         value={formState.nickname}
                                         onChange={e => setFormState({ ...formState, nickname: e.target.value })}
                                     />
@@ -155,8 +155,6 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                             required={true}
                                             value={formState.password}
                                             autoComplete="new-password"
-                                            disabled={isDisabled}
-                                            className={`${isDisabled ? 'disabled' : ''}`}
                                             onKeyDown={handlePasswordKeyDown}
                                             onChange={handlePasswordInput}
                                         />
@@ -168,7 +166,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                             required={true}
                                             value={formState.confirmPassword}
                                             disabled={!confirmPasswordReady}
-                                            className={`${isDisabled ? 'disabled' : ''}`}
+                                            className={`${mode} === 'edit' && isDisabled ? 'disabled' : ''}`}
                                             onKeyDown={handlePasswordKeyDown}
                                             onChange={handleConfirmPasswordInput}
                                         />
@@ -182,7 +180,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                         <AdminInput
                                             name='newPassword'
                                             type='password'
-                                            required={true}
+                                            required={false}
                                             value={formState.password}
                                             autoComplete="new-password"
                                             disabled={isDisabled}
@@ -195,7 +193,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                         <AdminInput
                                             name='confirmNewPassword'
                                             type='password'
-                                            required={true}
+                                            required={!!formState.password}
                                             value={formState.confirmPassword}
                                             disabled={!confirmPasswordReady}
                                             className={`${isDisabled ? 'disabled' : ''}`}

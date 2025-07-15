@@ -203,6 +203,11 @@ export interface UserFormStateEdit {
     role: Role;
 }
 
+export interface UserFormEditRoute extends UserFormStateEdit {
+    password?: string;
+    updatedAt: Date
+}
+
 export interface IngredientFormState {
     name: string;
     main: string;

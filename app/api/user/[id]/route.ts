@@ -1,8 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server'
+import { UserFormEditRoute } from '@/types/types';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
+
+//*****************/
+//****** GET ******/
+//*****************/
 
 export async function GET(
     req: NextRequest,
@@ -29,6 +34,11 @@ export async function GET(
 }
 
 
+
+//*****************/
+//****** PUT ******/
+//*****************/
+
 export async function PUT(
     req: NextRequest,
     { params }: any
@@ -42,24 +52,28 @@ export async function PUT(
 
     try {
 
+
         const body = await req.json();
 
         const { email, password, nickname, username, admin } = body;
-
         const role = admin ? 'admin' : 'user';
+        const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const updatedData: UserFormEditRoute = {
+            email,
+            nickname,
+            username,
+            role,
+            updatedAt: new Date(),
+        };
+
+        if (hashedPassword !== undefined) {
+            updatedData.password = hashedPassword;
+        }
 
         const editedUser = await prisma.user.update({
-            where: { id: numericId }, 
-            data: {
-                email,
-                password: hashedPassword,
-                nickname,
-                username,
-                role,
-                lastLogin: new Date(),
-            },
+            where: { id: numericId },
+            data: updatedData
         });
 
         return NextResponse.json(editedUser, { status: 201 });
