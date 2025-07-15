@@ -106,10 +106,13 @@ export default function useUserForm(mode: Mode) {
             const validity = validatePassword(value);
 
             clearStatuses();
-            !validity.isValid
-                ? setWarningMsg(validity.message)
-                : setInstructionMsg('Confirm password');
-            setConfirmPasswordReady(validity.isValid);
+            if (value !== '') {
+                //! check here if there is already confirmation password, check match even when typing in first password field
+                !validity.isValid
+                    ? setWarningMsg(validity.message)
+                    : setInstructionMsg('Confirm password');
+                setConfirmPasswordReady(validity.isValid);
+            }
         }
     };
 
@@ -275,16 +278,21 @@ export default function useUserForm(mode: Mode) {
     // COMPARE USER INFO TO VALIDATE THE SUBMIT BUTTON => no change, no edit
     useEffect(() => {
         const handleCompareUserForm = (updatedUserData: UserFormState, currentUserData: UserFormStateEdit) => {
-            if (
-                updatedUserData.email !== currentUserData.email
-                || updatedUserData.nickname !== currentUserData.nickname
-                || updatedUserData.username !== currentUserData.username
-                || updatedUserData.admin !== (currentUserData.role === 'admin' ? true : false)
-            ) {
-                console.warn('enabling');
-                setValidationWaiting(false);
-            } else {
-                setValidationWaiting(true);
+
+            if (!formState.password) {
+
+                if (
+                    updatedUserData.email !== currentUserData.email
+                    || updatedUserData.nickname !== currentUserData.nickname
+                    || updatedUserData.username !== currentUserData.username
+                    || updatedUserData.admin !== (currentUserData.role === 'admin' ? true : false)
+                ) {
+                    clearStatuses();
+                    setValidationWaiting(false);
+                } else {
+                    setValidationWaiting(true);
+                    setWarningMsg('No changes have been made.')
+                }
             }
         }
 
@@ -292,7 +300,7 @@ export default function useUserForm(mode: Mode) {
             console.warn('comparing');
             handleCompareUserForm(formState, currentUserData);
         }
-    }, [formState.email, formState.username, formState.nickname, formState.admin]);
+    }, [formState.email, formState.username, formState.nickname, formState.admin, formState.password]);
 
 
 
