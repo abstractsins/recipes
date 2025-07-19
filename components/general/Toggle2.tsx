@@ -4,7 +4,7 @@ interface Props {
     id: string;
     pos1: string;
     pos2: string;
-    value: boolean;
+    value?: boolean;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

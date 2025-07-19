@@ -1,5 +1,5 @@
 div.body.login-page {
-  background-image: url('@/app/public/images/food.jpg');
+  background-image: url('../public/images/food.jpg');
   background-size: 125%;
   background-position-x: -333px;
   display: flex;

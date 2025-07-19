@@ -98,7 +98,7 @@ input.login-page-field:focus {
 
 .field-container {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   width: 100%;
   box-sizing: border-box;
 }

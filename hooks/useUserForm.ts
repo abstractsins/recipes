@@ -54,6 +54,7 @@ export default function useUserForm(mode: Mode) {
 
     const {
         refreshUsersModule,
+        fetchUserInfo: contextFetchUserInfo
     } = useDashboard();
 
     const emptyUserForm: UserFormState = {
@@ -65,12 +66,11 @@ export default function useUserForm(mode: Mode) {
         admin: false
     };
 
-    const [isUserInfoLoading, setUserInfoLoading] = useState<boolean>(false);
-
     const [formState, setFormState] = useState<UserFormState>(emptyUserForm);
 
     const [submitWaiting, setSubmitWaiting] = useState(false);
     const [validationWaiting, setValidationWaiting] = useState(true);
+    const [isUserInfoLoading, setUserInfoLoading] = useState<boolean>(false);
 
     const [error, setError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -97,7 +97,7 @@ export default function useUserForm(mode: Mode) {
         setSuccessMsg(null);
         setWarningMsg(null);
         setInstructionMsg(null);
-    }
+    };
 
     const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -131,7 +131,7 @@ export default function useUserForm(mode: Mode) {
         } else {
             setValidationWaiting(false);
         }
-    }
+    };
 
     const handlePasswordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         const asciiCode = e.key.charCodeAt(0);
@@ -143,16 +143,42 @@ export default function useUserForm(mode: Mode) {
     const handleAdminSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(e.target.checked);
         setFormState(prev => ({ ...prev, admin: e.target.checked }));
-    }
+    };
 
-    const handleUserSelect = (option: UserOption | null) => {
-        resetAll();
-        if (option) {
-            setSelectedUserUserId(option.value);
+    const handleUserSelect = (user: UserOption | null) => {
+        if (user !== null) {
+            if (user.value !== null) {
+                setSelectedUserUserId(user.value);
+            }
         } else {
+            clearStatuses();
             setSelectedUserUserId(null);
+            setFormState(emptyUserForm);
         }
-    }
+    };
+
+    const fetchUserInfo = useCallback(async () => {
+        if (selectedUserUserId) {
+
+            setWarningMsg('User info loading...');
+            setFormState(emptyUserForm);
+            const data = await contextFetchUserInfo(selectedUserUserId);
+            console.log(data);
+            setCurrentUserData(data);
+            
+            setFormState({
+                email: data.email,
+                username: data.username || '',
+                nickname: data.nickname || '',
+                password: '',
+                confirmPassword: '',
+                admin: data.role === 'admin' ? true : false
+            });
+            
+            setSelectedUserInfo(data);
+        }
+        clearStatuses();
+    }, [selectedUserUserId]);
 
     const resetAll = useCallback((exceptions?: string[]) => {
         !exceptions?.includes('error') && setError(null);
@@ -227,7 +253,7 @@ export default function useUserForm(mode: Mode) {
         }
 
         setSubmitWaiting(false);
-    }
+    };
 
 
 
@@ -236,42 +262,15 @@ export default function useUserForm(mode: Mode) {
     //*------------------------------------------------//
 
     useEffect(() => {
-        console.log(selectedUserUserId);
-        clearStatuses();
-        const getUserData = async () => {
-            setUserInfoLoading(true);
-            const res = await fetch(`api/user/${selectedUserUserId}`);
-
-            if (!res.ok) {
-                const error = res.json();
-                setError('Error fetching user information.');
-                console.log(error);
-                return;
-            }
-
-            const data: UserFormStateEdit = await res.json();
-            setCurrentUserData(data);
-            setFormState({
-                email: data.email,
-                username: data.username || '',
-                nickname: data.nickname || '',
-                password: '',
-                confirmPassword: '',
-                admin: data.role === 'admin' ? true : false
-            });
-            setUserInfoLoading(false);
-        }
-
         if (selectedUserUserId) {
-            getUserData();
+            console.log('selectedUserUserId:', selectedUserUserId);
+            console.log(warningMsg);
+            fetchUserInfo();
             setIsDisabled(false);
         } else {
-            console.warn('disabling');
             setValidationWaiting(true);
             setIsDisabled(true);
         }
-
-        clearStatuses();
     }, [selectedUserUserId]);
 
 

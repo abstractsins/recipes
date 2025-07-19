@@ -258,6 +258,7 @@ export interface DashboardContextValue {
     fetchUserRecipes: (userId: number) => Promise<Ingredient[]>;
     fetchIngredientById: (id: number) => Promise<Ingredient>;
     fetchRecipeById: (id: number) => Promise<Ingredient>;
+    fetchUserInfo: (id: number) => Promise<UserFormStateEdit>;
     refreshIngredientModule: () => void,
     refreshRecipeModule: () => void,
     refreshUsersModule: () => void,
@@ -269,9 +270,11 @@ export interface DashboardContextValue {
     defaultRecipeTagOptions: TagOption[],
 
     /* Loader States */
-    userTagsWaiting?: boolean,
+    // userTagsWaiting?: boolean,
     ingredientListWaiting?: boolean,
     recipeListWaiting?: boolean,
+    isUserInfoLoading?: boolean,
+    isIngredientInfoLoading?: boolean,
 
     /* Admin Access for all tags at once */
     allUserIngredientTags: Tag[],
@@ -281,7 +284,7 @@ export interface DashboardContextValue {
     /* user-specific tags */
     // userIngredientTags: Tag[],
     // userRecipeTags: Tag[],
-    selectedUserIngredientTagOptions: TagOption[],
+    selectedUserIngredientTagOptions?: TagOption[],
     selectedUserRecipeTagOptions: TagOption[],
     loadUserTags: (type: 'ingredient' | 'recipe', userId: number) => Promise<Tag[]>;
 

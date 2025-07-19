@@ -3,9 +3,13 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
+export async function GET(
+    req: NextRequest,
+    { params }: { params: Promise<{ userId: string }> }
+) {
     try {
-        const userId = Number(params.userId);
+        const { userId: idStr } = await params;
+        const userId = Number(idStr);
         const searchParams = req.nextUrl.searchParams;
         const query = searchParams.get('query') || '';
 
@@ -22,7 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: { userId: stri
                 },
             },
             orderBy: { name: 'asc' },
-            take: 15, // optional limit
+            take: 15, // limit
         });
 
         return NextResponse.json(ingredients);

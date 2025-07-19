@@ -46,7 +46,9 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
 
     const [mode, setMode] = useState<Mode>('add');
 
-    const { } = useDashboard();
+    const {
+        isUserInfoLoading,
+    } = useDashboard();
 
     const {
         formState,
@@ -65,7 +67,6 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
         handleAdminSelect,
         handleConfirmPasswordInput,
         isDisabled,
-        isUserInfoLoading,
         handleSubmit
     } = useUserForm(mode)
 
@@ -112,7 +113,6 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                     </FieldModule>
                                 </FormRow>
                             )}
-
 
                             <FormRow>
                                 <FieldModule label='Email*'>

@@ -20,6 +20,8 @@ import {
   Tag,
   Ingredient,
   DashboardContextValue,
+  User,
+  UserFormStateEdit
 } from '@/types/types';
 
 
@@ -59,9 +61,21 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
   const refreshIngredientModule = useCallback(() => setIngredientsRefreshKey(k => k + 1), []);
 
 
+  // FETCHING USER INFORMATION
+  const [isUserInfoLoading, setUserInfoLoading] = useState<boolean>(false);
+
+  const fetchUserInfo = useCallback(async (userId: number): Promise<UserFormStateEdit> => {
+    setUserInfoLoading(true);
+    const res = await fetch(`api/user/${userId}`);
+    const data: UserFormStateEdit = await res.json();
+    setUserInfoLoading(false);
+    return data;
+  }, []);
+
 
   // FETCHING INGREDIENT INFORMATION
   const [ingredientListWaiting, setIngredientListWaiting] = useState<boolean>(false);
+  const [isIngredientInfoLoading, setIngredientInfoLoading] = useState<boolean>(false);
 
   const fetchUserIngredients = useCallback(async (userId: number): Promise<Ingredient[]> => {
     setIngredientListWaiting(true);
@@ -72,8 +86,10 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
   }, []);
 
   const fetchIngredientById = useCallback(async (id: number): Promise<Ingredient> => {
+    setIngredientInfoLoading(true);
     const res = await fetch(`/api/ingredient/${id}`);
     const data = await res.json();
+    setIngredientInfoLoading(false);
     return data;
   }, []);
 
@@ -154,11 +170,13 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     users,
     ingredients,
     recipes,
-    fetchUserIngredients,
-    fetchIngredientById,
     refreshIngredientModule,
     refreshRecipeModule,
     refreshUsersModule,
+
+    fetchUserInfo,
+    fetchUserIngredients,
+    fetchIngredientById,
     fetchUserRecipes,
     fetchRecipeById,
 
@@ -169,7 +187,9 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     defaultRecipeTagOptions,
 
     /* Loader States */
+    isUserInfoLoading,
     ingredientListWaiting,
+    isIngredientInfoLoading,
     recipeListWaiting,
 
     /* Admin Access for all tags at once */
@@ -201,7 +221,10 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     defaultRecipeTagOptions,
     // selectedUserIngredientTagOptions,
     selectedUserRecipeTagOptions,
+
+    isUserInfoLoading,
     ingredientListWaiting,
+    isIngredientInfoLoading,
     recipeListWaiting
   ]);
 

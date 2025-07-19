@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Mode } from "@/types/types";
 
 import ScreenGuard from "@/components/general/ScreenGuard";
+import InputSpinner from "@/components/general/InputSpinner";
 
 import FormRow from "@/components/admin/formElements/FormRow";
 import FieldModule from "@/components/admin/formElements/FieldModule";
@@ -67,12 +68,14 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
         isDisabled,
         resetAll,
         userTagsWaiting,
-        submitWaiting
+        submitWaiting,
     } = useIngredientForm(mode);
 
     const {
         defaultIngredientTagOptions,
-        ingredientListWaiting,
+        isUserInfoLoading,
+        isIngredientInfoLoading,
+        ingredientListWaiting
     } = useDashboard();
 
 
@@ -113,6 +116,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                     <FormRow className={styles['row-0']}>
                                         <FieldModule label="User" id="edit-ingredient-user-module">
                                             <UserSelect value={selectedIngredientUserValue} onSelect={handleIngredientUserSelect} />
+                                            {isUserInfoLoading && <InputSpinner />}
                                         </FieldModule>
                                     </FormRow>
 
@@ -124,6 +128,8 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                                 ready={!ingredientListWaiting && !!selectedIngredientUserId}
                                                 onSelect={handleIngredientSelect}
                                             />
+                                            {isIngredientInfoLoading && <InputSpinner />}
+
                                         </FieldModule>
                                     </FormRow>
                                 </>

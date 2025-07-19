@@ -3,10 +3,13 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(req: Request, { params }: { params: { userId: string } }) {
+export async function GET(
+    req: Request,
+    { params }: { params: Promise<{ userId: string }> }
+) {
     try {
-        const urlParams = await params;
-        const userId = parseInt(urlParams.userId);
+        const { userId: idStr } = await params;
+        const userId = Number(idStr);
 
         const recipes = await prisma.recipe.findMany({
             where: { userId: userId }

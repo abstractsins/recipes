@@ -1,5 +1,11 @@
 'use client';
 
+
+
+//*--------------------------------------------//
+//*------------------IMPORT--------------------//
+//*--------------------------------------------//
+
 import {
     useState,
     useEffect,
@@ -27,7 +33,18 @@ import { useSyncUserTags } from "@/hooks/useSyncUserTags";
 
 
 
+//*--------------------------------------------//
+//*------------------EXPORT--------------------//
+//*--------------------------------------------//
+
+
 export function useIngredientForm(mode: 'add' | 'edit') {
+
+
+
+    //*----------------------------------------------//
+    //*--------------------states--------------------//
+    //*----------------------------------------------//
 
     const {
         fetchUserIngredients: contextFetchUserIngredients,
@@ -35,7 +52,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         allUserIngredientTags,
         loadUserTags,
         refreshAllTags,
-        refreshIngredientModule
+        refreshIngredientModule,
     } = useDashboard();
 
     const emptyIngredientForm: IngredientFormState = {
@@ -53,10 +70,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const [formState, setFormState] = useState<IngredientFormState>(emptyIngredientForm);
 
     const [submitWaiting, setSubmitWaiting] = useState(false);
-    const [ingredientLoading, setIngredientLoading] = useState(false);
+    // const [isIngredientInfoLoading, setIngredientInfoLoading] = useState(false);
+    const [isUserInfoLoading, setUserInfoLoading] = useState<boolean>(false);
 
     const [error, setError] = useState<string | null>(null);
-    const [sucessMsg, setSuccessMsg] = useState<string | null>(null);
+    const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [warningMsg, setWarningMsg] = useState<string | null>(null);
     const [instructionMsg, setInstructionMsg] = useState<string | null>(null);
 
@@ -76,9 +94,16 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const isDisabled = mode === 'edit' && !ingredientReady;
 
 
+
+    //*-----------------------------------------------//
+    //*-------------------functions-------------------//
+    //*-----------------------------------------------//
+
     const resetAll = useCallback((exceptions?: string[]) => {
         !exceptions?.includes('error') && setError(null);
-        !exceptions?.includes('status') && setSuccessMsg(null);
+        !exceptions?.includes('success') && setSuccessMsg(null);
+        !exceptions?.includes('warning') && setWarningMsg(null);
+        !exceptions?.includes('instruction') && setInstructionMsg(null);
         !exceptions?.includes('userId') && setSelectedIngredientUserId(null);
         !exceptions?.includes('userId') && setSelectedIngredientUserValue(null);
         !exceptions?.includes('ingredientList') && setUserIngredientList([]);
@@ -89,7 +114,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         !exceptions?.includes('userReady') && setUserReady(false);
         !exceptions?.includes('ingredientReady') && setIngredientReady(false);
     }, []);
-
 
     const handleIngredientSelect = (id: number | null) => {
         setSelectedIngredientId(id);
@@ -125,20 +149,31 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         setFormState(emptyIngredientForm);
     }
 
+    const clearStatuses = () => {
+        setError(null);
+        setSuccessMsg(null);
+        setWarningMsg(null);
+        setInstructionMsg(null);
+    }
+
     const fetchUserIngredients = useCallback(async () => {
         if (selectedIngredientUserId) {
+            setUserInfoLoading(true);
+            setWarningMsg('User ingredients loading...');
             const data = await contextFetchUserIngredients(selectedIngredientUserId);
             setUserIngredientList(data);
+            setUserInfoLoading(false);
         }
-    }, [selectedIngredientUserId, contextFetchUserIngredients]);
+        clearStatuses();
+    }, [selectedIngredientUserId]);
 
     const fetchIngredientInfo = useCallback(async () => {
         if (selectedIngredientId) {
-            setIngredientLoading(true);
+            setWarningMsg('Ingredient info loading...');
             const data = await fetchIngredientById(selectedIngredientId);
             setIngredientInfo(data);
-            setIngredientLoading(false);
         }
+        clearStatuses();
     }, [selectedIngredientId, fetchIngredientById]);
 
     // ➕👤🏷️
@@ -230,6 +265,12 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         setUserTags: setUserIngredientTags,
     });
 
+
+
+    //*------------------------------------------------//
+    //*-------------------useEffects-------------------//
+    //*------------------------------------------------//
+
     useEffect(() => { fetchUserIngredients(); }, [selectedIngredientUserId, fetchUserIngredients]);
     useEffect(() => { fetchIngredientInfo(); }, [selectedIngredientId, fetchIngredientInfo]);
     useEffect(() => {
@@ -253,6 +294,10 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
 
 
+    //*--------------------------------------------//
+    //*-------------------return-------------------//
+    //*--------------------------------------------//
+
     return {
         formState, setFormState,
         handleIngredientSelect,
@@ -269,12 +314,12 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         userIngredientList,
         userTagsWaiting,
         error,
-        sucessMsg,
+        successMsg,
         warningMsg,
         instructionMsg,
         isDisabled,
-        submitWaiting,
+        resetAll,
         selectedAuthorId,
-        resetAll
+        submitWaiting,
     };
 }

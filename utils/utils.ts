@@ -3,6 +3,7 @@
 // ***********
 
 import {
+    Season,
     SeasonOption,
     Tag,
     TagOption,
@@ -175,12 +176,12 @@ export function handleModeSelectFactory(
 export function handleSeasonSelect(
     setFormState: (fn: (prev: any) => any) => void
 ) {
-    return (season: SeasonOption, checked: boolean) => {
+    return (season: SeasonOption | null, checked: boolean) => {
         setFormState(prev => ({
             ...prev,
             selectedSeasonIndexes: checked
-                ? [...prev.selectedSeasonIndexes, season.id]
-                : prev.selectedSeasonIndexes.filter(s => s !== season.id),
+                ? [...prev.selectedSeasonIndexes, season?.id]
+                : prev.selectedSeasonIndexes.filter((s: number) => s !== season?.id),
         }));
     };
 }
@@ -190,12 +191,12 @@ export function handleTagSelectFactory<T extends { id: number }>(
     setFormState: (fn: (prev: any) => any) => void,
     key: 'selectedDefaultTagIndexes' | 'selectedUserTagIndexes'
 ) {
-    return (tag: T, checked: boolean) => {
+    return (tag: T | null, checked: boolean) => {
         setFormState(prev => ({
             ...prev,
             [key]: checked
-                ? [...prev[key], tag.id]
-                : prev[key].filter((id: number) => id !== tag.id),
+                ? [...prev[key], tag?.id]
+                : prev[key].filter((id: number) => id !== tag?.id),
         }));
     };
 }

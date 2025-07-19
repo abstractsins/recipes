@@ -19,7 +19,8 @@ export async function GET(
             where: { id: numericId },
             include: { 
                 ingredients: true,
-                RecipeTag: true
+                defaultTags: true,
+                userTags: true
             }
         });
 
