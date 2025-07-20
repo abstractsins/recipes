@@ -166,13 +166,13 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const fetchIngredientInfo = useCallback(
         async ({ quiet = false }: { quiet?: boolean } = {}) => {
-        if (selectedIngredientId) {
-            if (!quiet) setWarningMsg('Ingredient info loading...');
-            const data = await fetchIngredientById(selectedIngredientId);
-            setIngredientInfo(data);
-        }
-        setWarningMsg(null);
-    }, [selectedIngredientId, fetchIngredientById]);
+            if (selectedIngredientId) {
+                if (!quiet) setWarningMsg('Ingredient info loading...');
+                const data = await fetchIngredientById(selectedIngredientId);
+                setIngredientInfo(data);
+            }
+            setWarningMsg(null);
+        }, [selectedIngredientId, fetchIngredientById]);
 
     // ➕👤🏷️
     const addUserIngredientTag = async () => {
@@ -211,8 +211,10 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
         const data = {
             ...formState,
-            userId: mode === 'add' ? new FormData(e.currentTarget).get('user') : selectedIngredientUserId,
-            IngredientTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
+            userId: mode === 'add'
+                ? new FormData(e.currentTarget).get('user')
+                : selectedIngredientUserId, 
+                    IngredientTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
         };
 
         try {

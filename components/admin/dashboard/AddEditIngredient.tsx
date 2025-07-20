@@ -104,7 +104,11 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
             {isActive && (
                 <>
                     <div className={styles['add-edit-ingredient-body']}>
-                        <form id="add-edit-ingredient" className="add-edit-ingredient" onSubmit={handleSubmit}>
+                        <form
+                            id="add-edit-ingredient"
+                            className="add-edit-ingredient"
+                            onSubmit={handleSubmit}
+                        >
 
                             {mode === 'edit' && (
                                 <>
@@ -276,7 +280,12 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                     </FieldModule>
                                 )}
                                 <FieldModule className="add-edit-ingredient-submit-module">
-                                    <input disabled={submitWaiting} className={styles["add-edit-ingredient-submit"]} type="submit" value={toTitleCase(mode)} />
+                                    <input
+                                        disabled={submitWaiting}
+                                        className={styles["add-edit-ingredient-submit"]}
+                                        type="submit"
+                                        value={toTitleCase(mode)}
+                                    />
                                 </FieldModule>
                             </FormRow>
 

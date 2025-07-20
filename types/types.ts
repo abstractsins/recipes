@@ -76,6 +76,7 @@ export interface IngredientDTO {
     variety?: string;
     category?: string;
     subcategory?: string;
+    brand? : string;
     notes?: string;
     selectedSeasonIndexes?: number[];
     selectedDefaultTagIndexes?: number[];

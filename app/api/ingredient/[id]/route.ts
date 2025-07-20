@@ -34,7 +34,7 @@ export async function GET(
 /* ─────────────── PUT ─────────────── */
 export async function PUT(
   req: NextRequest,
-  { params }: IdCtx                                   // <- same context
+  { params }: IdCtx
 ) {
   const { id } = await params
   const numericId = Number(id)
@@ -47,13 +47,37 @@ export async function PUT(
     return new NextResponse('name and userId are required', { status: 400 })
   }
 
+  await prisma.ingredientUserTag.deleteMany({ where: { ingredientId: numericId } });
+  await prisma.ingredientDefaultTag.deleteMany({ where: { ingredientId: numericId } });
+
   const updatedIngredient = await prisma.$transaction(async (tx) => {
-    // … your update logic …
+
     return tx.ingredient.update({
       where: { id: numericId },
-      data: { /* fields */ },
+      data: {
+        name: body.name,
+        userId: body.userId,
+        main: body.main ?? null,
+        variety: body.variety ?? null,
+        category: body.category ?? null,
+        subcategory: body.subcategory ?? null,
+        brand: body.brand ?? null,
+        notes: body.notes ?? null,
+        seasons: { set: body.selectedSeasonIndexes?.map(id => ({ id })) ?? [] },
+
+        // userTags: { set: body.selectedUserTagIndexes?.map(tagId => ({ tagId })) ?? [] },
+        //   set: body.selectedUserTagIndexes?.map(id => ({ id })) ?? [],
+        // },
+        updatedAt: new Date()
+      },
     })
   })
+
+  await prisma.ingredientUserTag.createMany({
+    data: body.selectedUserTagIndexes?.map(tagId => ({ ingredientId: numericId, tagId })),
+    skipDuplicates: true,
+  });
+
 
   return NextResponse.json(updatedIngredient, { status: 200 })
 }
