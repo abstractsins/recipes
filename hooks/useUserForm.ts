@@ -54,7 +54,7 @@ export default function useUserForm(mode: Mode) {
 
     const {
         refreshUsersModule,
-        fetchUserInfo: contextFetchUserInfo
+        fetchUserUserInfo: contextFetchUserInfo
     } = useDashboard();
 
     const emptyUserForm: UserFormState = {
