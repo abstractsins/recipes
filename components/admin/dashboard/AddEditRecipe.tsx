@@ -2,7 +2,7 @@
 
 import styles from './AddEditRecipe.module.css';
 import { FiPlusCircle } from "react-icons/fi";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Mode } from "@/types/types";
 
 import ScreenGuard from "@/components/general/ScreenGuard";

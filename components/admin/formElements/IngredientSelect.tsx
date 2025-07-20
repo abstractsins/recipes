@@ -9,13 +9,18 @@ type IngredientOption = {
 };
 
 interface Props {
-    data: Ingredient[] | undefined;
+    data: Ingredient[] | null;
     ready: boolean;
     value: any;
     onSelect: (value: number | null) => void;
 }
 
-export default function IngredientSelect({ data, value, ready, onSelect }: Props) {
+export default function IngredientSelect({ 
+    data, 
+    value, 
+    ready, 
+    onSelect 
+}: Props) {
 
     const handleSelect = (selectedOption: IngredientOption | null) => {
         if (onSelect) {

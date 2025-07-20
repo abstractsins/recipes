@@ -16,7 +16,17 @@ interface Props {
 }
 
 
-export default function AddEditHeader({ title, active, mode, error, successMsg, warningMsg, instructionMsg, handleModeSelect }: Props) {
+export default function AddEditHeader({
+    title,
+    active,
+    mode,
+    error,
+    successMsg,
+    warningMsg,
+    instructionMsg,
+    handleModeSelect
+}: Props
+) {
     return (
         <>
             <FormRow id="row-1">
@@ -49,13 +59,13 @@ export default function AddEditHeader({ title, active, mode, error, successMsg, 
                         <span>🥒 {successMsg}</span>
                     </div>
                 }
-                
+
                 {active && warningMsg &&
                     <div className={styles["warning"]}>
                         <span>🍋 {warningMsg}</span>
                     </div>
                 }
-                
+
                 {active && instructionMsg &&
                     <div className={styles["instruction"]}>
                         <span>🍄 {instructionMsg}</span>

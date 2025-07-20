@@ -258,7 +258,7 @@ export interface DashboardContextValue {
     fetchUserRecipes: (userId: number) => Promise<Ingredient[]>;
     fetchIngredientById: (id: number) => Promise<Ingredient>;
     fetchRecipeById: (id: number) => Promise<Ingredient>;
-    fetchUserInfo: (id: number) => Promise<UserFormStateEdit>;
+    fetchUserUserInfo: (id: number) => Promise<UserFormStateEdit>;
     refreshIngredientModule: () => void,
     refreshRecipeModule: () => void,
     refreshUsersModule: () => void,
@@ -273,7 +273,8 @@ export interface DashboardContextValue {
     // userTagsWaiting?: boolean,
     ingredientListWaiting?: boolean,
     recipeListWaiting?: boolean,
-    isUserInfoLoading?: boolean,
+    isUserUserInfoLoading?: boolean,
+    setIngredientInfoLoading?: (b: boolean) => void;
     isIngredientInfoLoading?: boolean,
 
     /* Admin Access for all tags at once */

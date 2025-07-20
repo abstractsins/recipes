@@ -3,7 +3,7 @@
 
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 import RegisterLink from "../general/RegisterLink";
@@ -16,6 +16,8 @@ export default function LoginForm() {
 
     const [isWaiting, setIsWaiting] = useState(false);
 
+    const userRef = useRef<HTMLInputElement>(null);
+
     const router = useRouter();
 
     const maxUserLength = 64;
@@ -25,6 +27,7 @@ export default function LoginForm() {
         e.preventDefault();
         console.log(e);
         setIsWaiting(true);
+        
         const fd = new FormData(e.currentTarget)
 
         console.log([...fd.entries()]);
@@ -47,6 +50,8 @@ export default function LoginForm() {
         }
 
     }
+
+    useEffect(()=> { if (userRef) { userRef.current?.focus();} }, []);
 
 
     return (
@@ -73,6 +78,8 @@ export default function LoginForm() {
                             </div>
                             <div className={`${styles["field-container"]} ${styles["username-field-container"]}`}>
                                 <input
+                                    ref={userRef}
+                                    id={`email`}
                                     className={`${styles["login-page-field"]}`}
                                     type="text"
                                     name="email"

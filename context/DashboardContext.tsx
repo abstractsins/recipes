@@ -62,19 +62,28 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
 
   // FETCHING USER INFORMATION
-  const [isUserInfoLoading, setUserInfoLoading] = useState<boolean>(false);
+  const [isUserUserInfoLoading, setUserUserInfoLoading] = useState<boolean>(false);
 
-  const fetchUserInfo = useCallback(async (userId: number): Promise<UserFormStateEdit> => {
-    setUserInfoLoading(true);
+  const fetchUserUserInfo = useCallback(async (userId: number): Promise<UserFormStateEdit> => {
+    setUserUserInfoLoading(true);
     const res = await fetch(`api/user/${userId}`);
     const data: UserFormStateEdit = await res.json();
-    setUserInfoLoading(false);
+    setUserUserInfoLoading(false);
     return data;
   }, []);
 
 
+  const [isIngredientUserInfoLoading, setIngredientUserInfoLoading] = useState<boolean>(false);
+  const fetchIngredientUserInfo = useCallback(async (userId: number): Promise<UserFormStateEdit> => {
+    setUserUserInfoLoading(true);
+    const res = await fetch(`api/user/${userId}`);
+    const data: UserFormStateEdit = await res.json();
+    setUserUserInfoLoading(false);
+    return data;
+  }, []);
+
   // FETCHING INGREDIENT INFORMATION
-  const [ingredientListWaiting, setIngredientListWaiting] = useState<boolean>(false);
+  const [ingredientListWaiting, setIngredientListWaiting] = useState<boolean | undefined>(undefined);
   const [isIngredientInfoLoading, setIngredientInfoLoading] = useState<boolean>(false);
 
   const fetchUserIngredients = useCallback(async (userId: number): Promise<Ingredient[]> => {
@@ -174,7 +183,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     refreshRecipeModule,
     refreshUsersModule,
 
-    fetchUserInfo,
+    fetchUserUserInfo,
     fetchUserIngredients,
     fetchIngredientById,
     fetchUserRecipes,
@@ -187,9 +196,10 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     defaultRecipeTagOptions,
 
     /* Loader States */
-    isUserInfoLoading,
+    isUserUserInfoLoading,
     ingredientListWaiting,
     isIngredientInfoLoading,
+    setIngredientInfoLoading,
     recipeListWaiting,
 
     /* Admin Access for all tags at once */
@@ -222,7 +232,8 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     // selectedUserIngredientTagOptions,
     selectedUserRecipeTagOptions,
 
-    isUserInfoLoading,
+    isIngredientUserInfoLoading,
+    isUserUserInfoLoading,
     ingredientListWaiting,
     isIngredientInfoLoading,
     recipeListWaiting

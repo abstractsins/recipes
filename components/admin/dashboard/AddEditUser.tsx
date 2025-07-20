@@ -36,7 +36,13 @@ import InputSpinner from '@/components/general/InputSpinner';
 //*------------------EXPORT--------------------//
 //*--------------------------------------------//
 
-export default function AddEditUser({ id, isActive, onClick, title, close }: AdminAddEditModule) {
+export default function AddEditUser({
+    id,
+    isActive,
+    onClick,
+    title,
+    close
+}: AdminAddEditModule) {
 
 
 
@@ -47,7 +53,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
     const [mode, setMode] = useState<Mode>('add');
 
     const {
-        isUserInfoLoading,
+        isUserUserInfoLoading,
     } = useDashboard();
 
     const {
@@ -71,7 +77,6 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
     } = useUserForm(mode)
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
-
 
 
     //*--------------------------------------------//
@@ -109,7 +114,7 @@ export default function AddEditUser({ id, isActive, onClick, title, close }: Adm
                                 <FormRow className={styles['row-0']}>
                                     <FieldModule label="User" id="edit-ingredient-user-module">
                                         <UserSelect onSelect={handleUserSelect} />
-                                        {isUserInfoLoading && <InputSpinner />}
+                                        {isUserUserInfoLoading && <InputSpinner />}
                                     </FieldModule>
                                 </FormRow>
                             )}

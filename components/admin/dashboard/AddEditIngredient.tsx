@@ -2,8 +2,8 @@
 
 import styles from './AddEditIngredient.module.css';
 import { FiPlusCircle } from "react-icons/fi";
-import { useState } from "react";
-import { Mode } from "@/types/types";
+import { useEffect, useState } from "react";
+import { Mode, AdminAddEditModule } from "@/types/types";
 
 import ScreenGuard from "@/components/general/ScreenGuard";
 import InputSpinner from "@/components/general/InputSpinner";
@@ -32,18 +32,16 @@ import { useDashboard } from '@/context/DashboardContext';
 
 
 
-interface Props {
-    id: string;
-    isActive: boolean;
-    title: string;
-    onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
-    close: (e: React.MouseEvent<HTMLDivElement>) => void;
-}
 
-
-export default function AddEditIngredient({ id, title, isActive, onClick, close }: Props) {
+export default function AddEditIngredient({ id, title, isActive, onClick, close }: AdminAddEditModule) {
 
     const [mode, setMode] = useState<Mode>('add');
+
+    const {
+        defaultIngredientTagOptions,
+        isIngredientInfoLoading,
+        ingredientListWaiting
+    } = useDashboard();
 
     const {
         formState,
@@ -61,29 +59,26 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
         selectedIngredientUserValue,
         selectedIngredientId,
         userIngredientList,
-        successMsg,
-        warningMsg,
-        instructionMsg,
-        error,
-        isDisabled,
+        error, successMsg, warningMsg, instructionMsg,
         resetAll,
         userTagsWaiting,
         submitWaiting,
+        ingredientInfo,
+        userIngredientListHasLoaded
     } = useIngredientForm(mode);
 
-    const {
-        defaultIngredientTagOptions,
-        isUserInfoLoading,
-        isIngredientInfoLoading,
-        ingredientListWaiting
-    } = useDashboard();
-
+    const ingredientSelectReady = (ingredientListWaiting === false && !!userIngredientList);
+    const ingredientInfoReady = (isIngredientInfoLoading === false && !!ingredientInfo && ingredientSelectReady);
+    const ingredientEditDisabled = mode === 'edit' && !ingredientInfoReady;
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
     const onSeasonChange = handleSeasonSelect(setFormState);
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
     const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIndexes');
 
+    useEffect(() => {
+        console.log('userIngredientListHasLoaded:', userIngredientListHasLoaded);
+    }, [])
 
 
     return (
@@ -116,7 +111,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                     <FormRow className={styles['row-0']}>
                                         <FieldModule label="User" id="edit-ingredient-user-module">
                                             <UserSelect value={selectedIngredientUserValue} onSelect={handleIngredientUserSelect} />
-                                            {isUserInfoLoading && <InputSpinner />}
+                                            {ingredientListWaiting && <InputSpinner />}
                                         </FieldModule>
                                     </FormRow>
 
@@ -125,7 +120,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                             <IngredientSelect
                                                 value={selectedIngredientId}
                                                 data={userIngredientList}
-                                                ready={!ingredientListWaiting && !!selectedIngredientUserId}
+                                                ready={ingredientSelectReady}
                                                 onSelect={handleIngredientSelect}
                                             />
                                             {isIngredientInfoLoading && <InputSpinner />}
@@ -140,9 +135,9 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                     <AdminInput
                                         name="name"
                                         required
-                                        disabled={isDisabled}
-                                        className={`${isDisabled ? 'disabled' : ''}`}
-                                        placeholder="e.g. Fingerling Potatoes"
+                                        disabled={ingredientEditDisabled}
+                                        className={`${ingredientEditDisabled ? 'disabled' : ''}`}
+                                        placeholder={mode === 'add' ? "e.g. Fingerling Potatoes" : ''}
                                         value={formState.name}
                                         onChange={e => setFormState({ ...formState, name: e.target.value })}
                                     />
@@ -153,7 +148,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                 <FieldModule className={`tags`} label="Season">
                                     <AdminMultiSelect
                                         name="season"
-                                        disabled={isDisabled}
+                                        disabled={ingredientEditDisabled}
                                         defaultValue={formState.selectedSeasonIndexes}
                                         multiple
                                         className={`tag`}
@@ -167,30 +162,30 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                 <FieldModule label="Main Class">
                                     <AdminInput
                                         name="main"
-                                        disabled={isDisabled}
+                                        disabled={ingredientEditDisabled}
                                         value={formState.main}
-                                        placeholder="e.g. Potato"
-                                        className={`${isDisabled ? 'disabled' : ''} optional`}
+                                        placeholder={mode === 'add' ? "e.g. Potato" : ''}
+                                        className={`${ingredientEditDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, main: e.target.value })}
                                     />
                                 </FieldModule>
                                 <FieldModule label="Variety">
                                     <AdminInput
                                         name="variety"
-                                        disabled={isDisabled}
+                                        disabled={ingredientEditDisabled}
                                         value={formState.variety}
-                                        placeholder="e.g. Fingerling"
-                                        className={`${isDisabled ? 'disabled' : ''} optional`}
+                                        placeholder={mode === 'add' ? "e.g. Fingerling" : ''}
+                                        className={`${ingredientEditDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, variety: e.target.value })}
                                     />
                                 </FieldModule>
                                 <FieldModule className={`tags`} label="Preferred Brand">
                                     <AdminInput
                                         name="brand"
-                                        disabled={isDisabled}
+                                        disabled={ingredientEditDisabled}
                                         value={formState.brand}
-                                        placeholder='e.g. Heinz'
-                                        className={`${isDisabled ? 'disabled' : ''} optional`}
+                                        placeholder={mode === 'add' ? 'e.g. Heinz' : ''}
+                                        className={`${ingredientEditDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, brand: e.target.value })}
                                     />
                                 </FieldModule>
@@ -200,20 +195,20 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                 <FieldModule label="Category">
                                     <AdminInput
                                         name="category"
-                                        disabled={isDisabled}
+                                        disabled={ingredientEditDisabled}
                                         value={formState.category}
-                                        placeholder="e.g. Vegetable"
-                                        className={`${isDisabled ? 'disabled' : ''} optional`}
+                                        placeholder={mode === 'add' ? "e.g. Vegetable" : ''}
+                                        className={`${ingredientEditDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, category: e.target.value })}
                                     />
                                 </FieldModule>
                                 <FieldModule label="Sub Category">
                                     <AdminInput
                                         name="subcategory"
-                                        disabled={isDisabled}
+                                        disabled={ingredientEditDisabled}
                                         value={formState.subcategory}
-                                        placeholder="e.g. Root"
-                                        className={`${isDisabled ? 'disabled' : ''} optional`}
+                                        placeholder={mode === 'add' ? "e.g. Root" : ''}
+                                        className={`${ingredientEditDisabled ? 'disabled' : ''} optional`}
                                         onChange={e => setFormState({ ...formState, subcategory: e.target.value })}
                                     />
                                 </FieldModule>
@@ -225,7 +220,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                         <TagsSelect
                                             name="default-tags"
                                             defaultValue={formState.selectedDefaultTagIndexes}
-                                            disabled={isDisabled}
+                                            disabled={ingredientEditDisabled}
                                             onChange={onDefaultTagChange}
                                             multiple
                                             type="ingredient"
@@ -242,7 +237,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                                 <TagsSelect
                                                     name="user-tags"
                                                     defaultValue={formState.selectedUserTagIndexes}
-                                                    disabled={isDisabled}
+                                                    disabled={ingredientEditDisabled}
                                                     onChange={onUserTagChange}
                                                     isLoading={userTagsWaiting}
                                                     multiple
