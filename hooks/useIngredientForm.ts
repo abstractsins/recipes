@@ -286,8 +286,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 subcategory: ingredientInfo.subcategory ?? '',
                 brand: ingredientInfo.brand ?? '',
                 selectedSeasonIndexes: ingredientInfo.seasons.map(s => s.id) ?? [],
-                selectedDefaultTagIndexes: ingredientInfo.defaultTags.map(t => t.tagId) ?? [],
-                selectedUserTagIndexes: ingredientInfo.userTags.map(t => t.tagId) ?? []
+                selectedDefaultTagIndexes: ingredientInfo.defaultTags.map((t: Tag) => t.id) ?? [],
+                selectedUserTagIndexes: ingredientInfo.userTags.map((t: Tag) => t.id) ?? []
             });
         }
     }, [ingredientInfo]);

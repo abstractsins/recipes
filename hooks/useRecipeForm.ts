@@ -212,8 +212,8 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
             setFormState({
                 name: recipeInfo.name ?? '',
                 selectedSeasonIndexes: recipeInfo.seasons.map(s => s.id) ?? [],
-                selectedDefaultTagIndexes: recipeInfo.defaultTags.map(t => t.tagId) ?? [],
-                selectedUserTagIndexes: recipeInfo.userTags.map(t => t.tagId) ?? []
+                selectedDefaultTagIndexes: recipeInfo.defaultTags.map((t: Tag) => t.id) ?? [],
+                selectedUserTagIndexes: recipeInfo.userTags.map((t: Tag) => t.id) ?? []
             });
         }
     }, [recipeInfo]);

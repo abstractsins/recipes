@@ -110,10 +110,10 @@ async function main() {
             userId: adminUser.id,
 
             defaultTags: {
-                create: [{ tag: { connect: { id: meatTag.id } } }],
+                connect: [{ id: meatTag.id }],
             },
             userTags: {
-                create: [{ tag: { connect: { id: getAtWFTag.id } } }],
+                connect: [{ id: getAtWFTag.id }],
             },
         },
     });
@@ -156,7 +156,7 @@ async function main() {
                 category: 'herb',
                 userId: adminUser.id,
                 defaultTags: {
-                    create: [{ tag: { connect: { id: driedTag.id } } }],
+                    connect: [{ id: driedTag.id }],
                 },
             },
         }),
@@ -186,7 +186,7 @@ async function main() {
                 category: 'dairy',
                 userId: adminUser.id,
                 defaultTags: {
-                    create: [{ tag: { connect: { id: notVeganTag.id } } }],
+                    connect: [{ id: notVeganTag.id }],
                 },
             },
         }),
@@ -215,7 +215,7 @@ async function main() {
                 subcategory: 'root',
                 userId: regUser2.id,
                 defaultTags: {
-                    create: [{ tag: { connect: { id: veganTag.id } } }],
+                    connect: [{ id: veganTag.id }],
                 },
             },
         }),

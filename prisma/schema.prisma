@@ -51,8 +51,8 @@ model DefaultTag {
   name String
   type TagType
 
-  recipeLinks     RecipeDefaultTag[]
-  ingredientLinks IngredientDefaultTag[]
+  recipes     RecipeDefaultTag[]
+  ingredients Ingredient[]
 
   @@unique([name, type])
 }
@@ -64,8 +64,8 @@ model UserTag {
   createdBy Int
   owner     User    @relation(fields: [createdBy], references: [id])
 
-  recipeLinks     RecipeUserTag[]
-  ingredientLinks IngredientUserTag[]
+  recipes     RecipeUserTag[]
+  ingredients Ingredient[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -94,23 +94,6 @@ model RecipeUserTag {
   @@id([recipeId, tagId])
 }
 
-model IngredientDefaultTag {
-  ingredientId Int
-  tagId        Int
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
-  tag          DefaultTag @relation(fields: [tagId], references: [id])
-
-  @@id([ingredientId, tagId])
-}
-
-model IngredientUserTag {
-  ingredientId Int
-  tagId        Int
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
-  tag          UserTag    @relation(fields: [tagId], references: [id])
-
-  @@id([ingredientId, tagId])
-}
 
 /**
  * ---------- DOMAIN MODELS ----------
@@ -152,8 +135,8 @@ model Ingredient {
    * relations
    */
   recipes     RecipeIngredient[]
-  defaultTags IngredientDefaultTag[]
-  userTags    IngredientUserTag[]
+  defaultTags DefaultTag[]
+  userTags    UserTag[]
   seasons     Season[]               @relation("IngredientSeasons")
 
   @@unique([userId, name])

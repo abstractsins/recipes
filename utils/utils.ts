@@ -66,6 +66,8 @@ export const tagsIntoOptions = (tags: Tag[]) => {
         return option;
     });
 
+    console.dir(options);
+
     return options;
 }
 

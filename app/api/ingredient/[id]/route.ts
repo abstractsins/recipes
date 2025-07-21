@@ -13,22 +13,27 @@ export async function GET(
   _req: NextRequest,
   { params }: IdCtx
 ) {
-  const { id } = await params                      // <- await
-  const numericId = Number(id)
+  const { id } = await params;
+  const numericId = Number(id);
   if (Number.isNaN(numericId)) {
-    return new NextResponse('Invalid ingredient ID; must be a number.', {
-      status: 400,
-    })
+    return new NextResponse('Invalid ingredient ID; must be a number.', { status: 400, });
   }
 
   const ingredient = await prisma.ingredient.findUnique({
     where: { id: numericId },
-    include: { seasons: true, defaultTags: true, userTags: true },
+    include: {
+      seasons: true,
+      defaultTags: true,
+      recipes: true,
+      userTags: true
+    },
   })
+
+  console.dir(ingredient);
 
   return ingredient
     ? NextResponse.json(ingredient)
-    : new NextResponse('Ingredient not found.', { status: 404 })
+    : new NextResponse('Ingredient not found.', { status: 404 });
 }
 
 /* ─────────────── PUT ─────────────── */
@@ -36,10 +41,10 @@ export async function PUT(
   req: NextRequest,
   { params }: IdCtx
 ) {
-  const { id } = await params
-  const numericId = Number(id)
+  const { id } = await params;
+  const numericId = Number(id);
   if (Number.isNaN(numericId)) {
-    return new NextResponse('Invalid ingredient id', { status: 400 })
+    return new NextResponse('Invalid ingredient id', { status: 400 });
   }
 
   const body = (await req.json()) as IngredientDTO
@@ -47,8 +52,6 @@ export async function PUT(
     return new NextResponse('name and userId are required', { status: 400 })
   }
 
-  await prisma.ingredientUserTag.deleteMany({ where: { ingredientId: numericId } });
-  await prisma.ingredientDefaultTag.deleteMany({ where: { ingredientId: numericId } });
 
   const updatedIngredient = await prisma.$transaction(async (tx) => {
 
@@ -64,19 +67,12 @@ export async function PUT(
         brand: body.brand ?? null,
         notes: body.notes ?? null,
         seasons: { set: body.selectedSeasonIndexes?.map(id => ({ id })) ?? [] },
-
-        // userTags: { set: body.selectedUserTagIndexes?.map(tagId => ({ tagId })) ?? [] },
-        //   set: body.selectedUserTagIndexes?.map(id => ({ id })) ?? [],
-        // },
+        userTags: { set: body.selectedUserTagIndexes?.map(id => ({ id })) ?? [] },
+        defaultTags: { set: body.selectedDefaultTagIndexes?.map(id => ({ id })) ?? [] },
         updatedAt: new Date()
       },
     })
   })
-
-  await prisma.ingredientUserTag.createMany({
-    data: body.selectedUserTagIndexes?.map(tagId => ({ ingredientId: numericId, tagId })),
-    skipDuplicates: true,
-  });
 
 
   return NextResponse.json(updatedIngredient, { status: 200 })

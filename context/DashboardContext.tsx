@@ -21,6 +21,7 @@ import {
   Ingredient,
   DashboardContextValue,
   User,
+  Recipe,
   UserFormStateEdit
 } from '@/types/types';
 
@@ -44,10 +45,11 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
   const { recipes } = useFetchRecipes({ refreshKey: recipesRefreshKey });
 
-  const {
-    defaultTags: defaultIngredientTags,
-    userTags: allUserIngredientTags,
-  } = useFetchTags({ type: 'ingredient', user: null, refreshKey: tagsRefreshKey });
+  const { defaultTags: defaultIngredientTags, userTags: allUserIngredientTags } = useFetchTags({
+    type: 'ingredient',
+    user: null,
+    refreshKey: tagsRefreshKey
+  });
 
   const {
     defaultTags: defaultRecipeTags,
@@ -90,6 +92,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     setIngredientListWaiting(true);
     const res = await fetch(`/api/ingredient/user/${userId}`);
     const data = await res.json();
+    console.dir(data);
     setIngredientListWaiting(false);
     return data;
   }, []);
@@ -105,7 +108,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
   // FETCHING RECIPE INFORMATION
   const [recipeListWaiting, setRecipeListWaiting] = useState<boolean>(false);
 
-  const fetchUserRecipes = useCallback(async (userId: number): Promise<Ingredient[]> => {
+  const fetchUserRecipes = useCallback(async (userId: number): Promise<Recipe[]> => {
     setRecipeListWaiting(true);
     const res = await fetch(`/api/recipe/user/${userId}`);
     const data = await res.json();
@@ -113,7 +116,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     return data;
   }, []);
 
-  const fetchRecipeById = useCallback(async (id: number): Promise<Ingredient> => {
+  const fetchRecipeById = useCallback(async (id: number): Promise<Recipe> => {
     const res = await fetch(`/api/recipe/${id}`);
     const data = await res.json();
     return data;

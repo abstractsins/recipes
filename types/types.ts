@@ -19,9 +19,9 @@ export interface Recipe {
     name: string,
     user?: User,
     seasons: Season[],
-    defaultTags: IngredientTag[],
-    userTags: IngredientTag[],
-    createdAt?: Date,
+    defaultTags: Tag[],
+    userTags: Tag[],
+    createdAt?: Date,   
     updatedAt?: Date
 }
 
@@ -36,16 +36,16 @@ export interface Ingredient {
     user?: User,
     category?: string,
     subcategory?: string,
-    defaultTags: IngredientTag[],
-    userTags: IngredientTag[],
+    defaultTags: Tag[],
+    userTags: Tag[],
     brand?: string,
     createdAt?: Date,
     updatedAt?: Date
 }
 
 export interface IngredientTag {
-    ingredientId: number,
     tagId: number,
+    ingredientId: number,
     category: string
 }
 
@@ -256,9 +256,9 @@ export interface DashboardContextValue {
     ingredients: Ingredient[];
     recipes: Recipe[];
     fetchUserIngredients: (userId: number) => Promise<Ingredient[]>;
-    fetchUserRecipes: (userId: number) => Promise<Ingredient[]>;
+    fetchUserRecipes: (userId: number) => Promise<Recipe[]>;
     fetchIngredientById: (id: number) => Promise<Ingredient>;
-    fetchRecipeById: (id: number) => Promise<Ingredient>;
+    fetchRecipeById: (id: number) => Promise<Recipe>;
     fetchUserUserInfo: (id: number) => Promise<UserFormStateEdit>;
     refreshIngredientModule: () => void,
     refreshRecipeModule: () => void,

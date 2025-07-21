@@ -13,10 +13,10 @@ export async function GET() {
     try {
         const ingredients = await prisma.ingredient.findMany({
             include: {
-                userTags: true,
-                defaultTags: true,
                 user: false,
                 seasons: true,
+                userTags: true,
+                defaultTags: true,
             },
         });
         return NextResponse.json(ingredients);
@@ -50,26 +50,14 @@ export async function POST(req: NextRequest) {
                     seasons: body.selectedSeasonIndexes?.length
                         ? { connect: body.selectedSeasonIndexes.map((id) => ({ id })) }
                         : undefined,
+                    defaultTags: body.selectedDefaultTagIndexes?.length
+                        ? { connect: body.selectedDefaultTagIndexes.map((id) => ({ id })) }
+                        : undefined,
+                    userTags: body.selectedUserTagIndexes?.length
+                        ? { connect: body.selectedUserTagIndexes.map((id) => ({ id })) }
+                        : undefined,
                 },
             });
-
-            if (body.selectedDefaultTagIndexes?.length) {
-                await tx.ingredientDefaultTag.createMany({
-                    data: body.selectedDefaultTagIndexes.map((tagId) => ({
-                        ingredientId: newIng.id,
-                        tagId,
-                    })),
-                });
-            }
-
-            if (body.selectedUserTagIndexes?.length) {
-                await tx.ingredientUserTag.createMany({
-                    data: body.selectedUserTagIndexes.map((tagId) => ({
-                        ingredientId: newIng.id,
-                        tagId,
-                    })),
-                });
-            }
 
             return newIng;
         });
