@@ -32,10 +32,22 @@ div.module-header h2 {
   font-size: 20pt;
 }
 
+div.module-subheader {
+  display: flex;
+  padding: 5px 0;
+}
+
 span.cat-data-label {
   text-transform: uppercase;
-  font-size: 10pt;
+  font-size: 12pt;
   color: lightcyan;
+  margin-right: 5px;
+}
+
+span.cat-data {
+  width: 100%;
+  font-size: 12pt;
+  min-height: 22px;
 }
 
 .grand-module>header {

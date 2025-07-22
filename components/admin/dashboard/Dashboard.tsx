@@ -1,20 +1,28 @@
 'use client';
 
+import styles from "./Dashboard.module.css";
+
 import { useEffect, useState } from "react";
 
 import DashboardAddEdit from "./DashboardAddEdit";
 import DashboardReadouts from "./readouts/DashboardReadouts";
-import styles from "./Dashboard.module.css";
 import { useDashboard } from "@/context/DashboardContext";
 
 export default function Dashboard() {
 
 
-    const { 
-        activateModule, 
-        deactivateModule, 
-        activeModuleIds: activeIds 
+    const {
+        activateModule,
+        deactivateModule,
+        setActiveModuleIds,
+        activeModuleIds: activeIds,
     } = useDashboard();
+
+
+        //* ----------------FUNCTIONS------------- //
+    
+        const collapseAll = () => { setActiveModuleIds([]) };
+    
 
 
     return (
@@ -22,6 +30,15 @@ export default function Dashboard() {
             <header className={styles['header']}>
                 <h1>Recipe Database Admin Dashboard</h1>
             </header>
+
+            <div>
+                <input
+                    className={styles["collapse-all"]}
+                    type='button'
+                    value="Collapse All"
+                    onClick={collapseAll}
+                />
+            </div>
 
             <div className={styles["body"]}>
 

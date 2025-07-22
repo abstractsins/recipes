@@ -9,16 +9,22 @@ import { useEffect } from "react";
 import Entries from "./Entries";
 
 import styles from './DashboardReadoutModule.module.css';
+import ReadoutSpinner from "@/components/general/ReadoutSpinner";
 
-function DashboardReadoutModule({ title, id, hookData, isActive }: AdminReadoutModule) {
+function DashboardReadoutModule({
+    id,
+    title,
+    hookData,
+    isLoading,
+    isActive
+}: AdminReadoutModule) {
 
     const {
         activateModule: activate,
-        deactivateModule: deactivate
+        deactivateModule: deactivate,
     } = useDashboard();
 
-    const isLoading = false; // DEBUG?
-
+    
     return (
         <div
             className={`module ${styles['module']} ${isActive ? styles['active'] : styles['inactive']}`}
@@ -26,8 +32,13 @@ function DashboardReadoutModule({ title, id, hookData, isActive }: AdminReadoutM
             onClick={activate}
         >
             <div className={styles["module-header"]}>
-                <h3>{title}</h3>    
-                <span className="cat-data-label">total:</span><span className="cat-data"> {isLoading ? '--' : hookData?.length}</span>
+                <h3>{title}</h3>
+                <div className={styles["module-subheader"]}>
+                    <span className={styles["cat-data-label"]}>total: </span>
+                    <span className={styles["cat-data"]}>
+                        {isLoading ? <ReadoutSpinner /> : hookData?.length}
+                    </span>
+                </div>
             </div>
             {isActive &&
                 (<>

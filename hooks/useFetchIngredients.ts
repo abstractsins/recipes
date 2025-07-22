@@ -25,5 +25,7 @@ export function useFetchIngredients({ refreshKey }: Props) {
     })()
   }, [refreshKey]);
 
+  useEffect(() => { console.log('isLoading:', isLoading) }, [isLoading])
+
   return { ingredients, isLoading };
 }

@@ -21,7 +21,7 @@ export interface Recipe {
     seasons: Season[],
     defaultTags: Tag[],
     userTags: Tag[],
-    createdAt?: Date,   
+    createdAt?: Date,
     updatedAt?: Date
 }
 
@@ -76,7 +76,7 @@ export interface IngredientDTO {
     variety?: string;
     category?: string;
     subcategory?: string;
-    brand? : string;
+    brand?: string;
     notes?: string;
     selectedSeasonIndexes?: number[];
     selectedDefaultTagIndexes?: number[];
@@ -107,6 +107,7 @@ export interface AdminReadoutModule {
     title: string;
     id: string;
     hookData: any;
+    isLoading: boolean;
     isActive: boolean;
     onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
     close: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -272,12 +273,20 @@ export interface DashboardContextValue {
     defaultRecipeTagOptions: TagOption[],
 
     /* Loader States */
+    // add/edit loading states
     // userTagsWaiting?: boolean,
     ingredientListWaiting?: boolean,
     recipeListWaiting?: boolean,
     isUserUserInfoLoading?: boolean,
     setIngredientInfoLoading?: (b: boolean) => void;
     isIngredientInfoLoading?: boolean,
+
+    // readout loading states
+    usersLoading: boolean,
+    ingredientsLoading: boolean,
+    recipesLoading: boolean,
+    ingredientTagsLoading: boolean,
+    recipeTagsLoading: boolean,
 
     /* Admin Access for all tags at once */
     allUserIngredientTags: Tag[],
@@ -292,6 +301,7 @@ export interface DashboardContextValue {
     loadUserTags: (type: 'ingredient' | 'recipe', userId: number) => Promise<Tag[]>;
 
     /* UI state */
+    setActiveModuleIds: (ids: string[]) => void;
     activeModuleIds: string[];
     activateModule: (e: React.MouseEvent<HTMLDivElement>) => void;
     deactivateModule: (e: React.MouseEvent<HTMLDivElement>) => void;

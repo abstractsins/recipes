@@ -39,13 +39,17 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
   const [recipesRefreshKey, setRecipesRefreshKey] = useState(0);
 
   // READOUT MODULE DATA
-  const { users } = useFetchUsers({ refreshKey: usersRefreshKey });
+  const { users, isLoading: usersLoading } = useFetchUsers({ refreshKey: usersRefreshKey });
 
-  const { ingredients } = useFetchIngredients({ refreshKey: ingredientsRefreshKey });
+  const { ingredients, isLoading: ingredientsLoading } = useFetchIngredients({ refreshKey: ingredientsRefreshKey });
 
-  const { recipes } = useFetchRecipes({ refreshKey: recipesRefreshKey });
+  const { recipes, isLoading: recipesLoading } = useFetchRecipes({ refreshKey: recipesRefreshKey });
 
-  const { defaultTags: defaultIngredientTags, userTags: allUserIngredientTags } = useFetchTags({
+  const {
+    defaultTags: defaultIngredientTags,
+    userTags: allUserIngredientTags,
+    isLoading: ingredientTagsLoading
+  } = useFetchTags({
     type: 'ingredient',
     user: null,
     refreshKey: tagsRefreshKey
@@ -54,7 +58,12 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
   const {
     defaultTags: defaultRecipeTags,
     userTags: allUserRecipeTags,
-  } = useFetchTags({ type: 'recipe', user: null, refreshKey: tagsRefreshKey });
+    isLoading: recipeTagsLoading
+  } = useFetchTags({
+    type: 'recipe',
+    user: null,
+    refreshKey: tagsRefreshKey
+  });
 
   // READOUT MODULE REFRESH TRIGGERS
   const refreshUsersModule = useCallback(() => setUsersRefreshKey(k => k + 1), []);
@@ -198,12 +207,17 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     defaultIngredientTagOptions,
     defaultRecipeTagOptions,
 
-    /* Loader States */
+    /* Add/Edit Loader States */
     isUserUserInfoLoading,
     ingredientListWaiting,
     isIngredientInfoLoading,
     setIngredientInfoLoading,
     recipeListWaiting,
+
+    /* Readout Loader States */
+    usersLoading, ingredientsLoading, recipesLoading,
+    ingredientTagsLoading, recipeTagsLoading,
+
 
     /* Admin Access for all tags at once */
     allUserIngredientTags,
@@ -218,6 +232,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     loadUserTags,
 
     /* UI state */
+    setActiveModuleIds,
     activeModuleIds,
     activateModule,
     deactivateModule,
@@ -239,7 +254,10 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     isUserUserInfoLoading,
     ingredientListWaiting,
     isIngredientInfoLoading,
-    recipeListWaiting
+    recipeListWaiting,
+
+    usersLoading, ingredientsLoading, recipesLoading,
+    ingredientTagsLoading, recipeTagsLoading
   ]);
 
   return (
