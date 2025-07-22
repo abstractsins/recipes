@@ -32,8 +32,13 @@ import { useDashboard } from '@/context/DashboardContext';
 
 
 
-
-export default function AddEditIngredient({ id, title, isActive, onClick, close }: AdminAddEditModule) {
+export default function AddEditIngredient({
+    id,
+    title,
+    isActive,
+    onClick,
+    close
+}: AdminAddEditModule) {
 
     const [mode, setMode] = useState<Mode>('add');
 
@@ -64,7 +69,9 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
         userTagsWaiting,
         submitWaiting,
         ingredientInfo,
-        userIngredientListHasLoaded
+        userIngredientListHasLoaded,
+        isAddFormValid,
+        isEditFormValid
     } = useIngredientForm(mode);
 
     const ingredientSelectReady = (ingredientListWaiting === false && !!userIngredientList);
@@ -75,10 +82,6 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
     const onSeasonChange = handleSeasonSelect(setFormState);
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
     const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIndexes');
-
-    useEffect(() => {
-        console.log('userIngredientListHasLoaded:', userIngredientListHasLoaded);
-    }, [])
 
 
     return (
@@ -281,7 +284,7 @@ export default function AddEditIngredient({ id, title, isActive, onClick, close 
                                 )}
                                 <FieldModule className="add-edit-ingredient-submit-module">
                                     <input
-                                        disabled={submitWaiting}
+                                        disabled={mode === 'add' ? (submitWaiting || !isAddFormValid) : (submitWaiting || !isEditFormValid)}
                                         className={styles["add-edit-ingredient-submit"]}
                                         type="submit"
                                         value={toTitleCase(mode)}

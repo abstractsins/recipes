@@ -3,7 +3,7 @@ import { Tag } from '@/types/types';
 
 type Params<TFormState> = {
   type: 'ingredient' | 'recipe';
-  uid: number | null;                                 // whoever is the active user for *this* form
+  uid: number | null;      
   loadUserTags: (type: 'ingredient' | 'recipe', id: number) => Promise<Tag[]>;
   setFormState: React.Dispatch<React.SetStateAction<TFormState>>;
   tagResetKey: keyof TFormState;
@@ -16,7 +16,7 @@ type Params<TFormState> = {
  */
 export function useSyncUserTags<TFormState>({
   type,
-  uid,                      // pass ONE uid prop
+  uid,
   loadUserTags,
   setFormState,
   tagResetKey,
@@ -24,7 +24,7 @@ export function useSyncUserTags<TFormState>({
   setUserTags,
 }: Params<TFormState>) {
   useEffect(() => {
-    if (!uid) return;       // 👈 bail early only if no user selected
+    if (!uid) return;
 
     setFormState(prev => ({ ...prev, [tagResetKey]: [] as any }));
     setUserTagsWaiting(true);
@@ -32,5 +32,5 @@ export function useSyncUserTags<TFormState>({
     loadUserTags(type, uid)
       .then(setUserTags)
       .finally(() => setUserTagsWaiting(false));
-  }, [type, uid]);          // rerun when either changes
+  }, [type, uid]);
 }

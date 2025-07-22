@@ -88,6 +88,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const [userIngredientListHasLoaded, setUserIngredientListHasLoaded] = useState<boolean>(false);
 
+    const [isAddFormValid, setIsAddFormValid] = useState(false);
+    const [isEditFormValid, setIsEditFormValid] = useState(false);
+
+    const [currentIngredientData, setCurrentIngredientData] = useState<IngredientFormState>();
+
     const isDisabled = mode === 'edit' && !ingredientReady;
 
 
@@ -117,6 +122,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         !exceptions?.includes('form') && setFormState(emptyIngredientForm);
         !exceptions?.includes('userReady') && setUserReady(false);
         !exceptions?.includes('ingredientReady') && setIngredientReady(false);
+        !exceptions?.includes('valid') && setIsAddFormValid(false);
+        !exceptions?.includes('valid') && setIsEditFormValid(false);
     }, []);
 
     const handleIngredientSelect = (id: number | null) => {
@@ -127,10 +134,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     };
 
     const handleAuthorSelect = (user: UserOption | null) => {
-        if (user !== null) {
-            if (user.value !== null) {
-                setSelectedAuthorId(user.value);
-            }
+        if (user !== null && user.value !== null) {
+            setSelectedAuthorId(user.value);
         }
     };
 
@@ -170,6 +175,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 if (!quiet) setWarningMsg('Ingredient info loading...');
                 const data = await fetchIngredientById(selectedIngredientId);
                 setIngredientInfo(data);
+                setCurrentIngredientData(data);
             }
             setWarningMsg(null);
         }, [selectedIngredientId, fetchIngredientById]);
@@ -213,8 +219,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
             ...formState,
             userId: mode === 'add'
                 ? new FormData(e.currentTarget).get('user')
-                : selectedIngredientUserId, 
-                    IngredientTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
+                : selectedIngredientUserId,
+            IngredientTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
         };
 
         try {
@@ -246,7 +252,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
             setIngredientReady(false);
             setSelectedIngredientId(null);
             setSubmitWaiting(false);
-
             document.getElementById('add-edit-ingredient-module')?.scrollIntoView({ behavior: 'smooth' });
         }
     };
@@ -303,6 +308,38 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         }
     }, [selectedIngredientUserId]);
 
+    useEffect(() => {
+        if (mode === 'add') {
+            if (formState.name && selectedAuthorId) {
+                setIsAddFormValid(true);
+            } else {
+                setIsAddFormValid(false);
+            }
+        } else if (mode === 'edit') {
+
+        }
+    }, [formState, selectedAuthorId, selectedIngredientUserId]);
+
+
+    // COMPARE USER INFO TO VALIDATE THE SUBMIT BUTTON => no change, no edit
+    useEffect(() => {
+        const handleCompareIngredientForm = (updatedIngredientData: IngredientFormState, currentIngredientData: IngredientFormState) => {
+            if (
+                updatedIngredientData.name !== currentIngredientData.name
+            ) {
+                clearStatuses();
+                setIsEditFormValid(false);
+            } else {
+                setIsEditFormValid(true);
+                setWarningMsg('No changes have been made.')
+            }
+        }
+
+        if (currentIngredientData && mode === 'edit' && selectedIngredientUserId) {
+            console.warn('comparing ingredient form states');
+            handleCompareIngredientForm(formState, currentIngredientData);
+        }
+    }, [formState]);
 
 
     //*--------------------------------------------//
@@ -331,6 +368,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         selectedAuthorId,
         submitWaiting,
         userIngredientListHasLoaded,
-        ingredientInfo
+        ingredientInfo,
+        isAddFormValid,
+        isEditFormValid
     };
 }

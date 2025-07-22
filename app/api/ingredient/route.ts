@@ -16,6 +16,7 @@ export async function GET() {
                 user: false,
                 seasons: true,
                 userTags: true,
+                recipes: true,
                 defaultTags: true,
             },
         });
