@@ -1,11 +1,10 @@
 'use client';
 
+//* --------------------------------------------//
+//* ------------------IMPORTS-------------------//
+//* --------------------------------------------//
 
-
-//*--------------------------------------------//
-//*------------------IMPORT--------------------//
-//*--------------------------------------------//
-
+//* REACT
 import {
     useState,
     useEffect,
@@ -13,6 +12,7 @@ import {
     useMemo
 } from "react";
 
+//* TYPES
 import {
     Ingredient,
     IngredientFormState,
@@ -20,29 +20,29 @@ import {
     UserOption
 } from "@/types/types";
 
-import { useDashboard } from "@/context/DashboardContext";
-
+//* UTILS
 import {
     createInputHandler,
     tagsIntoOptions
 } from "@/utils/utils";
 
+//* HOOKS
 import { useSyncUserTags } from "@/hooks/useSyncUserTags";
 
+//* CONTEXT
+import { useDashboard } from "@/context/DashboardContext";
 
 
-//*--------------------------------------------//
-//*------------------EXPORT--------------------//
-//*--------------------------------------------//
+
+//* --------------------------------------------//
+//* ------------------EXPORTS-------------------//
+//* --------------------------------------------//
 
 
 export function useIngredientForm(mode: 'add' | 'edit') {
 
 
-
-    //*----------------------------------------------//
-    //*--------------------states--------------------//
-    //*----------------------------------------------//
+    //* --------------------STATES--------------------//
 
     const {
         fetchUserIngredients: contextFetchUserIngredients,
@@ -69,13 +69,19 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const [submitWaiting, setSubmitWaiting] = useState(false);
 
+    //* STATUSES
     const [error, setError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [warningMsg, setWarningMsg] = useState<string | null>(null);
     const [instructionMsg, setInstructionMsg] = useState<string | null>(null);
 
+    //* READINESS / WAITING / LOADING / VALIDITY
     const [userReady, setUserReady] = useState(false);
     const [ingredientReady, setIngredientReady] = useState(false);
+    const [isAddFormValid, setIsAddFormValid] = useState(false);
+    const [isEditFormValid, setIsEditFormValid] = useState(false);
+    const isDisabled = mode === 'edit' && !ingredientReady;
+
     const [selectedIngredientUserId, setSelectedIngredientUserId] = useState<number | null>(null);
     const [selectedIngredientUserValue, setSelectedIngredientUserValue] = useState<UserOption | null>(null);
     const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
@@ -88,18 +94,12 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const [userIngredientListHasLoaded, setUserIngredientListHasLoaded] = useState<boolean>(false);
 
-    const [isAddFormValid, setIsAddFormValid] = useState(false);
-    const [isEditFormValid, setIsEditFormValid] = useState(false);
 
     const [currentIngredientData, setCurrentIngredientData] = useState<IngredientFormState>();
 
-    const isDisabled = mode === 'edit' && !ingredientReady;
 
 
-
-    //*-----------------------------------------------//
-    //*-------------------functions-------------------//
-    //*-----------------------------------------------//
+    //* -------------------FUNCTIONS-------------------//
 
     const clearStatuses = () => {
         setError(null);
@@ -272,10 +272,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     });
 
 
-
-    //*------------------------------------------------//
-    //*-------------------useEffects-------------------//
-    //*------------------------------------------------//
+    //* -------------------useEffects-------------------//
 
     useEffect(() => { fetchUserIngredients(); }, [selectedIngredientUserId, fetchUserIngredients]);
     useEffect(() => { fetchIngredientInfo(); }, [selectedIngredientId, fetchIngredientInfo]);
@@ -324,13 +321,37 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     // COMPARE USER INFO TO VALIDATE THE SUBMIT BUTTON => no change, no edit
     useEffect(() => {
         const handleCompareIngredientForm = (updatedIngredientData: IngredientFormState, currentIngredientData: IngredientFormState) => {
+
+
+
+            console.log(updatedIngredientData.name !== currentIngredientData.name)
+            console.log(updatedIngredientData.main !== (currentIngredientData.main || ""))
+            console.log(updatedIngredientData.variety !== (currentIngredientData.variety || ""))
+            console.log(updatedIngredientData.category !== (currentIngredientData.category || ""))
+            console.log(updatedIngredientData.subcategory !== (currentIngredientData.subcategory || ""))
+            console.log(updatedIngredientData.brand !== (currentIngredientData.brand || ""))
+            console.log(JSON.stringify(updatedIngredientData.selectedDefaultTagIndexes), (JSON.stringify(currentIngredientData.selectedDefaultTagIndexes) || "[null]"))
+            console.log(JSON.stringify(updatedIngredientData.selectedUserTagIndexes), (JSON.stringify(currentIngredientData.selectedUserTagIndexes) || "[null]"))
+            console.log(JSON.stringify(updatedIngredientData.selectedSeasonIndexes) !== (JSON.stringify(currentIngredientData.selectedSeasonIndexes) || "[]"))
+
+
+
+
             if (
                 updatedIngredientData.name !== currentIngredientData.name
+                || updatedIngredientData.main !== (currentIngredientData.main || "")
+                || updatedIngredientData.variety !== (currentIngredientData.variety || "")
+                || updatedIngredientData.category !== (currentIngredientData.category || "")
+                || updatedIngredientData.subcategory !== (currentIngredientData.subcategory || "")
+                || updatedIngredientData.brand !== (currentIngredientData.brand || "")
+                || JSON.stringify(updatedIngredientData.selectedDefaultTagIndexes) !== (JSON.stringify(currentIngredientData.selectedDefaultTagIndexes) || "[null]")
+                || JSON.stringify(updatedIngredientData.selectedUserTagIndexes) !== (JSON.stringify(currentIngredientData.selectedUserTagIndexes) || "[null]")
+                || JSON.stringify(updatedIngredientData.selectedSeasonIndexes) !== (JSON.stringify(currentIngredientData.selectedSeasonIndexes) || "[]")
             ) {
                 clearStatuses();
-                setIsEditFormValid(false);
-            } else {
                 setIsEditFormValid(true);
+            } else {
+                setIsEditFormValid(false);
                 setWarningMsg('No changes have been made.')
             }
         }
@@ -342,9 +363,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     }, [formState]);
 
 
-    //*--------------------------------------------//
-    //*-------------------return-------------------//
-    //*--------------------------------------------//
+    //* -------------------RETURN-------------------//
 
     return {
         formState, setFormState,

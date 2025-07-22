@@ -1,10 +1,22 @@
 'use client';
 
+//* --------------------------------------- //
+//* -----------------IMPORTS--------------- //
+//* --------------------------------------- //
+
+//* STYLES
 import styles from './AddEditIngredient.module.css';
+
+//* ICONS
 import { FiPlusCircle } from "react-icons/fi";
+
+//* REACT
 import { useEffect, useState } from "react";
+
+//* TYPES
 import { Mode, AdminAddEditModule } from "@/types/types";
 
+//* COMPONENTS
 import ScreenGuard from "@/components/general/ScreenGuard";
 import InputSpinner from "@/components/general/InputSpinner";
 
@@ -19,6 +31,7 @@ import UserSelect from "../formElements/UserSelect";
 import IngredientSelect from "../formElements/IngredientSelect";
 import AddEditHeader from "./AddEditHeader";
 
+//* UTILS
 import {
     seasonOptions,
     toTitleCase,
@@ -27,10 +40,17 @@ import {
     handleTagSelectFactory
 } from "@/utils/utils";
 
+//* HOOKS
 import { useIngredientForm } from '@/hooks/useIngredientForm';
+
+//* CONTEXT
 import { useDashboard } from '@/context/DashboardContext';
 
 
+
+//* --------------------------------------- //
+//* -----------------EXPORTS--------------- //
+//* --------------------------------------- //
 
 export default function AddEditIngredient({
     id,
@@ -39,6 +59,9 @@ export default function AddEditIngredient({
     onClick,
     close
 }: AdminAddEditModule) {
+
+
+    //* -----------------STATES--------------- //
 
     const [mode, setMode] = useState<Mode>('add');
 
@@ -49,29 +72,26 @@ export default function AddEditIngredient({
     } = useDashboard();
 
     const {
-        formState,
-        setFormState,
+        formState, setFormState,
         handleIngredientSelect,
         handleIngredientUserSelect,
         handleAuthorSelect,
-        userIngredientTagValue,
+        handleSubmit,
         userIngredientTagInputHandler,
+        userIngredientTagValue,
         selectedUserIngredientTagOptions,
         addUserIngredientTag,
-        handleSubmit,
         selectedAuthorId,
         selectedIngredientUserId,
         selectedIngredientUserValue,
         selectedIngredientId,
         userIngredientList,
         error, successMsg, warningMsg, instructionMsg,
-        resetAll,
-        userTagsWaiting,
-        submitWaiting,
+        userTagsWaiting, submitWaiting,
         ingredientInfo,
         userIngredientListHasLoaded,
-        isAddFormValid,
-        isEditFormValid
+        isAddFormValid, isEditFormValid,
+        resetAll,
     } = useIngredientForm(mode);
 
     const ingredientSelectReady = (ingredientListWaiting === false && !!userIngredientList);
@@ -83,6 +103,8 @@ export default function AddEditIngredient({
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
     const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIndexes');
 
+
+    //* -----------------RETURN--------------- //
 
     return (
         <div
