@@ -94,7 +94,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const [userIngredientListHasLoaded, setUserIngredientListHasLoaded] = useState<boolean>(false);
 
-
     const [currentIngredientData, setCurrentIngredientData] = useState<IngredientFormState>();
 
 

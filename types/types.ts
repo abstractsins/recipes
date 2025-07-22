@@ -35,9 +35,9 @@ export interface Ingredient {
     brand?: string,
     notes?: string,
     seasons: Season[],
-    user?: User,
     userTags: Tag[],
     defaultTags: Tag[],
+    user?: User,
     recipes: Recipe[],
     createdAt?: Date,
     updatedAt?: Date
@@ -214,8 +214,9 @@ export interface IngredientFormState {
     main?: string;
     variety?: string;
     category?: string;
-    brand?: string;
     subcategory?: string;
+    brand?: string;
+    notes?: string;
     selectedSeasonIndexes: number[];
     selectedDefaultTagIndexes: number[];
     selectedUserTagIndexes: number[];
