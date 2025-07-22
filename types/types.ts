@@ -30,15 +30,15 @@ export interface Ingredient {
     name: string
     main?: string,
     variety?: string,
-    seasons: Season[],
-    recipes: Recipe[],
-    notes?: string,
-    user?: User,
     category?: string,
     subcategory?: string,
-    defaultTags: Tag[],
-    userTags: Tag[],
     brand?: string,
+    notes?: string,
+    seasons: Season[],
+    user?: User,
+    userTags: Tag[],
+    defaultTags: Tag[],
+    recipes: Recipe[],
     createdAt?: Date,
     updatedAt?: Date
 }
@@ -211,11 +211,11 @@ export interface UserFormEditRoute extends UserFormStateEdit {
 
 export interface IngredientFormState {
     name: string;
-    main: string;
-    variety: string;
-    category: string;
-    brand: string;
-    subcategory: string;
+    main?: string;
+    variety?: string;
+    category?: string;
+    brand?: string;
+    subcategory?: string;
     selectedSeasonIndexes: number[];
     selectedDefaultTagIndexes: number[];
     selectedUserTagIndexes: number[];

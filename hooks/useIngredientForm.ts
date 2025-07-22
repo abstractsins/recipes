@@ -156,6 +156,25 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         setFormState(emptyIngredientForm);
     }
 
+    const formalizeIngredient = (data: Ingredient | null): IngredientFormState | undefined => {
+        let formState: IngredientFormState | undefined;
+        if (data) {
+            formState = {
+                name: data.name,
+                main: data.main,
+                variety: data.variety,
+                category: data.category,
+                subcategory: data.subcategory,
+                brand: data.brand,
+                notes: data.notes,
+                selectedSeasonIndexes: data.seasons?.map(s => s.id),
+                selectedDefaultTagIndexes: data.defaultTags?.map(t => t.id),
+                selectedUserTagIndexes: data.userTags?.map(t => t.id)
+            }
+        }
+        return formState;
+    };
+
     const fetchUserIngredients = useCallback(
         async ({ quiet = false }: { quiet?: boolean } = {}) => {
             if (selectedIngredientUserId) {
@@ -175,7 +194,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 if (!quiet) setWarningMsg('Ingredient info loading...');
                 const data = await fetchIngredientById(selectedIngredientId);
                 setIngredientInfo(data);
-                setCurrentIngredientData(data);
+                setCurrentIngredientData(formalizeIngredient(data));
             }
             setWarningMsg(null);
         }, [selectedIngredientId, fetchIngredientById]);
@@ -210,9 +229,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const userIngredientTagInputHandler = createInputHandler(setUserIngredientTagValue);
 
+    //* ------------------SUBMIT------------------ //
     const handleIngredientSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSubmitWaiting(true);
+        mode === 'add' ? setIsAddFormValid(false) : setIsEditFormValid(false);
         clearStatuses();
 
         const data = {
@@ -306,6 +327,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     }, [selectedIngredientUserId]);
 
     useEffect(() => {
+        console.log(selectedAuthorId);
         if (mode === 'add') {
             if (formState.name && selectedAuthorId) {
                 setIsAddFormValid(true);
@@ -320,23 +342,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     // COMPARE USER INFO TO VALIDATE THE SUBMIT BUTTON => no change, no edit
     useEffect(() => {
+        
         const handleCompareIngredientForm = (updatedIngredientData: IngredientFormState, currentIngredientData: IngredientFormState) => {
-
-
-
-            console.log(updatedIngredientData.name !== currentIngredientData.name)
-            console.log(updatedIngredientData.main !== (currentIngredientData.main || ""))
-            console.log(updatedIngredientData.variety !== (currentIngredientData.variety || ""))
-            console.log(updatedIngredientData.category !== (currentIngredientData.category || ""))
-            console.log(updatedIngredientData.subcategory !== (currentIngredientData.subcategory || ""))
-            console.log(updatedIngredientData.brand !== (currentIngredientData.brand || ""))
-            console.log(JSON.stringify(updatedIngredientData.selectedDefaultTagIndexes), (JSON.stringify(currentIngredientData.selectedDefaultTagIndexes) || "[null]"))
-            console.log(JSON.stringify(updatedIngredientData.selectedUserTagIndexes), (JSON.stringify(currentIngredientData.selectedUserTagIndexes) || "[null]"))
-            console.log(JSON.stringify(updatedIngredientData.selectedSeasonIndexes) !== (JSON.stringify(currentIngredientData.selectedSeasonIndexes) || "[]"))
-
-
-
-
             if (
                 updatedIngredientData.name !== currentIngredientData.name
                 || updatedIngredientData.main !== (currentIngredientData.main || "")
@@ -348,8 +355,12 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 || JSON.stringify(updatedIngredientData.selectedUserTagIndexes) !== (JSON.stringify(currentIngredientData.selectedUserTagIndexes) || "[null]")
                 || JSON.stringify(updatedIngredientData.selectedSeasonIndexes) !== (JSON.stringify(currentIngredientData.selectedSeasonIndexes) || "[]")
             ) {
-                clearStatuses();
-                setIsEditFormValid(true);
+                if (selectedIngredientId) {
+                    clearStatuses();
+                    setIsEditFormValid(true);
+                } else {
+                    setIsEditFormValid(false);
+                }
             } else {
                 setIsEditFormValid(false);
                 setWarningMsg('No changes have been made.')
