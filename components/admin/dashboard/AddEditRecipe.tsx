@@ -1,10 +1,22 @@
 'use client';
 
+//* --------------------------------------- //
+//* -----------------IMPORTS--------------- //
+//* --------------------------------------- //
+
+//* STYLES
 import styles from './AddEditRecipe.module.css';
+
+//* ICONS
 import { FiPlusCircle } from "react-icons/fi";
+
+//* REACT
 import { useState } from "react";
+
+//* TYPES
 import { Mode } from "@/types/types";
 
+//* COMPONENTS
 import ScreenGuard from "@/components/general/ScreenGuard";
 
 import FormRow from "@/components/admin/formElements/FormRow";
@@ -16,13 +28,13 @@ import AdminMultiSelect from "../formElements/AdminMultiSelect";
 import TagsSelect from "../TagsSelect";
 import UserSelect from "../formElements/UserSelect";
 import RecipeIngredientsModule from '../formElements/addEditRecipe/RecipeIngredientsModule';
-// import RecipeSelect from "../formElements/RecipeSelect";
+
 import AddEditHeader from "./AddEditHeader";
 
 import RecipeSelect from '../formElements/RecipeSelect';
+import IngredientAdd from '../formElements/addEditRecipe/IngredientAdd';
 
-
-
+//* UTILS
 import {
     seasonOptions,
     toTitleCase,
@@ -31,11 +43,18 @@ import {
     handleTagSelectFactory,
 } from "@/utils/utils";
 
-import { useDashboard } from '@/context/DashboardContext';
+//* HOOKS
 import useRecipeForm from '@/hooks/useRecipeForm';
-import IngredientAdd from '../formElements/addEditRecipe/IngredientAdd';
+
+//* CONTEXT
+import { useDashboard } from '@/context/DashboardContext';
+import InputSpinner from '@/components/general/InputSpinner';
 
 
+
+//* --------------------------------------- //
+//* ----------------INTERFACE-------------- //
+//* --------------------------------------- //
 
 interface Props {
     id: string;
@@ -46,7 +65,21 @@ interface Props {
 }
 
 
-export default function AddEditRecipe({ id, isActive, onClick, title, close }: Props) {
+
+//* --------------------------------------- //
+//* -----------------EXPORTS--------------- //
+//* --------------------------------------- //
+
+export default function AddEditRecipe({
+    id,
+    isActive,
+    onClick,
+    title,
+    close
+}: Props) {
+
+
+    //* -----------------STATES--------------- //
 
     const [mode, setMode] = useState<Mode>('add');
 
@@ -56,29 +89,40 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
     } = useDashboard();
 
     const {
-        formState,
-        setFormState,
+        formState, setFormState,
+        resetAll,
+
+        userRecipeList, recipeInfo,
+
+        error, successMsg, warningMsg, instructionMsg,
+
+        userRecipeTagValue,
+        addUserRecipeTag,
+
         selectedRecipeId,
+        selectedRecipeValue,
         selectedRecipeUserId,
         selectedRecipeUserValue,
         selectedUserRecipeTagOptions,
-        userRecipeList,
-        handleRecipeUserSelect,
+
         handleRecipeSelect,
+        handleRecipeUserSelect,
         userRecipeTagInputHandler,
-        userRecipeTagValue,
-        addUserRecipeTag,
-        isDisabled,
         handleSubmit,
-        submitWaiting,
-        userTagsWaiting,
-        resetAll,
+
+        userReady, recipeReady,
+        isRecipeSelectReady, isIngredientModuleReady,
+        userTagsWaiting, submitWaiting, isRecipeLoading,
+        isDisabled
     } = useRecipeForm(mode);
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
     const onSeasonChange = handleSeasonSelect(setFormState);
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
     const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIndexes');
+
+
+    //* -----------------RETURN--------------- //
 
     return (
         <div
@@ -107,7 +151,8 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
 
                             <FormRow className={styles['row-0']}>
                                 <FieldModule label="User" id="edit-recipe-user-module">
-                                    <UserSelect onSelect={handleRecipeUserSelect} value={selectedRecipeUserValue}/>
+                                    <UserSelect onSelect={handleRecipeUserSelect} value={selectedRecipeUserValue} />
+                                    {recipeListWaiting && <InputSpinner />}
                                 </FieldModule>
                             </FormRow>
 
@@ -117,9 +162,10 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                                         <RecipeSelect
                                             value={selectedRecipeId}
                                             data={userRecipeList}
-                                            ready={!recipeListWaiting && !!selectedRecipeUserId}
+                                            ready={!recipeListWaiting && isRecipeSelectReady}
                                             onSelect={handleRecipeSelect}
                                         />
+                                        {isRecipeLoading && <InputSpinner />}
                                     </FieldModule>
                                 </FormRow>
                             )}
@@ -153,9 +199,9 @@ export default function AddEditRecipe({ id, isActive, onClick, title, close }: P
                             </FormRow>
 
 
-                            {!isDisabled &&
+                            {!isDisabled && isIngredientModuleReady &&
                                 <div className={styles["ingredients-module"]}>
-                                    <RecipeIngredientsModule />
+                                    <RecipeIngredientsModule mode={mode} />
                                 </div>
                             }
 

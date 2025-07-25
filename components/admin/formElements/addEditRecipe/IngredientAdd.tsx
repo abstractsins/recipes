@@ -25,7 +25,7 @@ export default function IngredientAdd() {
         <div className={styles['new-ingredient-info']}>
             <FormRow className='nested'>
                 <FieldModule
-                    label='New Ingredient'
+                    label='Insert Ingredient'
                     id='recipe-ingredient-add'
                 >
                     <RecipeIngredientSelector

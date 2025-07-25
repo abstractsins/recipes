@@ -295,7 +295,9 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     //* -------------------useEffects-------------------//
 
     useEffect(() => { fetchUserIngredients(); }, [selectedIngredientUserId, fetchUserIngredients]);
+    
     useEffect(() => { fetchIngredientInfo(); }, [selectedIngredientId, fetchIngredientInfo]);
+
     useEffect(() => {
         if (ingredientInfo) {
             console.log(ingredientInfo.defaultTags);
@@ -338,7 +340,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         }
     }, [formState, selectedAuthorId, selectedIngredientUserId]);
 
-
     // COMPARE USER INFO TO VALIDATE THE SUBMIT BUTTON => no change, no edit
     useEffect(() => {
         
@@ -377,28 +378,34 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     return {
         formState, setFormState,
+        resetAll,
+
         handleIngredientSelect,
         handleIngredientUserSelect,
-        selectedUserIngredientTagOptions,
         handleAuthorSelect,
+        handleSubmit: handleIngredientSubmit,
+
         userIngredientTagValue,
         userIngredientTagInputHandler,
         addUserIngredientTag,
-        handleSubmit: handleIngredientSubmit,
+        
+        selectedUserIngredientTagOptions,
         selectedIngredientUserId,
         selectedIngredientUserValue,
         selectedIngredientId,
+        selectedAuthorId,
+        
         userIngredientList,
         userTagsWaiting,
+
         error, successMsg, warningMsg, instructionMsg,
-        isDisabled,
-        userReady,
-        resetAll,
-        selectedAuthorId,
+
         submitWaiting,
         userIngredientListHasLoaded,
         ingredientInfo,
-        isAddFormValid,
-        isEditFormValid
+        
+        userReady,
+        isAddFormValid, isEditFormValid,
+        isDisabled
     };
 }

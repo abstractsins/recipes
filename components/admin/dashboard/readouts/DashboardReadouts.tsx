@@ -5,11 +5,11 @@
 //* STYLES
 import styles from './DashboardReadouts.module.css';
 
-//* COMPONENTS
-import DashboardReadoutModule from "./DashboardReadoutModule";
-
 //* REACT
 import { useMemo } from 'react';
+
+//* COMPONENTS
+import DashboardReadoutModule from "./DashboardReadoutModule";
 
 //* CONTEXT
 import { useDashboard } from '@/context/DashboardContext';
@@ -110,6 +110,7 @@ export default function DashboardReadouts({
 
     return (
         <div className={`${styles["readouts"]} ${styles['grand-module']}`}>
+            
             <header>
                 <h2>Data Readouts</h2>
             </header>

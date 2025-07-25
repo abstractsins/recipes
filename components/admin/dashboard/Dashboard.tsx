@@ -1,15 +1,32 @@
 'use client';
 
+//* --------------------------------------- //
+//* -----------------IMPORTS--------------- //
+//* --------------------------------------- //
+
+//* STYLES
 import styles from "./Dashboard.module.css";
 
+//* REACT
 import { useEffect, useState } from "react";
 
+//* COMPONENTS
 import DashboardAddEdit from "./DashboardAddEdit";
 import DashboardReadouts from "./readouts/DashboardReadouts";
+
+//* CONTEXT
 import { useDashboard } from "@/context/DashboardContext";
+
+
+
+//* --------------------------------------- //
+//* -----------------EXPORTS--------------- //
+//* --------------------------------------- //
 
 export default function Dashboard() {
 
+
+    //* -----------------STATES--------------- //
 
     const {
         activateModule,
@@ -19,14 +36,16 @@ export default function Dashboard() {
     } = useDashboard();
 
 
-        //* ----------------FUNCTIONS------------- //
-    
-        const collapseAll = () => { setActiveModuleIds([]) };
-    
+    //* ----------------FUNCTIONS------------- //
 
+    const collapseAll = () => { setActiveModuleIds([]) };
+
+
+    //* -----------------RETURN--------------- //
 
     return (
         <div className={styles["admin-dashboard"]}>
+            
             <header className={styles['header']}>
                 <h1>Recipe Database Admin Dashboard</h1>
             </header>

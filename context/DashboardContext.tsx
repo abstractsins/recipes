@@ -1,5 +1,10 @@
 'use client';
 
+//* -------------------------------------- //
+//* ----------------IMPORTS--------------- //
+//* -------------------------------------- //
+
+//* REACT
 import {
   createContext,
   useContext,
@@ -9,13 +14,13 @@ import {
   useCallback
 } from 'react';
 
+//* COMPONENTS
 import { useFetchTags } from '@/hooks/useFetchTags';
 import { useFetchRecipes } from '@/hooks/useFetchRecipes';
 import { useFetchUsers } from '@/hooks/useFetchUsers';
 import { useFetchIngredients } from '@/hooks/useFetchIngredients';
 
-import { tagsIntoOptions } from '@/utils/utils';
-
+//* TYPES
 import {
   Tag,
   Ingredient,
@@ -25,10 +30,24 @@ import {
   UserFormStateEdit
 } from '@/types/types';
 
+//* UTILS
+import { tagsIntoOptions } from '@/utils/utils';
+
 
 const DashboardContext = createContext<DashboardContextValue | undefined>(undefined);
 
+
+//* -------------------------------------- //
+//* ---------------INTERFACE-------------- //
+//* -------------------------------------- //
+
 interface DashboardProviderProps { children: ReactNode }
+
+
+
+//* -------------------------------------- //
+//* ----------------EXPORTS--------------- //
+//* -------------------------------------- //
 
 export function DashboardProvider({ children }: DashboardProviderProps) {
 
@@ -65,16 +84,16 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     refreshKey: tagsRefreshKey
   });
 
+
   // READOUT MODULE REFRESH TRIGGERS
   const refreshUsersModule = useCallback(() => setUsersRefreshKey(k => k + 1), []);
   const refreshRecipeModule = useCallback(() => setRecipesRefreshKey(k => k + 1), []);
   const refreshAllTags = useCallback(() => setTagsRefreshKey(k => k + 1), []);
   const refreshIngredientModule = useCallback(() => setIngredientsRefreshKey(k => k + 1), []);
 
-
+  //* ---------------FETCHES-------------- //
   // FETCHING USER INFORMATION
   const [isUserUserInfoLoading, setUserUserInfoLoading] = useState<boolean>(false);
-
   const fetchUserUserInfo = useCallback(async (userId: number): Promise<UserFormStateEdit> => {
     setUserUserInfoLoading(true);
     const res = await fetch(`api/user/${userId}`);
@@ -122,6 +141,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     const res = await fetch(`/api/recipe/user/${userId}`);
     const data = await res.json();
     setRecipeListWaiting(false);
+    console.warn('finished');
     return data;
   }, []);
 
@@ -152,7 +172,6 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     () => tagsIntoOptions(defaultRecipeTags ?? []),
     [defaultRecipeTags]
   );
-
   const selectedUserRecipeTagOptions = useMemo(
     () => tagsIntoOptions(allUserRecipeTags ?? []),
     [allUserRecipeTags]

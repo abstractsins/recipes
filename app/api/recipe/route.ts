@@ -4,9 +4,9 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-//********** */
-//* GET      */
-//********** */
+//* *************************************/
+//* ************** GET ******************/
+//* *************************************/
 export async function GET() {
     try {
         const recipes = await prisma.recipe.findMany({
@@ -37,18 +37,32 @@ export async function GET() {
     }
 }
 
-//********** */
-//* POST     */
-//********** */
+//* *************************************/
+//* ************** POST *****************/
+//* *************************************/
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { name, userId } = body;
+        const {
+            name,
+            userId,
+            selectedSeasonIndexes,
+            selectedDefaultTagIndexes,
+            selectedUserTagIndexes
+        } = body;
+
+        console.log(body);
+
+        console.log(body.selectedSeasonIndexes?.map((id: number) => { return { id } }));
 
         const newRecipe = await prisma.recipe.create({
             data: {
                 name,
-                userId: Number(userId)
+                userId: Number(userId),
+                //!
+                // seasons: body.selectedSeasonIndexes?.map((id: number) => { return { id } }) ?? undefined,
+                // defaultTags: body.selectedDefaultTagIndexes,
+                // userTags: body.selectedUserTagIndexes
             },
         });
 

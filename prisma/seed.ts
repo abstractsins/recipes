@@ -48,37 +48,47 @@ async function main() {
         quickRecipeTag,
         friedRecipeTag,
         onePotRecipeTag,
+
         meatTag,
         notVeganTag,
         veganTag,
         spicyIngTag,
         driedTag,
         cannedTag,
+        frozenTag,
+        kosherTag,
+        halalTag,
     ] = await Promise.all(
         [
             { name: 'spicy', type: TagType.recipe },
             { name: 'quick', type: TagType.recipe },
             { name: 'fried', type: TagType.recipe },
             { name: 'one pot', type: TagType.recipe },
-            { name: 'frozen', type: TagType.ingredient },
+
+            { name: 'meat', type: TagType.ingredient },
             { name: 'not vegan', type: TagType.ingredient },
             { name: 'vegan', type: TagType.ingredient },
             { name: 'spicy', type: TagType.ingredient },
             { name: 'dried', type: TagType.ingredient },
             { name: 'canned', type: TagType.ingredient },
-            { name: 'kosher', type: TagType.ingredient },
+            { name: 'frozen', type: TagType.ingredient },
+            { name: 'Kosher', type: TagType.ingredient },
+            { name: 'Halal', type: TagType.ingredient }
         ].map(t => prisma.defaultTag.create({ data: t }))
     );
 
     /* ─────────── User tags ─────────── */
     const [
-        jewishTag,
+        jewishRecipeTag,
+        trayfeRecipeTag,
         freezableTag,
         freezable2Tag,
         makeAheadTag,
         veryDairyTag,
         amberApprovedTag,
+
         expensiveTag,
+        trayfeIngredientTag,
         getAtWFTag,
         betterFreshTag,
         betterCannedTag,
@@ -91,6 +101,7 @@ async function main() {
             { name: 'make ahead', type: TagType.recipe, createdBy: regUser2.id },
             { name: 'very dairy', type: TagType.recipe, createdBy: regUser.id },
             { name: 'Amber approved', type: TagType.recipe, createdBy: regUser.id },
+
             { name: 'expensive', type: TagType.ingredient, createdBy: adminUser.id },
             { name: 'trayfe', type: TagType.ingredient, createdBy: adminUser.id },
             { name: 'get at WF', type: TagType.ingredient, createdBy: regUser.id },
@@ -271,6 +282,44 @@ async function main() {
         },
     });
 
+    /* third recipe */
+    await prisma.recipe.create({
+        data: {
+            name: 'Mac and Cheese',
+            userId: adminUser.id,
+            defaultTags: {
+                create: [
+                    { tag: { connect: { id: quickRecipeTag.id } } },
+                ],
+            },
+        },
+    });
+
+    /* fourth recipe */
+    await prisma.recipe.create({
+        data: {
+            name: 'Jambalaya',
+            userId: adminUser.id,
+            defaultTags: {
+                create: [
+                    { tag: { connect: { id: spicyRecipeTag.id } } },
+                ],
+            },
+        },
+    });
+
+    /* fifth recipe */
+    await prisma.recipe.create({
+        data: {
+            name: 'Challah',
+            userId: adminUser.id,
+            userTags: {
+                create: [
+                    { tag: { connect: { id: jewishRecipeTag.id } } },
+                ],
+            },
+        },
+    });
 
     console.log('Seeded successfully!');
 }
