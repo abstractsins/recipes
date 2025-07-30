@@ -1,7 +1,5 @@
 'use client';
 
-
-
 //*--------------------------------------------//
 //*------------------IMPORT--------------------//
 //*--------------------------------------------//
@@ -10,27 +8,18 @@ import {
     useState,
     useEffect,
     useCallback,
-    useMemo,
 } from "react";
 
 import {
     UserFormState,
     Mode,
-    ValidationObj,
     UserOption,
     UserFormStateEdit
 } from "@/types/types";
 
-import {
-    useDashboard
-} from "@/context/DashboardContext";
+import { useDashboard } from "@/context/DashboardContext";
 
-import {
-    toTitleCase,
-    createInputHandler,
-    tagsIntoOptions,
-    isPrintableAsciiOnly
-} from "@/utils/utils";
+import { isPrintableAsciiOnly } from "@/utils/utils";
 
 import {
     comparePasswords,

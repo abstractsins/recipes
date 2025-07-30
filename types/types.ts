@@ -198,6 +198,12 @@ export interface UserFormState {
     admin: boolean;
 }
 
+export interface TagFormState {
+    value: string;
+    type: 'ingredient' | 'recipe' | null;
+}
+
+
 export interface UserFormStateEdit {
     email: string;
     username?: string;

@@ -3,6 +3,7 @@ import styles from './DashboardAddEdit.module.css';
 import AddEditIngredient from "./AddEditIngredient"
 import AddEditRecipe from "./AddEditRecipe";
 import AddEditUser from './AddEditUser';
+import AddEditTags from './AddEditTags';
 
 import { useDashboard } from "@/context/DashboardContext";
 
@@ -30,7 +31,12 @@ export default function DashboardAddEdit({ activeIds, onClick, close }: Props) {
             id: 'add-edit-recipe-module',
             title: 'Recipe',
             Component: AddEditRecipe,
-        }
+        },
+        {
+            id: 'add-edit-tags-module',
+            title: 'Tag',
+            Component: AddEditTags,
+        }        
     ];
 
 
