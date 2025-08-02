@@ -43,7 +43,7 @@ export default function useTagForm(mode: Mode) {
 
     const emptyTagForm: TagFormState = {
         value: '',
-        type: null
+        isIngredient: null
     };
 
     const [formState, setFormState] = useState<TagFormState>(emptyTagForm);
@@ -83,6 +83,8 @@ export default function useTagForm(mode: Mode) {
         !exceptions?.includes('userId') && setSelectedUserUserId(null);
     }, []);
 
+    const handleTagTypeSelect = () => {};
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSubmitWaiting(true);
@@ -92,12 +94,9 @@ export default function useTagForm(mode: Mode) {
     return {
         formState,
         setFormState,
+        handleTagTypeSelect,
         resetAll,
-        error,
-        successMsg,
-        submitWaiting,
-        warningMsg,
-        instructionMsg,
+        error, successMsg, submitWaiting, warningMsg, instructionMsg,
         handleSubmit,
         isDisabled,
         isUserInfoLoading

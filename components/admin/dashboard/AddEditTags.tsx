@@ -46,6 +46,7 @@ import useTagForm from '@/hooks/useTagForm';
 
 //* CONTEXT
 import { useDashboard } from '@/context/DashboardContext';
+import Toggle2 from '@/components/general/Toggle2';
 
 
 
@@ -69,9 +70,11 @@ export default function AddEditTags({
     const {
         formState, setFormState,
         handleSubmit,
+        handleTagTypeSelect,
         error, successMsg, warningMsg, instructionMsg,
         submitWaiting,
         resetAll,
+        isDisabled
     } = useTagForm(mode);
 
     const { } = useDashboard();
@@ -102,6 +105,36 @@ export default function AddEditTags({
 
             {isActive && (
                 <>
+                    <div className={styles['add-edit-tag-body']}>
+                        <form id="add-edit-tag" className="add-edit-tag" onSubmit={handleSubmit}>
+
+                            <FormRow>
+                                <FieldModule label='Tag Value*'>
+                                    <AdminInput
+                                        name='tagValue'
+                                        required={true}
+                                        disabled={mode === 'edit' && isDisabled}
+                                        className={`${mode === 'edit' && isDisabled ? 'disabled' : ''}`}
+                                        value={formState.value}
+                                        onChange={e => setFormState({ ...formState, value: e.target.value })}
+                                    />
+                                </FieldModule>
+                            </FormRow>
+
+                            <FormRow>
+                                <FieldModule label='Permissions'>
+                                    <Toggle2
+                                        id='user-admin-assign'
+                                        pos1='Ingredient'
+                                        pos2='Recipe'
+                                        value={formState.isIngredient}
+                                        onChange={handleTagTypeSelect}
+                                    />
+                                </FieldModule>
+                            </FormRow>
+
+                        </form>
+                    </div>
                     <CloseButton onClick={(e) => { close(e); setMode('add'); resetAll() }} />
                 </>
             )}

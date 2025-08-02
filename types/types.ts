@@ -200,7 +200,8 @@ export interface UserFormState {
 
 export interface TagFormState {
     value: string;
-    type: 'ingredient' | 'recipe' | null;
+    // type: 'ingredient' | 'recipe' | null;
+    isIngredient: boolean;
 }
 
 
