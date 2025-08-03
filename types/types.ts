@@ -202,6 +202,9 @@ export interface TagFormState {
     value: string;
     // type: 'ingredient' | 'recipe' | null;
     isIngredient: boolean;
+    isDefaultTag: boolean;
+    selectedTagAuthor?: number | null;
+    selectedTagUser?: number | null;
 }
 
 

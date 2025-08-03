@@ -7,9 +7,14 @@ import { UserOption } from '@/types/types';
 interface Props {
     onSelect: (value: UserOption | null) => void;
     value?: UserOption | null;
+    disabled?: boolean;
 }
 
-export default function UserSelect({ onSelect, value }: Props) {
+export default function UserSelect({
+    onSelect,
+    value,
+    disabled = false
+}: Props) {
 
     const { users } = useDashboard();
 
@@ -29,8 +34,9 @@ export default function UserSelect({ onSelect, value }: Props) {
     return (
         <Select
             value={value}
+            isDisabled={disabled}
             onChange={handleSelect}
-            className={styles["admin-select"]}
+            className={`${disabled && 'disabled'}`}
             classNamePrefix='add-edit-user'
             name="user"
             defaultValue={null}

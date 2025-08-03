@@ -70,10 +70,14 @@ export default function AddEditTags({
     const {
         formState, setFormState,
         handleSubmit,
+        selectedTagAuthor,
         handleTagTypeSelect,
+        handleTagAuthorSelect: handleAuthorSelect,
+        handleTagAvailabilitySelect,
         error, successMsg, warningMsg, instructionMsg,
         submitWaiting,
         resetAll,
+        isAddFormValid, isEditFormValid,
         isDisabled
     } = useTagForm(mode);
 
@@ -109,7 +113,18 @@ export default function AddEditTags({
                         <form id="add-edit-tag" className="add-edit-tag" onSubmit={handleSubmit}>
 
                             <FormRow>
-                                <FieldModule label='Tag Value*'>
+
+                                <FieldModule label='tag type'>
+                                    <Toggle2
+                                        id='tag-type-assign'
+                                        pos1='Ingredient'
+                                        pos2='Recipe'
+                                        value={formState.isIngredient}
+                                        onChange={handleTagTypeSelect}
+                                    />
+                                </FieldModule>
+
+                                <FieldModule label='tag value*'>
                                     <AdminInput
                                         name='tagValue'
                                         required={true}
@@ -119,18 +134,41 @@ export default function AddEditTags({
                                         onChange={e => setFormState({ ...formState, value: e.target.value })}
                                     />
                                 </FieldModule>
+
+
                             </FormRow>
 
                             <FormRow>
-                                <FieldModule label='Permissions'>
+                                <FieldModule label='availability'>
                                     <Toggle2
-                                        id='user-admin-assign'
-                                        pos1='Ingredient'
-                                        pos2='Recipe'
-                                        value={formState.isIngredient}
-                                        onChange={handleTagTypeSelect}
+                                        id='tag-availability-assign'
+                                        pos1='Default'
+                                        pos2='User'
+                                        value={formState.isDefaultTag}
+                                        onChange={handleTagAvailabilitySelect}
                                     />
                                 </FieldModule>
+                                {mode === 'add' && (
+                                    <FieldModule label="User*" className="add-edit-tag-user-module">
+                                        <UserSelect value={selectedTagAuthor} disabled={formState.isDefaultTag} onSelect={handleAuthorSelect} />
+                                    </FieldModule>
+                                )}
+                            </FormRow>
+
+                            <FormRow>
+                                <FieldModule>
+                                    <input
+                                        disabled={mode === 'add' ? (submitWaiting || !isAddFormValid) : (submitWaiting || !isEditFormValid)}
+                                        className={styles["add-edit-tag-submit"]}
+                                        type="submit"
+                                        value={toTitleCase(mode)}
+                                    />
+                                </FieldModule>
+                            </FormRow>
+
+
+                            <FormRow className='footnote'>
+                                <div className="footnote-container"><span>* Required</span></div>
                             </FormRow>
 
                         </form>

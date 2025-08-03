@@ -65,3 +65,28 @@
 h3.unselected {
   color: gray !important;
 }
+
+
+
+input.add-edit-tag-submit {
+  background-color: rgb(188, 226, 249);
+  border: none;
+  font-size: 14pt;
+  border-radius: 10px;
+  justify-self: flex-end;
+  padding: 9px 15px;
+  width: 110px;
+  max-height: 41px;
+}
+
+input.add-edit-tag-submit:hover {
+  cursor: pointer;
+}
+
+input.add-edit-tag-submit:active {
+  background-color: whitesmoke !important;
+}
+
+input.add-edit-tag-submit:hover:not([class*="disabled"]) {
+  background-color: lightskyblue;
+}

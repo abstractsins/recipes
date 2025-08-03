@@ -89,3 +89,7 @@
 [class*="recipe-ingredient-uom"] {
   cursor: pointer !important;
 }
+
+.add-edit-user__control--is-disabled {
+  background-color: lightgray !important;
+}
