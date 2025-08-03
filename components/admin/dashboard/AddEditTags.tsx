@@ -114,6 +114,17 @@ export default function AddEditTags({
 
                             <FormRow>
 
+                                <FieldModule label='tag value*'>
+                                    <AdminInput
+                                        name='tagValue'
+                                        required={true}
+                                        disabled={mode === 'edit' && isDisabled}
+                                        className={`${mode === 'edit' && isDisabled && 'disabled'} full-length`}
+                                        value={formState.value}
+                                        onChange={e => setFormState({ ...formState, value: e.target.value })}
+                                    />
+                                </FieldModule>
+
                                 <FieldModule label='tag type'>
                                     <Toggle2
                                         id='tag-type-assign'
@@ -124,21 +135,18 @@ export default function AddEditTags({
                                     />
                                 </FieldModule>
 
-                                <FieldModule label='tag value*'>
-                                    <AdminInput
-                                        name='tagValue'
-                                        required={true}
-                                        disabled={mode === 'edit' && isDisabled}
-                                        className={`${mode === 'edit' && isDisabled ? 'disabled' : ''}`}
-                                        value={formState.value}
-                                        onChange={e => setFormState({ ...formState, value: e.target.value })}
-                                    />
-                                </FieldModule>
-
-
                             </FormRow>
 
                             <FormRow>
+                                {mode === 'add' && (
+                                    <FieldModule label="User*" className="add-edit-tag-user-module">
+                                        <UserSelect
+                                            value={selectedTagAuthor}
+                                            disabled={formState.isDefaultTag}
+                                            onSelect={handleAuthorSelect}
+                                    />
+                                    </FieldModule>
+                                )}
                                 <FieldModule label='availability'>
                                     <Toggle2
                                         id='tag-availability-assign'
@@ -148,11 +156,6 @@ export default function AddEditTags({
                                         onChange={handleTagAvailabilitySelect}
                                     />
                                 </FieldModule>
-                                {mode === 'add' && (
-                                    <FieldModule label="User*" className="add-edit-tag-user-module">
-                                        <UserSelect value={selectedTagAuthor} disabled={formState.isDefaultTag} onSelect={handleAuthorSelect} />
-                                    </FieldModule>
-                                )}
                             </FormRow>
 
                             <FormRow>

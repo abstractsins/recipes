@@ -65,3 +65,7 @@ input[type="number"].condensed::-webkit-outer-spin-button {
 input[disabled] {
   pointer-events: none;
 }
+
+input.full-length {
+  width: 100% !important;
+}

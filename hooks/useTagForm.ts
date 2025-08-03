@@ -13,7 +13,9 @@ import {
 
 import {
     Mode,
-    TagFormState
+    TagFormState,
+    User,
+    UserOption
 } from "@/types/types";
 
 import {
@@ -54,7 +56,7 @@ export default function useTagForm(mode: Mode) {
 
     const [formState, setFormState] = useState<TagFormState>(emptyTagForm);
 
-    const [selectedTagAuthor, setSelectedTagAuthor] = useState<number | null>(null);
+    const [selectedTagAuthor, setSelectedTagAuthor] = useState<UserOption | null>(null);
 
     const [submitWaiting, setSubmitWaiting] = useState(false);
     const [isUserInfoLoading, setUserInfoLoading] = useState<boolean>(false);
@@ -70,9 +72,7 @@ export default function useTagForm(mode: Mode) {
     const [isDisabled, setIsDisabled] = useState<boolean>();
 
 
-    //*-----------------------------------------------//
     //*-------------------functions-------------------//
-    //*-----------------------------------------------//
 
     const clearStatuses = () => {
         setError(null);
@@ -93,8 +93,9 @@ export default function useTagForm(mode: Mode) {
 
     const handleTagTypeSelect = () => { };
 
-    const handleTagAuthorSelect = (user: number | null) => {
-        setSelectedTagAuthor(user);
+    const handleTagAuthorSelect = (user: UserOption | null) => {
+        console.log(user);
+        setSelectedTagAuthor(user || null);
     };
 
     const handleTagAvailabilitySelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +110,22 @@ export default function useTagForm(mode: Mode) {
         setSubmitWaiting(false);
     }
 
+
+    //*-------------------useEffects-------------------//
+
+    useEffect(() => {
+        console.log(formState.value);
+        console.log(formState.isDefaultTag);
+        console.log(selectedTagAuthor);
+        if (formState.value && (formState.isDefaultTag || selectedTagAuthor?.value)) {
+            setAddFormValid(true);
+        } else {
+            setAddFormValid(false);
+        }
+    }, [formState.value, formState.isDefaultTag, selectedTagAuthor?.value])
+
+
+    //*-------------------return-------------------//
 
     return {
         formState,
