@@ -131,7 +131,8 @@ export default function AddEditTags({
                                     <FormRow>
                                         <FieldModule label='tag'>
                                             <TagDropSelect
-                                                user={1}
+                                                disabled={!selectedTagUser}
+                                                user={selectedTagUser}
                                                 onSelect={(e) => console.log(e)}
                                             />
                                         </FieldModule>

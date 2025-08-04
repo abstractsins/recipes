@@ -1,10 +1,10 @@
 import Select from 'react-select';
 import { useDashboard } from "@/context/DashboardContext";
-import { TagOption, Tag } from '@/types/types';
+import { TagOption, Tag, UserOption } from '@/types/types';
 import { useEffect, useState } from 'react';
 
 interface Props {
-    user: number | null;
+    user: UserOption | null;
     onSelect: (value: TagOption | null) => void;
     value?: TagOption | null;
     disabled?: boolean;
@@ -29,8 +29,8 @@ export default function TagDropSelect({
             onSelect(selectedOption || null);
         }
     }
-    
-    const getTagData = async() => await loadUserTags('ingredient', user);
+
+    const getTagData = async () => await loadUserTags('ingredient', user?.value);
 
     useEffect(() => {
         console.log(getTagData());

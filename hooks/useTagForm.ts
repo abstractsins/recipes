@@ -74,7 +74,9 @@ export default function useTagForm(mode: Mode) {
     const [selectedUserUserId, setSelectedUserUserId] = useState<number | null>(null);
     const [userReady, setUserReady] = useState(false);
 
-    const [isDisabled, setIsDisabled] = useState<boolean>();
+    const [isTagInformationLoaded, setTagInformationLoaded] = useState<boolean>(false);
+
+    const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
 
     //*-------------------functions-------------------//
@@ -159,6 +161,11 @@ export default function useTagForm(mode: Mode) {
         else setAddFormValid(false);
     }, [formState.value, formState.isDefaultTag, selectedTagAuthor?.value])
 
+    useEffect(() => {
+        if (isTagInformationLoaded) {
+            setIsDisabled(false);
+        }
+    }, [isTagInformationLoaded ]);
 
     //*-------------------return-------------------//
 

@@ -14,6 +14,7 @@
 }
 
 
+.add-edit-tag__control,
 .add-edit-recipe__control,
 .add-edit-ingredient__control {
   border: 3px solid transparent !important;
@@ -22,12 +23,14 @@
   /* background-color: blue; */
 }
 
+.add-edit-tag__control--is-disabled,
 .add-edit-recipe__control--is-disabled,
 .add-edit-ingredient__control--is-disabled {
   background-color: darkgray !important;
   color: gray;
 }
 
+.add-edit-tag__option,
 .add-edit-user__option,
 .add-edit-recipe__option,
 .add-edit-ingredient__option,
@@ -36,8 +39,10 @@
   width: fit-content;
 }
 
+.add-edit-user__menu,
+.add-edit-tag__menu,
 .recipe-ingredient-select__menu {
-  z-index: 2;
+  z-index: 2 !important;
 }
 
 .recipe-ingredient-select__control {
@@ -52,6 +57,10 @@
   min-width: 150px !important;
 }
 
+
+
+
+/** UOM */
 .recipe-ingredient-uom__single-value {
   color: whitesmoke !important;
 }
@@ -78,6 +87,11 @@
   color: black !important
 }
 
+
+
+
+
+.add-edit-tag__control:focus-within,
 .add-edit-user__control:focus-within,
 .add-edit-recipe__control:focus-within,
 .add-edit-ingredient__control:focus-within,
