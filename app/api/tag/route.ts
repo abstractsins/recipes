@@ -28,24 +28,26 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { name, type, createdBy } = body;
+        const {
+            value,
+            isIngredient,
+            isDefaultTag,
+            selectedTagAuthor
+        } = body;
+
+        const name = value;
+        const type = isIngredient ? 'ingredient' : 'recipe';
+        const createdBy = isDefaultTag ? null : selectedTagAuthor;
 
         let newTag;
 
         if (createdBy) {
             newTag = await prisma.userTag.create({
-                data: {
-                    name,
-                    type,
-                    createdBy
-                },
+                data: { name, type, createdBy },
             });
         } else {
             newTag = await prisma.defaultTag.create({
-                data: {
-                    name,
-                    type
-                },
+                data: { name, type },
             });
         }
 

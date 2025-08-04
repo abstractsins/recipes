@@ -32,8 +32,6 @@ export function useFetchTags({ type, user, refreshKey }: Props) {
             try {
                 const res = await fetch(fetchString);
                 const { defaultTags, userTags }: IncomingTags = await res.json();
-                console.log(defaultTags);
-                console.log(userTags);
 
                 setDefaultTags(defaultTags);
                 setUserTags(userTags);

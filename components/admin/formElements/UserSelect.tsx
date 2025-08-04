@@ -1,7 +1,5 @@
-import styles from './AdminMultiSelect.module.css';
 import Select from 'react-select';
 import { useDashboard } from "@/context/DashboardContext";
-import { useState } from 'react';
 import { UserOption } from '@/types/types';
 
 interface Props {

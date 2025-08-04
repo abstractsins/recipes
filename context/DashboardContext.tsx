@@ -91,7 +91,9 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
   const refreshAllTags = useCallback(() => setTagsRefreshKey(k => k + 1), []);
   const refreshIngredientModule = useCallback(() => setIngredientsRefreshKey(k => k + 1), []);
 
+
   //* ---------------FETCHES-------------- //
+
   // FETCHING USER INFORMATION
   const [isUserUserInfoLoading, setUserUserInfoLoading] = useState<boolean>(false);
   const fetchUserUserInfo = useCallback(async (userId: number): Promise<UserFormStateEdit> => {
@@ -153,7 +155,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
   /* —  USER TAGS (lazy-loaded) — */
   const loadUserTags = useCallback(
-    async (type: 'ingredient' | 'recipe', user: number): Promise<Tag[]> => {
+    async (type: 'ingredient' | 'recipe', user: number | null): Promise<Tag[]> => {
       const res = await fetch(`/api/tag/${type}/user/${user}`);
       const { userTags } = await res.json();
       return userTags;

@@ -51,12 +51,17 @@ export default function useTagForm(mode: Mode) {
         selectedTagUser: null
     };
 
+    const {
+        refreshAllTags
+    } = useDashboard();
+
     const [isAddFormValid, setAddFormValid] = useState(false);
     const [isEditFormValid, setEditFormValid] = useState(false);
 
     const [formState, setFormState] = useState<TagFormState>(emptyTagForm);
 
     const [selectedTagAuthor, setSelectedTagAuthor] = useState<UserOption | null>(null);
+    const [selectedTagUser, setSelectedTagUser] = useState<UserOption | null>(null);
 
     const [submitWaiting, setSubmitWaiting] = useState(false);
     const [isUserInfoLoading, setUserInfoLoading] = useState<boolean>(false);
@@ -91,22 +96,58 @@ export default function useTagForm(mode: Mode) {
         !exceptions?.includes('userId') && setSelectedUserUserId(null);
     }, []);
 
-    const handleTagTypeSelect = () => { };
-
-    const handleTagAuthorSelect = (user: UserOption | null) => {
-        console.log(user);
-        setSelectedTagAuthor(user || null);
+    const handleTagTypeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormState(prev => ({ ...prev, isIngredient: e.target.checked }));
     };
 
     const handleTagAvailabilitySelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.checked);
         setFormState(prev => ({ ...prev, isDefaultTag: e.target.checked }));
         setSelectedTagAuthor(null);
+    };
+
+    const handleTagAuthorSelect = (user: UserOption | null) => {
+        setSelectedTagAuthor(user || null);
+        setFormState({ ...formState, selectedTagAuthor: user?.value || null})
+        console.log(user);
+    };
+
+    const handleTagUserSelect = (user: UserOption | null) => {
+        setSelectedTagUser(user || null);
+        setFormState({ ...formState, selectedTagUser: user?.value || null});
+
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSubmitWaiting(true);
+
+        if (mode === 'add') {
+
+            console.log(formState);
+
+            const res = await fetch('/api/tag', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formState)
+            });
+
+            clearStatuses();
+
+            if (!res.ok) {
+                const error = res.json();
+                console.log(error);
+                setError('error, check console');
+            } else {
+                setSuccessMsg(`New ${formState.isDefaultTag ? 'default' : 'user'} tag created!`);
+                refreshAllTags();
+                setFormState(emptyTagForm);
+                setSelectedTagAuthor(null);
+            }
+
+        } else if (mode === 'edit') {
+
+        }
+
         setSubmitWaiting(false);
     }
 
@@ -114,14 +155,8 @@ export default function useTagForm(mode: Mode) {
     //*-------------------useEffects-------------------//
 
     useEffect(() => {
-        console.log(formState.value);
-        console.log(formState.isDefaultTag);
-        console.log(selectedTagAuthor);
-        if (formState.value && (formState.isDefaultTag || selectedTagAuthor?.value)) {
-            setAddFormValid(true);
-        } else {
-            setAddFormValid(false);
-        }
+        if (formState.value && (formState.isDefaultTag || selectedTagAuthor?.value)) setAddFormValid(true);
+        else setAddFormValid(false);
     }, [formState.value, formState.isDefaultTag, selectedTagAuthor?.value])
 
 
@@ -131,6 +166,8 @@ export default function useTagForm(mode: Mode) {
         formState,
         setFormState,
         selectedTagAuthor,
+        selectedTagUser,
+        handleTagUserSelect,
         handleTagTypeSelect,
         handleTagAuthorSelect,
         handleTagAvailabilitySelect,

@@ -47,6 +47,7 @@ import useTagForm from '@/hooks/useTagForm';
 //* CONTEXT
 import { useDashboard } from '@/context/DashboardContext';
 import Toggle2 from '@/components/general/Toggle2';
+import TagDropSelect from '../formElements/TagDropSelect';
 
 
 
@@ -71,8 +72,10 @@ export default function AddEditTags({
         formState, setFormState,
         handleSubmit,
         selectedTagAuthor,
+        selectedTagUser,
         handleTagTypeSelect,
         handleTagAuthorSelect: handleAuthorSelect,
+        handleTagUserSelect: handleUserSelect,
         handleTagAvailabilitySelect,
         error, successMsg, warningMsg, instructionMsg,
         submitWaiting,
@@ -112,6 +115,31 @@ export default function AddEditTags({
                     <div className={styles['add-edit-tag-body']}>
                         <form id="add-edit-tag" className="add-edit-tag" onSubmit={handleSubmit}>
 
+                            {mode === 'edit' && (
+                                // ROW 0: USER SELECT
+                                <>
+                                    <FormRow>
+                                        <FieldModule label='user'>
+                                            <UserSelect
+                                                value={selectedTagUser}
+                                                onSelect={handleUserSelect}
+                                            />
+                                        </FieldModule>
+                                    </FormRow>
+
+                                    {/* ROW 00: TAG SELECT */}
+                                    <FormRow>
+                                        <FieldModule label='tag'>
+                                            <TagDropSelect
+                                                user={1}
+                                                onSelect={(e) => console.log(e)}
+                                            />
+                                        </FieldModule>
+                                    </FormRow>
+                                </>
+                            )}
+
+                            {/* ROW 1: VALUE, TYPE */}
                             <FormRow>
 
                                 <FieldModule label='tag value*'>
@@ -137,6 +165,7 @@ export default function AddEditTags({
 
                             </FormRow>
 
+                            {/* ROW 2: USER, AVAILABILITY */}
                             <FormRow>
                                 {mode === 'add' && (
                                     <FieldModule label="User*" className="add-edit-tag-user-module">
@@ -144,7 +173,7 @@ export default function AddEditTags({
                                             value={selectedTagAuthor}
                                             disabled={formState.isDefaultTag}
                                             onSelect={handleAuthorSelect}
-                                    />
+                                        />
                                     </FieldModule>
                                 )}
                                 <FieldModule label='availability'>
