@@ -73,6 +73,7 @@ export default function AddEditTags({
         selectedTagAuthor,
         selectedTagUser,
         handleTagTypeSelect,
+        handleTagSelect,
         tagOptions,
         handleTagAuthorSelect: handleAuthorSelect,
         handleTagUserSelect: handleUserSelect,
@@ -133,7 +134,7 @@ export default function AddEditTags({
                                             <TagDropSelect
                                                 disabled={!selectedTagUser}
                                                 user={selectedTagUser}
-                                                onSelect={(e) => console.log(e)}
+                                                onSelect={handleTagSelect}
                                                 options={tagOptions}
                                             />
                                         </FieldModule>
@@ -199,7 +200,6 @@ export default function AddEditTags({
                                     />
                                 </FieldModule>
                             </FormRow>
-
 
                             <FormRow className='footnote'>
                                 <div className="footnote-container"><span>* Required</span></div>

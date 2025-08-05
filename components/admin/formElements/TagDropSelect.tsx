@@ -7,7 +7,7 @@ interface Props {
     user: UserOption | null;
     onSelect: (value: TagOption | null) => void;
     value?: TagOption | null;
-    options: TagOption[] | null;
+    options: Tag[] | null;
     disabled?: boolean;
 }
 
@@ -34,14 +34,15 @@ export default function TagDropSelect({
     useEffect(() => {
         if (options) {
             console.log(options);
-            const mappedTags = options.map(el => {
+            const tagOptions = options.map(el => {
                 return {
                     id: el.id,
                     value: el.name,
-                    label: `${el.id}: ${el.name} -- ${el.type}`
+                    type: el.type,
+                    label: `[${el.id}] -- ${el.name} -- [${el.type}]`
                 }
             });
-            setMappedTags(mappedTags);
+            setMappedTags(tagOptions);
         }
     }, [options]);
 

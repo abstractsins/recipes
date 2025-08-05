@@ -14,9 +14,9 @@ import {
 import {
     Mode,
     TagFormState,
-    TagOption,
-    User,
-    UserOption
+    Tag,
+    UserOption,
+    TagOption
 } from "@/types/types";
 
 import {
@@ -73,10 +73,9 @@ export default function useTagForm(mode: Mode) {
     const [warningMsg, setWarningMsg] = useState<string | null>(null);
     const [instructionMsg, setInstructionMsg] = useState<string | null>(null);
 
-    const [selectedUserUserId, setSelectedUserUserId] = useState<number | null>(null);
     const [userReady, setUserReady] = useState(false);
 
-    const [tagOptions, setTagOptions] = useState<Promise<TagOption[] | undefined>>();
+    const [tagOptions, setTagOptions] = useState<Tag[] | null>(null);
     const [isTagInformationLoaded, setTagInformationLoaded] = useState<boolean>(false);
 
     const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -98,7 +97,7 @@ export default function useTagForm(mode: Mode) {
         !exceptions?.includes('instruction') && setInstructionMsg(null);
         !exceptions?.includes('userReady') && setUserReady(false);
         !exceptions?.includes('form') && setFormState(emptyTagForm);
-        !exceptions?.includes('userId') && setSelectedUserUserId(null);
+        !exceptions?.includes('userId') && setSelectedTagUser(null);
     }, []);
 
     const handleTagTypeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,15 +110,17 @@ export default function useTagForm(mode: Mode) {
     };
 
     const handleTagAuthorSelect = (user: UserOption | null) => {
-        setSelectedTagAuthor(user || null);
+        setSelectedTagAuthor(user);
         setFormState({ ...formState, selectedTagAuthor: user?.value || null })
         console.log(user);
     };
 
     const handleTagUserSelect = (user: UserOption | null) => {
-        setSelectedTagUser(user || null);
+        setSelectedTagUser(user);
         setFormState({ ...formState, selectedTagUser: user?.value || null });
     };
+
+    const handleTagSelect = (tag: TagOption) => {};
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -167,6 +168,10 @@ export default function useTagForm(mode: Mode) {
         const allTags = [...ingredientTagsData, ...recipeTagsData];
         allTags.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
 
+        console.log(allTags);
+
+        setTagOptions(allTags);
+
         return allTags;
     }, [selectedTagUser, loadUserTags])
 
@@ -177,6 +182,14 @@ export default function useTagForm(mode: Mode) {
 
 
     //*-------------------useEffects-------------------//
+
+    useEffect(() => { 
+        if (selectedTagUser) {
+            getAllTagsForUser(selectedTagUser); 
+        } else {
+            setTagOptions(null);
+        }
+    }, [selectedTagUser, getAllTagsForUser]);
 
     useEffect(() => {
         if (formState.value && (formState.isDefaultTag || selectedTagAuthor?.value)) setAddFormValid(true);
@@ -191,14 +204,6 @@ export default function useTagForm(mode: Mode) {
         }
     }, [isTagInformationLoaded]);
 
-    useEffect(() => {
-        if (selectedTagUser) {
-            const allTags = getAllTagsForUser(selectedTagUser);
-            setTagOptions(allTags);
-        } else {
-            setTagOptions([]);
-        }
-    }, [selectedTagUser]);
 
     //*-------------------return-------------------//
 
@@ -212,6 +217,7 @@ export default function useTagForm(mode: Mode) {
         handleTagTypeSelect,
         handleTagAuthorSelect,
         handleTagAvailabilitySelect,
+        handleTagSelect,
         resetAll,
         error, successMsg, submitWaiting, warningMsg, instructionMsg,
         handleSubmit,

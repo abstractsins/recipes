@@ -165,7 +165,9 @@ export interface AdminOption {
     name?: string;
 }
 
-export interface TagOption extends AdminOption { }
+export interface TagOption extends AdminOption {
+    type: string;
+}
 
 export interface SeasonOption extends AdminOption { }
 
