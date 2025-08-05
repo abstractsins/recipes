@@ -196,7 +196,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 setCurrentIngredientData(formalizeIngredient(data));
             }
             setWarningMsg(null);
-        }, [selectedIngredientId, fetchIngredientById]);
+        }, [selectedIngredientId, fetchIngredientById]
+    );
 
     // ➕👤🏷️
     const addUserIngredientTag = async () => {
@@ -295,7 +296,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     //* -------------------useEffects-------------------//
 
     useEffect(() => { fetchUserIngredients(); }, [selectedIngredientUserId, fetchUserIngredients]);
-    
+
     useEffect(() => { fetchIngredientInfo(); }, [selectedIngredientId, fetchIngredientInfo]);
 
     useEffect(() => {
@@ -335,14 +336,12 @@ export function useIngredientForm(mode: 'add' | 'edit') {
             } else {
                 setIsAddFormValid(false);
             }
-        } else if (mode === 'edit') {
-
         }
     }, [formState, selectedAuthorId, selectedIngredientUserId]);
 
     // COMPARE USER INFO TO VALIDATE THE SUBMIT BUTTON => no change, no edit
     useEffect(() => {
-        
+
         const handleCompareIngredientForm = (updatedIngredientData: IngredientFormState, currentIngredientData: IngredientFormState) => {
             if (
                 updatedIngredientData.name !== currentIngredientData.name
@@ -388,13 +387,13 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         userIngredientTagValue,
         userIngredientTagInputHandler,
         addUserIngredientTag,
-        
+
         selectedUserIngredientTagOptions,
         selectedIngredientUserId,
         selectedIngredientUserValue,
         selectedIngredientId,
         selectedAuthorId,
-        
+
         userIngredientList,
         userTagsWaiting,
 
@@ -403,7 +402,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         submitWaiting,
         userIngredientListHasLoaded,
         ingredientInfo,
-        
+
         userReady,
         isAddFormValid, isEditFormValid,
         isDisabled

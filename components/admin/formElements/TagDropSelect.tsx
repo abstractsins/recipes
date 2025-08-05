@@ -7,6 +7,7 @@ interface Props {
     user: UserOption | null;
     onSelect: (value: TagOption | null) => void;
     value?: TagOption | null;
+    options: TagOption[] | null;
     disabled?: boolean;
 }
 
@@ -14,10 +15,10 @@ export default function TagDropSelect({
     user,
     onSelect,
     value,
+    options,
     disabled = false
 }: Props) {
 
-    const [tagData, setTagData] = useState<Tag[] | undefined>();
     const [mappedTags, setMappedTags] = useState<TagOption[]>();
 
     const {
@@ -30,15 +31,10 @@ export default function TagDropSelect({
         }
     }
 
-    const getTagData = async () => await loadUserTags('ingredient', user?.value);
-
     useEffect(() => {
-        console.log(getTagData());
-    }, [user]);
-
-    useEffect(() => {
-        if (tagData) {
-            const mappedTags = tagData?.map(el => {
+        if (options) {
+            console.log(options);
+            const mappedTags = options.map(el => {
                 return {
                     id: el.id,
                     value: el.name,
@@ -47,7 +43,7 @@ export default function TagDropSelect({
             });
             setMappedTags(mappedTags);
         }
-    }, [tagData]);
+    }, [options]);
 
     return (
         <Select

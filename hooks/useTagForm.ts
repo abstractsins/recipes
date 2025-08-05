@@ -14,6 +14,7 @@ import {
 import {
     Mode,
     TagFormState,
+    TagOption,
     User,
     UserOption
 } from "@/types/types";
@@ -52,7 +53,8 @@ export default function useTagForm(mode: Mode) {
     };
 
     const {
-        refreshAllTags
+        refreshAllTags,
+        loadUserTags
     } = useDashboard();
 
     const [isAddFormValid, setAddFormValid] = useState(false);
@@ -74,6 +76,7 @@ export default function useTagForm(mode: Mode) {
     const [selectedUserUserId, setSelectedUserUserId] = useState<number | null>(null);
     const [userReady, setUserReady] = useState(false);
 
+    const [tagOptions, setTagOptions] = useState<Promise<TagOption[] | undefined>>();
     const [isTagInformationLoaded, setTagInformationLoaded] = useState<boolean>(false);
 
     const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -109,14 +112,13 @@ export default function useTagForm(mode: Mode) {
 
     const handleTagAuthorSelect = (user: UserOption | null) => {
         setSelectedTagAuthor(user || null);
-        setFormState({ ...formState, selectedTagAuthor: user?.value || null})
+        setFormState({ ...formState, selectedTagAuthor: user?.value || null })
         console.log(user);
     };
 
     const handleTagUserSelect = (user: UserOption | null) => {
         setSelectedTagUser(user || null);
-        setFormState({ ...formState, selectedTagUser: user?.value || null});
-
+        setFormState({ ...formState, selectedTagUser: user?.value || null });
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -136,7 +138,7 @@ export default function useTagForm(mode: Mode) {
             clearStatuses();
 
             if (!res.ok) {
-                const error = res.json();
+                const error = await res.json();
                 console.log(error);
                 setError('error, check console');
             } else {
@@ -154,6 +156,26 @@ export default function useTagForm(mode: Mode) {
     }
 
 
+
+
+
+    const getAllTagsForUser = useCallback(async (user: UserOption) => {
+
+        const ingredientTagsData = await loadUserTags('ingredient', user.value);
+        const recipeTagsData = await loadUserTags('recipe', user.value);
+
+        const allTags = [...ingredientTagsData, ...recipeTagsData];
+        allTags.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
+
+        return allTags;
+    }, [selectedTagUser, loadUserTags])
+
+
+
+
+
+
+
     //*-------------------useEffects-------------------//
 
     useEffect(() => {
@@ -164,8 +186,19 @@ export default function useTagForm(mode: Mode) {
     useEffect(() => {
         if (isTagInformationLoaded) {
             setIsDisabled(false);
+        } else {
+            setIsDisabled(true);
         }
-    }, [isTagInformationLoaded ]);
+    }, [isTagInformationLoaded]);
+
+    useEffect(() => {
+        if (selectedTagUser) {
+            const allTags = getAllTagsForUser(selectedTagUser);
+            setTagOptions(allTags);
+        } else {
+            setTagOptions([]);
+        }
+    }, [selectedTagUser]);
 
     //*-------------------return-------------------//
 
@@ -174,6 +207,7 @@ export default function useTagForm(mode: Mode) {
         setFormState,
         selectedTagAuthor,
         selectedTagUser,
+        tagOptions,
         handleTagUserSelect,
         handleTagTypeSelect,
         handleTagAuthorSelect,

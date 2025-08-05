@@ -254,9 +254,9 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
     //* -----------------useEffect--------------- //
 
-    useEffect(() => { fetchUserRecipes(); }, [selectedRecipeUserId, fetchUserRecipes]);
+    useEffect(() => { fetchUserRecipes() }, [selectedRecipeUserId, fetchUserRecipes]);
 
-    useEffect(() => { fetchRecipeInfo(); }, [selectedRecipeId, fetchRecipeInfo]);
+    useEffect(() => { fetchRecipeInfo() }, [selectedRecipeId, fetchRecipeInfo]);
 
     useEffect(() => {
         if (recipeInfo) {
@@ -314,8 +314,8 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
         userRecipeTagInputHandler,
         handleSubmit: handleRecipeSubmit,
 
-        userReady, recipeReady, 
-        isRecipeSelectReady, isIngredientModuleReady, 
+        userReady, recipeReady,
+        isRecipeSelectReady, isIngredientModuleReady,
         userTagsWaiting, submitWaiting, isRecipeLoading,
         isDisabled
     }

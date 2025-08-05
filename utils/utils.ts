@@ -129,7 +129,6 @@ export function mapPrismaCodeToStatus(code: string): number {
             return 409;            // Conflict
         case 'P2003':            // FK constraint failed
             return 400;            // Bad Request
-        // add the ones you care about …
         default:
             return 400;
     }

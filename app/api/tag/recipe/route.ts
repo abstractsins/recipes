@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { TagType } from '@prisma/client';
 import { INGREDIENT_RECIPE_TAG_GET as GET } from '@/utils/utils';
 
 

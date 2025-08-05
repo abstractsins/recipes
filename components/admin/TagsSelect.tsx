@@ -1,17 +1,33 @@
 'use client';
 
-import { useFetchTags } from "@/hooks/useFetchTags";
+//* -------------------------------------- //
+//* ----------------IMPORTS--------------- //
+//* -------------------------------------- //
+
+//* COMPONENTS
+import AdminMultiSelect from "./formElements/AdminMultiSelect";
+
+//* TYPES
 import { AdminMultiSelectProps, TagOption} from "@/types/types";
 import { TagType } from "@prisma/client";
 
-import AdminMultiSelect from "./formElements/AdminMultiSelect";
 
+
+//* -------------------------------------- //
+//* ---------------INTERFACE-------------- //
+//* -------------------------------------- //
 
 interface Props extends AdminMultiSelectProps {
     type: TagType;
     user: number | null;
     onSelect?: (tag: TagOption) => void;
 }
+
+
+
+//* -------------------------------------- //
+//* ----------------EXPORTS--------------- //
+//* -------------------------------------- //
 
 export default function TagsSelect({
     name,

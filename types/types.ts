@@ -176,7 +176,7 @@ export interface UomOption extends AdminOption {
 }
 
 export interface UserOption {
-    value: number | null;
+    value: number;
     label: string;
 };
 

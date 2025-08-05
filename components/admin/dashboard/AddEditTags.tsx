@@ -26,7 +26,6 @@ import CloseButton from "@/components/admin/dashboard/CloseButton";
 
 import AdminInput from "../formElements/AdminInput";
 import AdminMultiSelect from "../formElements/AdminMultiSelect";
-import TagsSelect from "../TagsSelect";
 import UserSelect from "../formElements/UserSelect";
 import IngredientSelect from "../formElements/IngredientSelect";
 import AddEditHeader from "./AddEditHeader";
@@ -74,6 +73,7 @@ export default function AddEditTags({
         selectedTagAuthor,
         selectedTagUser,
         handleTagTypeSelect,
+        tagOptions,
         handleTagAuthorSelect: handleAuthorSelect,
         handleTagUserSelect: handleUserSelect,
         handleTagAvailabilitySelect,
@@ -134,6 +134,7 @@ export default function AddEditTags({
                                                 disabled={!selectedTagUser}
                                                 user={selectedTagUser}
                                                 onSelect={(e) => console.log(e)}
+                                                options={tagOptions}
                                             />
                                         </FieldModule>
                                     </FormRow>
