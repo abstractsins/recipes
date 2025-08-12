@@ -43,7 +43,8 @@ export default function LoginForm() {
         if (res.ok) {
             console.log('LOGIN OK!');
             await res.json();
-            router.push('/profile');
+            const user = userRef.current?.value.toLowerCase();
+            user === 'demo@demo.com' || user === 'dan' ? router.push('/admin') : router.push('/profile');
         } else {
             alert('Login failed');
             setIsWaiting(false);
@@ -126,7 +127,7 @@ export default function LoginForm() {
                     </div>
                 </form>
                 
-                <RegisterLink theme="light" />
+                {/* <RegisterLink theme="light" /> */}
 
             </div>
         </>

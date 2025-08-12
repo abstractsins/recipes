@@ -50,14 +50,14 @@ export default function Dashboard() {
                 <h1>Recipe Database Admin Dashboard</h1>
             </header>
 
-            <div>
+            {/* <div>
                 <input
                     className={styles["collapse-all"]}
                     type='button'
                     value="Collapse All"
                     onClick={collapseAll}
                 />
-            </div>
+            </div> */}
 
             <div className={styles["body"]}>
 
