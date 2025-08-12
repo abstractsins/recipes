@@ -120,7 +120,7 @@ export default function useTagForm(mode: Mode) {
         setFormState({ ...formState, selectedTagUser: user?.value || null });
     };
 
-    const handleTagSelect = (tag: TagOption) => {};
+    const handleTagSelect = (tag: TagOption | null) => { };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -183,9 +183,9 @@ export default function useTagForm(mode: Mode) {
 
     //*-------------------useEffects-------------------//
 
-    useEffect(() => { 
+    useEffect(() => {
         if (selectedTagUser) {
-            getAllTagsForUser(selectedTagUser); 
+            getAllTagsForUser(selectedTagUser);
         } else {
             setTagOptions(null);
         }

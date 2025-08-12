@@ -61,7 +61,8 @@ export const tagsIntoOptions = (tags: Tag[]) => {
             id: el.id,
             name: el.name,
             label: toTitleCase(el.name),
-            value: el.name
+            value: el.name,
+            type: el.type
         }
         return option;
     });
