@@ -41,7 +41,7 @@ export async function GET(
 // app/api/ingredient/[id]/route.ts
 export async function PUT(
   req: NextRequest,
-  { params }: { params: IngredientDTO} }
+  { params }: { params: IngredientDTO }
 ) {
   console.log(params);
   try {
