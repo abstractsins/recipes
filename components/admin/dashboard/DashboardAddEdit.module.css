@@ -12,3 +12,12 @@
   width: 80vw;
 }
 
+@media (max-width: 1550px) {
+  .add-data {
+    width: unset;
+  }
+
+  .add-data-modules {
+    justify-content: center;
+  }
+}

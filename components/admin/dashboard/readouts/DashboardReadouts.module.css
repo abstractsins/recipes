@@ -15,3 +15,12 @@ div.readout-modules {
   flex-wrap: wrap;
 }
 
+@media (max-width: 1550px) {
+  .readouts {
+    width: unset;
+  }
+
+  .readout-modules {
+    justify-content: center;
+  }
+}
