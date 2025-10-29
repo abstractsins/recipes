@@ -78,7 +78,7 @@ export interface IngredientDTO {
     subcategory?: string;
     brand?: string;
     notes?: string;
-    selectedSeasonIndexes?: number[];
+    selectedSeasons?: SeasonOption[];
     selectedDefaultTagIndexes?: number[];
     selectedUserTagIndexes?: number[];
 };
@@ -119,7 +119,7 @@ export interface AdminMultiSelectProps {
     className?: string;
     required?: boolean;
     isLoading?: boolean;
-    defaultValue?: number[];
+    defaultValue?: (number | string)[];
     multiple?: boolean;
     disabled?: boolean;
     id?: string;
@@ -230,18 +230,17 @@ export interface IngredientFormState {
     subcategory?: string;
     brand?: string;
     notes?: string;
-    selectedSeasonIndexes: number[];
+    selectedSeasons: SeasonOption[];
     selectedDefaultTagIndexes: number[];
     selectedUserTagIndexes: number[];
 };
 
 export interface RecipeFormState {
     name: string;
-    selectedSeasonIndexes: number[];
+    selectedSeasons: SeasonOption[];
     selectedDefaultTagIndexes: number[];
     selectedUserTagIndexes: number[];
 }
-
 
 // ***************
 // * VALIDATIONS *

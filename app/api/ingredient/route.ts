@@ -1,7 +1,7 @@
 // app/api/ingredient/route.ts
 import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient, Prisma } from '@prisma/client';   // ← pull in Prisma types
-import { IngredientDTO } from '@/types/types';
+import { IngredientDTO, SeasonOption } from '@/types/types';
 import { mapPrismaCodeToStatus, humanMessage } from '@/utils/utils';
 
 const prisma = new PrismaClient();
@@ -48,8 +48,8 @@ export async function POST(req: NextRequest) {
                     subcategory: body.subcategory,
                     notes: body.notes,
                     userId: Number(body.userId),
-                    seasons: body.selectedSeasonIndexes?.length
-                        ? { connect: body.selectedSeasonIndexes.map((id) => ({ id })) }
+                    seasons: body.selectedSeasons?.length
+                        ? { connect: body.selectedSeasons.map((s: SeasonOption) => ({ name: s.label })) }
                         : undefined,
                     defaultTags: body.selectedDefaultTagIndexes?.length
                         ? { connect: body.selectedDefaultTagIndexes.map((id) => ({ id })) }

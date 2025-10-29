@@ -162,7 +162,7 @@ model RecipeIngredient {
 
 model Season {
   id          Int          @id @default(autoincrement())
-  name        String
+  name        String       @unique
   ingredients Ingredient[] @relation("IngredientSeasons")
   recipes     Recipe[]     @relation("RecipeSeasons")
 }

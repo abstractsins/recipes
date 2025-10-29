@@ -37,43 +37,52 @@ export async function GET(
 }
 
 /* ─────────────── PUT ─────────────── */
-export async function PUT(
-  req: NextRequest,
-  { params }: IdCtx
-) {
+// api/ingredient/[id]/route.ts  (PUT)
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const numericId = Number(id);
-  if (Number.isNaN(numericId)) {
+  const ingredientId = Number(id);
+  if (Number.isNaN(ingredientId)) {
     return new NextResponse('Invalid ingredient id', { status: 400 });
   }
 
-  const body = (await req.json()) as IngredientDTO
+  const body = await req.json() as IngredientDTO;
   if (!body?.name || !body?.userId) {
-    return new NextResponse('name and userId are required', { status: 400 })
+    return new NextResponse('name and userId are required', { status: 400 });
   }
 
+  // normalize arrays to id objects
+  const seasonIds = Array.isArray(body.selectedSeasons) ? body.selectedSeasons : [];
+  const seasonSet = [...new Set(seasonIds.map(Number).filter(n => Number.isInteger(n) && n > 0))];
 
-  const updatedIngredient = await prisma.$transaction(async (tx) => {
+  const defaultTagIds = Array.isArray(body.selectedDefaultTagIndexes) ? body.selectedDefaultTagIndexes : [];
+  const userTagIds = Array.isArray(body.selectedUserTagIndexes) ? body.selectedUserTagIndexes : [];
 
-    return tx.ingredient.update({
-      where: { id: numericId },
-      data: {
-        name: body.name,
-        userId: body.userId,
-        main: body.main ?? null,
-        variety: body.variety ?? null,
-        category: body.category ?? null,
-        subcategory: body.subcategory ?? null,
-        brand: body.brand ?? null,
-        notes: body.notes ?? null,
-        seasons: { set: body.selectedSeasonIndexes?.map(id => ({ id })) ?? [] },
-        userTags: { set: body.selectedUserTagIndexes?.map(id => ({ id })) ?? [] },
-        defaultTags: { set: body.selectedDefaultTagIndexes?.map(id => ({ id })) ?? [] },
-        updatedAt: new Date()
-      },
-    })
-  })
+  const updated = await prisma.ingredient.update({
+    where: { id: ingredientId },
+    data: {
+      name: body.name,
+      userId: body.userId,
+      main: body.main ?? null,
+      variety: body.variety ?? null,
+      category: body.category ?? null,
+      subcategory: body.subcategory ?? null,
+      brand: body.brand ?? null,
+      notes: body.notes ?? null,
 
+      // IMPORTANT: set expects identifier objects, not raw numbers
+      seasons: { set: seasonSet.map(id => ({ id })) },
+      defaultTags: { set: defaultTagIds.map(id => ({ id })) },
+      userTags: { set: userTagIds.map(id => ({ id })) },
 
-  return NextResponse.json(updatedIngredient, { status: 200 })
+      updatedAt: new Date(),
+    },
+    include: {
+      seasons: true,
+      defaultTags: true,
+      userTags: true,
+      recipes: true,
+    },
+  });
+
+  return NextResponse.json(updated, { status: 200 });
 }

@@ -47,7 +47,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
     const emptyRecipeForm: RecipeFormState = {
         name: '',
-        selectedSeasonIndexes: [],
+        selectedSeasons: [],
         selectedDefaultTagIndexes: [],
         selectedUserTagIndexes: []
     };
@@ -150,7 +150,6 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
                 console.log(error);
                 setError(error.message);
             } else {
-                const json = await res.json();
                 setSuccessMsg(mode === 'add' ? 'Recipe Created!' : 'Recipe Updated!');
                 if (mode === 'edit') fetchUserRecipes();
                 refreshRecipeModule();
@@ -227,6 +226,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
             setRecipeReady(true);
             setIsIngredientModuleReady(true);
             setRecipeLoading(false);
+            console.log(data);
         } else {
             setIsIngredientModuleReady(false);
             resetAll(['userId', 'recipeList', 'recipeSelect']);
@@ -259,10 +259,16 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     useEffect(() => { fetchRecipeInfo() }, [selectedRecipeId, fetchRecipeInfo]);
 
     useEffect(() => {
+        console.log(recipeInfo);
         if (recipeInfo) {
+
+            const seasons: SeasonOption[] = recipeInfo.seasons.map(s => ({
+                id: s.id, label: s.name, value: s.name.toLowerCase()
+            }))
+
             setFormState({
                 name: recipeInfo.name ?? '',
-                selectedSeasonIndexes: recipeInfo.seasons?.map(s => s.id) ?? [],
+                selectedSeasons: seasons ?? [],
                 selectedDefaultTagIndexes: recipeInfo.defaultTags?.map((t: Tag) => t.id) ?? [],
                 selectedUserTagIndexes: recipeInfo.userTags?.map((t: Tag) => t.id) ?? []
             });

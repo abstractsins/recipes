@@ -1,0 +1,6 @@
+.wrapper {
+      display: flex;
+      flex-direction: column;
+      background-image: linear-gradient(black 5%, slateblue);
+      min-height: 100vh;
+}

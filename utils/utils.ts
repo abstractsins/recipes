@@ -7,6 +7,7 @@ import {
     SeasonOption,
     Tag,
     TagOption,
+    SeasonSelection,
 } from "@/types/types";
 
 import { TagType } from "@prisma/client";
@@ -177,11 +178,12 @@ export function handleSeasonSelect(
     setFormState: (fn: (prev: any) => any) => void
 ) {
     return (season: SeasonOption | null, checked: boolean) => {
+        console.log(season, checked);
         setFormState(prev => ({
             ...prev,
-            selectedSeasonIndexes: checked
-                ? [...prev.selectedSeasonIndexes, season?.id]
-                : prev.selectedSeasonIndexes.filter((s: number) => s !== season?.id),
+            selectedSeasons: checked
+                ? [...prev.selectedSeasons, season]
+                : prev.selectedSeasons.filter((s: SeasonSelection) => s.label !== season?.label),
         }));
     };
 }

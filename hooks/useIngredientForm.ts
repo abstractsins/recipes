@@ -16,6 +16,7 @@ import {
 import {
     Ingredient,
     IngredientFormState,
+    SeasonOption,
     Tag,
     UserOption
 } from "@/types/types";
@@ -60,7 +61,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         category: '',
         subcategory: '',
         brand: '',
-        selectedSeasonIndexes: [],
+        selectedSeasons: [],
         selectedDefaultTagIndexes: [],
         selectedUserTagIndexes: []
     };
@@ -158,6 +159,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const formalizeIngredient = (data: Ingredient | null): IngredientFormState | undefined => {
         let formState: IngredientFormState | undefined;
         if (data) {
+
+            const seasons: SeasonOption[] = data.seasons?.map(s => ({
+                id: s.id, label: s.name, value: s.name.toLowerCase()
+            }))
+
             formState = {
                 name: data.name,
                 main: data.main,
@@ -166,7 +172,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 subcategory: data.subcategory,
                 brand: data.brand,
                 notes: data.notes,
-                selectedSeasonIndexes: data.seasons?.map(s => s.id),
+                selectedSeasons: seasons,
                 selectedDefaultTagIndexes: data.defaultTags?.map(t => t.id),
                 selectedUserTagIndexes: data.userTags?.map(t => t.id)
             }
@@ -301,6 +307,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     useEffect(() => {
         if (ingredientInfo) {
+
+            const seasons: SeasonOption[] = ingredientInfo.seasons?.map(s => ({
+                id: s.id, label: s.name, value: s.name.toLowerCase()
+            }))
+
             console.log(ingredientInfo.defaultTags);
             console.log(ingredientInfo.userTags);
             setFormState({
@@ -310,7 +321,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 category: ingredientInfo.category ?? '',
                 subcategory: ingredientInfo.subcategory ?? '',
                 brand: ingredientInfo.brand ?? '',
-                selectedSeasonIndexes: ingredientInfo.seasons.map(s => s.id) ?? [],
+                selectedSeasons: seasons ?? [],
                 selectedDefaultTagIndexes: ingredientInfo.defaultTags.map((t: Tag) => t.id) ?? [],
                 selectedUserTagIndexes: ingredientInfo.userTags.map((t: Tag) => t.id) ?? []
             });
@@ -352,7 +363,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 || updatedIngredientData.brand !== (currentIngredientData.brand || "")
                 || JSON.stringify(updatedIngredientData.selectedDefaultTagIndexes) !== (JSON.stringify(currentIngredientData.selectedDefaultTagIndexes) || "[null]")
                 || JSON.stringify(updatedIngredientData.selectedUserTagIndexes) !== (JSON.stringify(currentIngredientData.selectedUserTagIndexes) || "[null]")
-                || JSON.stringify(updatedIngredientData.selectedSeasonIndexes) !== (JSON.stringify(currentIngredientData.selectedSeasonIndexes) || "[]")
+                || JSON.stringify(updatedIngredientData.selectedSeasons) !== (JSON.stringify(currentIngredientData.selectedSeasons) || "[]")
             ) {
                 if (selectedIngredientId) {
                     clearStatuses();

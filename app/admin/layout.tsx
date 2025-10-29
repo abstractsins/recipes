@@ -1,3 +1,5 @@
+import styles from './layout.module.css';
+
 import { getUser } from "@/lib/auth";
 
 import PrimeHeader from "@/components/prime/PrimeHeader";
@@ -14,11 +16,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const role = user?.role;
 
   return (
-    <>
+    <div className={styles.wrapper}>
       <DashboardProvider >
         <PrimeHeader nickname={nickname} role={role} />
         {children}
       </DashboardProvider>
-    </>
+    </div>
   );
 }

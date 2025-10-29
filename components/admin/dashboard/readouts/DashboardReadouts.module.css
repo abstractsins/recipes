@@ -9,5 +9,9 @@ div.readout-modules {
 
 .readouts {
   padding: 15px;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
 }
 

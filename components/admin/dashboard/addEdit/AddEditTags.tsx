@@ -24,10 +24,10 @@ import FormRow from "@/components/admin/formElements/FormRow";
 import FieldModule from "@/components/admin/formElements/FieldModule";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 
-import AdminInput from "../formElements/AdminInput";
-import AdminMultiSelect from "../formElements/AdminMultiSelect";
-import UserSelect from "../formElements/UserSelect";
-import IngredientSelect from "../formElements/IngredientSelect";
+import AdminInput from "@/components/admin/formElements/AdminInput";
+import AdminMultiSelect from "@/components/admin/formElements/AdminMultiSelect";
+import UserSelect from "@/components/admin/formElements/UserSelect";
+import IngredientSelect from "@/components/admin/formElements/IngredientSelect";
 import AddEditHeader from "./AddEditHeader";
 
 //* UTILS
@@ -46,7 +46,7 @@ import useTagForm from '@/hooks/useTagForm';
 //* CONTEXT
 import { useDashboard } from '@/context/DashboardContext';
 import Toggle2 from '@/components/general/Toggle2';
-import TagDropSelect from '../formElements/TagDropSelect';
+import TagDropSelect from '@/components/admin/formElements/TagDropSelect';
 
 
 

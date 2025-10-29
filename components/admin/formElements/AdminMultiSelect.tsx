@@ -22,7 +22,7 @@ export default function AdminMultiSelect({
     isLoading,
     className = '',
     required = false,
-    defaultValue = [],
+    defaultValue,
     onChange
 }: AdminMultiSelectProps) {
 
@@ -33,7 +33,7 @@ export default function AdminMultiSelect({
                 : (
                     options?.map((opt: AdminOption) => {
 
-                        const checked = defaultValue.includes(opt.id);
+                        const checked = defaultValue?.includes(opt.value ?? opt.id);
 
                         return (
                             < div

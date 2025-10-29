@@ -1,9 +1,9 @@
 import styles from './DashboardAddEdit.module.css';
 
-import AddEditIngredient from "./AddEditIngredient"
-import AddEditRecipe from "./AddEditRecipe";
-import AddEditUser from './AddEditUser';
-import AddEditTags from './AddEditTags';
+import AddEditIngredient from "./addEdit/AddEditIngredient"
+import AddEditRecipe from "./addEdit/AddEditRecipe";
+import AddEditUser from './addEdit/AddEditUser';
+import AddEditTags from './addEdit/AddEditTags';
 
 import { useDashboard } from "@/context/DashboardContext";
 

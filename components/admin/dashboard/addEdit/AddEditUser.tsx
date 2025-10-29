@@ -10,10 +10,10 @@ import { useEffect, useState } from 'react';
 import AddEditHeader from './AddEditHeader';
 import FormRow from "@/components/admin/formElements/FormRow";
 import FieldModule from "@/components/admin/formElements/FieldModule";
-import AdminInput from "../formElements/AdminInput";
-import UserSelect from "../formElements/UserSelect";
+import AdminInput from "@/components/admin/formElements/AdminInput";
+import UserSelect from "@/components/admin/formElements/UserSelect";
 
-import CloseButton from './CloseButton';
+import CloseButton from '@/components/admin/dashboard/CloseButton';
 import ScreenGuard from '@/components/general/ScreenGuard';
 import Toggle2 from '@/components/general/Toggle2';
 

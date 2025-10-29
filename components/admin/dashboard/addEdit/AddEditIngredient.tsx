@@ -24,11 +24,11 @@ import FormRow from "@/components/admin/formElements/FormRow";
 import FieldModule from "@/components/admin/formElements/FieldModule";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 
-import AdminInput from "../formElements/AdminInput";
-import AdminMultiSelect from "../formElements/AdminMultiSelect";
-import TagsSelect from "../TagsSelect";
-import UserSelect from "../formElements/UserSelect";
-import IngredientSelect from "../formElements/IngredientSelect";
+import AdminInput from "@/components/admin/formElements/AdminInput";
+import AdminMultiSelect from "@/components/admin/formElements/AdminMultiSelect";
+import TagsSelect from "@/components/admin/TagsSelect";
+import UserSelect from "@/components/admin/formElements/UserSelect";
+import IngredientSelect from "@/components/admin/formElements/IngredientSelect";
 import AddEditHeader from "./AddEditHeader";
 
 //* UTILS
@@ -178,7 +178,7 @@ export default function AddEditIngredient({
                                     <AdminMultiSelect
                                         name="season"
                                         disabled={ingredientEditDisabled}
-                                        defaultValue={formState.selectedSeasonIndexes}
+                                        defaultValue={formState.selectedSeasons?.map(s => s.value || s.id)}
                                         multiple
                                         className={`tag`}
                                         onChange={onSeasonChange}

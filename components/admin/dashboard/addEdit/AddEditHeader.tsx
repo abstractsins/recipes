@@ -1,7 +1,7 @@
 import styles from './AddEditIngredient.module.css'
 
 import FormRow from "@/components/admin/formElements/FormRow";
-import Toggle from "../../general/Toggle";
+import Toggle from "@/components/general/Toggle";
 
 
 interface Props {

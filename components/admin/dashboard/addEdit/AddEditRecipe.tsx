@@ -23,16 +23,16 @@ import FormRow from "@/components/admin/formElements/FormRow";
 import FieldModule from "@/components/admin/formElements/FieldModule";
 import CloseButton from "@/components/admin/dashboard/CloseButton";
 
-import AdminInput from "../formElements/AdminInput";
-import AdminMultiSelect from "../formElements/AdminMultiSelect";
-import TagsSelect from "../TagsSelect";
-import UserSelect from "../formElements/UserSelect";
-import RecipeIngredientsModule from '../formElements/addEditRecipe/RecipeIngredientsModule';
+import AdminInput from "@/components/admin/formElements/AdminInput";
+import AdminMultiSelect from "@/components/admin/formElements/AdminMultiSelect";
+import TagsSelect from "@/components/admin/TagsSelect";
+import UserSelect from "@/components/admin/formElements/UserSelect";
+import RecipeIngredientsModule from '@/components/admin/formElements/addEditRecipe/RecipeIngredientsModule';
 
 import AddEditHeader from "./AddEditHeader";
 
-import RecipeSelect from '../formElements/RecipeSelect';
-import IngredientAdd from '../formElements/addEditRecipe/IngredientAdd';
+import RecipeSelect from '@/components/admin/formElements/RecipeSelect';
+import IngredientAdd from '@/components/admin/formElements/addEditRecipe/IngredientAdd';
 
 //* UTILS
 import {
@@ -121,6 +121,7 @@ export default function AddEditRecipe({
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
     const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIndexes');
 
+    console.log(formState);
 
     //* -----------------RETURN--------------- //
 
@@ -189,7 +190,7 @@ export default function AddEditRecipe({
                                     <AdminMultiSelect
                                         name="season"
                                         disabled={isDisabled}
-                                        defaultValue={formState.selectedSeasonIndexes}
+                                        defaultValue={formState.selectedSeasons.map(s => s.value || s.id)}
                                         multiple
                                         className={`tag`}
                                         onChange={onSeasonChange}
@@ -274,7 +275,7 @@ export default function AddEditRecipe({
 
                         </form>
                     </div>
-                    <CloseButton onClick={(e) => { close(e); setMode('add'); resetAll() }} />
+                    <CloseButton onClick={(e) => { close(e); setMode('add'); resetAll(); }} />
                 </>
             )}
 

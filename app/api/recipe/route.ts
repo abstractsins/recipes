@@ -1,12 +1,14 @@
 // app/api/recipe/route.ts
 import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { SeasonOption, SeasonSelection } from '@/types/types';
 
 const prisma = new PrismaClient();
 
 //* *************************************/
 //* ************** GET ******************/
 //* *************************************/
+
 export async function GET() {
     try {
         const recipes = await prisma.recipe.findMany({
@@ -27,7 +29,8 @@ export async function GET() {
                 },
                 ingredients: {
                     include: { ingredient: true }
-                }
+                },
+                seasons: true
             }
         });
         return NextResponse.json(recipes);
@@ -40,33 +43,45 @@ export async function GET() {
 //* *************************************/
 //* ************** POST *****************/
 //* *************************************/
+
 export async function POST(req: NextRequest) {
+
+    console.log('POST new recipe');
+
     try {
+
         const body = await req.json();
         const {
             name,
             userId,
-            selectedSeasonIndexes,
+            selectedSeasons,
             selectedDefaultTagIndexes,
             selectedUserTagIndexes
         } = body;
 
         console.log(body);
 
-        console.log(body.selectedSeasonIndexes?.map((id: number) => { return { id } }));
+        console.log(selectedSeasons);
 
-        const newRecipe = await prisma.recipe.create({
-            data: {
-                name,
-                userId: Number(userId),
-                //!
-                // seasons: body.selectedSeasonIndexes?.map((id: number) => { return { id } }) ?? undefined,
-                // defaultTags: body.selectedDefaultTagIndexes,
-                // userTags: body.selectedUserTagIndexes
-            },
+        const recipe = await prisma.$transaction(async (tx) => {
+
+            const newRecipe = await tx.recipe.create({
+                data: {
+                    name,
+                    userId: Number(userId),
+                    //!
+                    seasons: selectedSeasons?.length
+                        ? { connect: selectedSeasons.map((s: SeasonOption) => ({ name: s.label })) }
+                        : undefined,
+                    // defaultTags: body.selectedDefaultTagIndexes,
+                    // userTags: body.selectedUserTagIndexes
+                },
+                include: { seasons: true }
+            });
+            return newRecipe;
         });
 
-        return NextResponse.json(newRecipe, { status: 201 });
+        return NextResponse.json(recipe, { status: 201 });
 
     } catch (err) {
         console.error('Error creating recipe:', err);

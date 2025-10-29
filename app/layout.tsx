@@ -14,21 +14,25 @@ const parkinsans = Parkinsans({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-parkinsans',
+  display: 'block',
 });
 
 const alatsi = Alatsi({
   subsets: ['latin'],
   weight: ['400'],
   variable: '--font-alatsi',
+  display: 'block',
 });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
+  display: 'block',
   subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  display: 'block',
   subsets: ["latin"],
 });
 
