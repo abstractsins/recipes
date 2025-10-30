@@ -17,7 +17,8 @@ import {
     SeasonOption,
     UserOption,
     TagOption,
-    Tag
+    Tag,
+    RecipeTag
 } from "@/types/types";
 
 import { useDashboard } from "@/context/DashboardContext";
@@ -48,8 +49,8 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const emptyRecipeForm: RecipeFormState = {
         name: '',
         selectedSeasons: [],
-        selectedDefaultTagIndexes: [],
-        selectedUserTagIndexes: []
+        selectedDefaultTagIds: [],
+        selectedUserTagIds: []
     };
 
 
@@ -134,7 +135,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
         const data = {
             ...formState,
             userId: mode === 'add' ? new FormData(e.currentTarget).get('user') : selectedRecipeUserId,
-            RecipeTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
+            RecipeTag: [...formState.selectedDefaultTagIds, ...formState.selectedUserTagIds]
         }
 
         try {
@@ -269,9 +270,9 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
             setFormState({
                 name: recipeInfo.name ?? '',
-                selectedSeasons: seasons ?? [],
-                selectedDefaultTagIndexes: recipeInfo.defaultTags?.map((t: Tag) => t.id) ?? [],
-                selectedUserTagIndexes: recipeInfo.userTags?.map((t: Tag) => t.id) ?? []
+                selectedSeasons: seasons.map((s: SeasonOption) => s.label) ?? [],
+                selectedDefaultTagIds: recipeInfo.defaultTags?.map((t: RecipeTag) => t.tagId) ?? [],
+                selectedUserTagIds: recipeInfo.userTags?.map((t: RecipeTag) => t.tagId) ?? []
             });
             if (mode === 'edit') setIsIngredientModuleReady(true);
         } else {
@@ -281,7 +282,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
     useEffect(() => {
         console.log('recipe ready:', recipeReady);
-    }, [recipeReady])
+    }, [recipeReady]);
 
 
     //* -----------------CUSTOM HOOKS--------------- //
@@ -291,7 +292,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
         uid: selectedRecipeUserId,
         loadUserTags,
         setFormState,
-        tagResetKey: 'selectedUserTagIndexes',
+        tagResetKey: 'selectedUserTagIds',
         setUserTagsWaiting,
         setUserTags: setUserRecipeTags,
     });

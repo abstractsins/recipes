@@ -118,8 +118,8 @@ export default function AddEditRecipe({
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
     const onSeasonChange = handleSeasonSelect(setFormState);
-    const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
-    const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIndexes');
+    const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIds');
+    const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIds');
 
     console.log(formState);
 
@@ -190,7 +190,8 @@ export default function AddEditRecipe({
                                     <AdminMultiSelect
                                         name="season"
                                         disabled={isDisabled}
-                                        defaultValue={formState.selectedSeasons.map(s => s.value || s.id)}
+                                        valueKey='label'
+                                        defaultValue={formState.selectedSeasons}
                                         multiple
                                         className={`tag`}
                                         onChange={onSeasonChange}
@@ -211,7 +212,7 @@ export default function AddEditRecipe({
                                     <FieldModule label="Default-Tags">
                                         <TagsSelect
                                             name="default-tags"
-                                            defaultValue={formState.selectedDefaultTagIndexes}
+                                            defaultValue={formState.selectedDefaultTagIds}
                                             disabled={isDisabled}
                                             onChange={onDefaultTagChange}
                                             multiple
@@ -228,7 +229,7 @@ export default function AddEditRecipe({
                                             <FieldModule label="User-Tags">
                                                 <TagsSelect
                                                     name="user-tags"
-                                                    defaultValue={formState.selectedUserTagIndexes}
+                                                    defaultValue={formState.selectedUserTagIds}
                                                     disabled={isDisabled}
                                                     onChange={onUserTagChange}
                                                     isLoading={userTagsWaiting}

@@ -64,7 +64,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             }
             if (Array.isArray(selectedSeasons)) {
                 // caller provided seasons; replace the links (can be [] to clear)
-                updateData.seasons = { set: selectedSeasons.map((s) => ({ name: s.label })) };
+                updateData.seasons = { set: selectedSeasons.map((name) => ({ name })) };
             }
 
             if (Object.keys(updateData).length) {

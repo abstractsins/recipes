@@ -1,7 +1,7 @@
 // app/api/recipe/route.ts
 import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { SeasonOption, SeasonSelection } from '@/types/types';
+import { SeasonOption } from '@/types/types';
 
 const prisma = new PrismaClient();
 
@@ -55,8 +55,8 @@ export async function POST(req: NextRequest) {
             name,
             userId,
             selectedSeasons,
-            selectedDefaultTagIndexes,
-            selectedUserTagIndexes
+            selectedDefaultTagIds,
+            selectedUserTagIds
         } = body;
 
         console.log(body);
@@ -69,12 +69,15 @@ export async function POST(req: NextRequest) {
                 data: {
                     name,
                     userId: Number(userId),
-                    //!
                     seasons: selectedSeasons?.length
-                        ? { connect: selectedSeasons.map((s: SeasonOption) => ({ name: s.label })) }
+                        ? { connect: selectedSeasons.map((name: string) => ({ name })) }
                         : undefined,
-                    // defaultTags: body.selectedDefaultTagIndexes,
-                    // userTags: body.selectedUserTagIndexes
+                    defaultTags: selectedDefaultTagIds.length
+                        ? { connect: selectedDefaultTagIds.map((id: number) => ({ id })) }
+                        : undefined,
+                    userTags: selectedUserTagIds.length
+                        ? { connect: selectedUserTagIds.map((id: number) => ({ id })) }
+                        : undefined,
                 },
                 include: { seasons: true }
             });
