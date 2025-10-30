@@ -2,7 +2,7 @@
 // * DATA TYPES *
 // **************
 
-import { Role, TagType } from "@prisma/client"
+import { DefaultTag, Role, TagType, UserTag } from "@prisma/client"
 
 export interface User {
     id: number,
@@ -78,9 +78,24 @@ export interface IngredientDTO {
     subcategory?: string;
     brand?: string;
     notes?: string;
+    selectedSeasons?: string[];
+    selectedDefaultTagIds?: number[];
+    selectedUserTagIds?: number[];
+};
+
+export interface RecipeDTO {
+    name: string;
+    userId: number;
+    ingredients?: Ingredient[];
+    main?: string;
+    variety?: string;
+    category?: string;
+    subcategory?: string;
+    brand?: string;
+    notes?: string;
     selectedSeasons?: SeasonOption[];
-    selectedDefaultTagIndexes?: number[];
-    selectedUserTagIndexes?: number[];
+    selectedDefaultTagIds?: Tag[];
+    selectedUserTagIds?: Tag[];
 };
 
 export interface RecipeIngredientOption {
@@ -230,16 +245,16 @@ export interface IngredientFormState {
     subcategory?: string;
     brand?: string;
     notes?: string;
-    selectedSeasons: SeasonOption[];
-    selectedDefaultTagIndexes: number[];
-    selectedUserTagIndexes: number[];
+    selectedSeasons: string[];
+    selectedDefaultTagIds: number[];
+    selectedUserTagIds: number[];
 };
 
 export interface RecipeFormState {
     name: string;
     selectedSeasons: SeasonOption[];
-    selectedDefaultTagIndexes: number[];
-    selectedUserTagIndexes: number[];
+    selectedDefaultTags: Tag[];
+    selectedUserTags: Tag[];
 }
 
 // ***************

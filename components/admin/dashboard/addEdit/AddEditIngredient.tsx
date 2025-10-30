@@ -11,7 +11,7 @@ import styles from './AddEditIngredient.module.css';
 import { FiPlusCircle } from "react-icons/fi";
 
 //* REACT
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 //* TYPES
 import { Mode, AdminAddEditModule } from "@/types/types";
@@ -100,8 +100,8 @@ export default function AddEditIngredient({
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
     const onSeasonChange = handleSeasonSelect(setFormState);
-    const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIndexes');
-    const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIndexes');
+    const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIds');
+    const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIds');
 
 
     //* -----------------RETURN--------------- //
@@ -178,11 +178,15 @@ export default function AddEditIngredient({
                                     <AdminMultiSelect
                                         name="season"
                                         disabled={ingredientEditDisabled}
-                                        defaultValue={formState.selectedSeasons?.map(s => s.value || s.id)}
+                                        valueKey="label"
+                                        defaultValue={formState.selectedSeasons}
+                                        emitPrimitive
                                         multiple
                                         className={`tag`}
                                         onChange={onSeasonChange}
                                         options={seasonOptions}
+
+
                                     />
                                 </FieldModule>
                             </FormRow>
@@ -248,7 +252,7 @@ export default function AddEditIngredient({
                                     <FieldModule label="Default-Tags">
                                         <TagsSelect
                                             name="default-tags"
-                                            defaultValue={formState.selectedDefaultTagIndexes}
+                                            defaultValue={formState.selectedDefaultTagIds}
                                             disabled={ingredientEditDisabled}
                                             onChange={onDefaultTagChange}
                                             multiple
@@ -265,7 +269,7 @@ export default function AddEditIngredient({
                                             <FieldModule label="User-Tags">
                                                 <TagsSelect
                                                     name="user-tags"
-                                                    defaultValue={formState.selectedUserTagIndexes}
+                                                    defaultValue={formState.selectedUserTagIds}
                                                     disabled={ingredientEditDisabled}
                                                     onChange={onUserTagChange}
                                                     isLoading={userTagsWaiting}

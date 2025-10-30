@@ -8,6 +8,7 @@ import {
     Tag,
     TagOption,
     SeasonSelection,
+    AdminOption,
 } from "@/types/types";
 
 import { TagType } from "@prisma/client";
@@ -74,10 +75,10 @@ export const tagsIntoOptions = (tags: Tag[]) => {
 
 //* STANDARD DATA */
 export const seasonOptions: SeasonOption[] = [
-    { id: 1, value: 'fall', label: 'Fall' },
-    { id: 2, value: 'winter', label: 'Winter' },
-    { id: 3, value: 'spring', label: 'Spring' },
-    { id: 4, value: 'summer', label: 'Summer' }
+    { id: 1, name: 'fall', value: 'fall', label: 'Fall' },
+    { id: 2, name: 'winter', value: 'winter', label: 'Winter' },
+    { id: 3, name: 'spring', value: 'spring', label: 'Spring' },
+    { id: 4, name: 'summer', value: 'summer', label: 'Summer' }
 ]
 
 
@@ -173,32 +174,59 @@ export function handleModeSelectFactory(
     };
 }
 
-// 🍁
-export function handleSeasonSelect(
-    setFormState: (fn: (prev: any) => any) => void
+// ✅ TAGS — store numeric IDs from AdminOption
+export function handleTagSelectFactory(
+    setFormState: (fn: (prev: any) => any) => void,
+    key: 'selectedDefaultTagIds' | 'selectedUserTagIds'
 ) {
-    return (season: SeasonOption | null, checked: boolean) => {
-        console.log(season, checked);
-        setFormState(prev => ({
-            ...prev,
-            selectedSeasons: checked
-                ? [...prev.selectedSeasons, season]
-                : prev.selectedSeasons.filter((s: SeasonSelection) => s.label !== season?.label),
-        }));
+    return (opt: AdminOption | null, checked: boolean) => {
+        if (!opt) return;
+
+        // Prefer `id`, else numeric `value`, else try to coerce value to number
+        const id: number = typeof opt.id === 'number'
+            ? opt.id
+            : typeof opt.value === 'number'
+                ? opt.value
+                : Number(opt.value);
+
+        if (Number.isNaN(id)) return; // guard if value cannot be coerced
+
+        setFormState(prev => {
+            const list: number[] = Array.isArray(prev[key]) ? prev[key] : [];
+            return {
+                ...prev,
+                [key]: checked
+                    ? (list.includes(id) ? list : [...list, id])
+                    : list.filter(x => x !== id),
+            };
+        });
     };
 }
 
-// 🏷️
-export function handleTagSelectFactory<T extends { id: number }>(
-    setFormState: (fn: (prev: any) => any) => void,
-    key: 'selectedDefaultTagIndexes' | 'selectedUserTagIndexes'
+// ✅ SEASONS — store labels from AdminOption
+export function handleSeasonSelect(
+    setFormState: (fn: (prev: any) => any) => void
 ) {
-    return (tag: T | null, checked: boolean) => {
-        setFormState(prev => ({
-            ...prev,
-            [key]: checked
-                ? [...prev[key], tag?.id]
-                : prev[key].filter((id: number) => id !== tag?.id),
-        }));
+    return (opt: AdminOption | null, checked: boolean) => {
+        if (!opt) return;
+
+        const label = opt.label; // valueKey='label' in the select
+
+        setFormState(prev => {
+            console.log(prev.selectedSeasons);
+
+            console.log(prev.selectedSeasons);
+
+            const list: string[] = Array.isArray(prev.selectedSeasons)
+                ? prev.selectedSeasons.map((s: string) => s)
+                : [];
+
+            return {
+                ...prev,
+                selectedSeasons: checked
+                    ? (list.includes(opt.label) ? list : [...list, opt.label])
+                    : list.filter(x => x !== opt.label),
+            };
+        });
     };
 }

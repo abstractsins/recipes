@@ -48,7 +48,7 @@ model User {
  */
 model DefaultTag {
   id   Int     @id @default(autoincrement())
-  name String
+  name String 
   type TagType
 
   recipes     RecipeDefaultTag[]

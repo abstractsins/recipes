@@ -62,8 +62,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         subcategory: '',
         brand: '',
         selectedSeasons: [],
-        selectedDefaultTagIndexes: [],
-        selectedUserTagIndexes: []
+        selectedDefaultTagIds: [],
+        selectedUserTagIds: []
     };
 
     const [formState, setFormState] = useState<IngredientFormState>(emptyIngredientForm);
@@ -161,7 +161,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         if (data) {
 
             const seasons: SeasonOption[] = data.seasons?.map(s => ({
-                id: s.id, label: s.name, value: s.name.toLowerCase()
+                id: s.id, name: s.name, label: s.name, value: s.name.toLowerCase()
             }))
 
             formState = {
@@ -173,8 +173,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 brand: data.brand,
                 notes: data.notes,
                 selectedSeasons: seasons,
-                selectedDefaultTagIndexes: data.defaultTags?.map(t => t.id),
-                selectedUserTagIndexes: data.userTags?.map(t => t.id)
+                selectedDefaultTagIds: data.defaultTags?.map(t => t.id),
+                selectedUserTagIds: data.userTags?.map(t => t.id)
             }
         }
         return formState;
@@ -191,7 +191,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         },
         [selectedIngredientUserId]
     );
-
 
     const fetchIngredientInfo = useCallback(
         async ({ quiet = false }: { quiet?: boolean } = {}) => {
@@ -247,7 +246,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
             userId: mode === 'add'
                 ? new FormData(e.currentTarget).get('user')
                 : selectedIngredientUserId,
-            IngredientTag: [...formState.selectedDefaultTagIndexes, ...formState.selectedUserTagIndexes]
+            IngredientTag: [...formState.selectedDefaultTagIds, ...formState.selectedUserTagIds]
         };
 
         try {
@@ -293,7 +292,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         uid: selectedAuthorId ?? selectedIngredientUserId,
         loadUserTags,
         setFormState,
-        tagResetKey: 'selectedUserTagIndexes',
+        tagResetKey: 'selectedUserTagIds',
         setUserTagsWaiting,
         setUserTags: setUserIngredientTags,
     });
@@ -321,9 +320,9 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 category: ingredientInfo.category ?? '',
                 subcategory: ingredientInfo.subcategory ?? '',
                 brand: ingredientInfo.brand ?? '',
-                selectedSeasons: seasons ?? [],
-                selectedDefaultTagIndexes: ingredientInfo.defaultTags.map((t: Tag) => t.id) ?? [],
-                selectedUserTagIndexes: ingredientInfo.userTags.map((t: Tag) => t.id) ?? []
+                selectedSeasons: seasons.map((s: SeasonOption) => s.label) ?? [],
+                selectedDefaultTagIds: ingredientInfo.defaultTags.map((t: Tag) => t.id) ?? [],
+                selectedUserTagIds: ingredientInfo.userTags.map((t: Tag) => t.id) ?? []
             });
         }
     }, [ingredientInfo]);
@@ -340,7 +339,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     }, [selectedIngredientUserId]);
 
     useEffect(() => {
-        console.log(selectedAuthorId);
         if (mode === 'add') {
             if (formState.name && selectedAuthorId) {
                 setIsAddFormValid(true);
@@ -361,8 +359,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 || updatedIngredientData.category !== (currentIngredientData.category || "")
                 || updatedIngredientData.subcategory !== (currentIngredientData.subcategory || "")
                 || updatedIngredientData.brand !== (currentIngredientData.brand || "")
-                || JSON.stringify(updatedIngredientData.selectedDefaultTagIndexes) !== (JSON.stringify(currentIngredientData.selectedDefaultTagIndexes) || "[null]")
-                || JSON.stringify(updatedIngredientData.selectedUserTagIndexes) !== (JSON.stringify(currentIngredientData.selectedUserTagIndexes) || "[null]")
+                || JSON.stringify(updatedIngredientData.selectedDefaultTagIds) !== (JSON.stringify(currentIngredientData.selectedDefaultTagIds) || "[null]")
+                || JSON.stringify(updatedIngredientData.selectedUserTagIds) !== (JSON.stringify(currentIngredientData.selectedUserTagIds) || "[null]")
                 || JSON.stringify(updatedIngredientData.selectedSeasons) !== (JSON.stringify(currentIngredientData.selectedSeasons) || "[]")
             ) {
                 if (selectedIngredientId) {

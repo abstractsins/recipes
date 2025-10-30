@@ -1,7 +1,7 @@
 // app/api/ingredient/route.ts
 import { NextResponse, NextRequest } from 'next/server';
-import { PrismaClient, Prisma } from '@prisma/client';   // ← pull in Prisma types
-import { IngredientDTO, SeasonOption } from '@/types/types';
+import { PrismaClient, Prisma, DefaultTag, UserTag } from '@prisma/client';   // ← pull in Prisma types
+import { IngredientDTO, SeasonOption, Tag } from '@/types/types';
 import { mapPrismaCodeToStatus, humanMessage } from '@/utils/utils';
 
 const prisma = new PrismaClient();
@@ -16,8 +16,8 @@ export async function GET() {
                 user: false,
                 seasons: true,
                 userTags: true,
-                recipes: true,
                 defaultTags: true,
+                recipes: true
             },
         });
         return NextResponse.json(ingredients);
@@ -49,13 +49,13 @@ export async function POST(req: NextRequest) {
                     notes: body.notes,
                     userId: Number(body.userId),
                     seasons: body.selectedSeasons?.length
-                        ? { connect: body.selectedSeasons.map((s: SeasonOption) => ({ name: s.label })) }
+                        ? { connect: body.selectedSeasons.map((name: string) => ({ name })) }
                         : undefined,
-                    defaultTags: body.selectedDefaultTagIndexes?.length
-                        ? { connect: body.selectedDefaultTagIndexes.map((id) => ({ id })) }
+                    defaultTags: body.selectedDefaultTagIds?.length
+                        ? { connect: body.selectedDefaultTagIds.map((id: number) => ({ id })) }
                         : undefined,
-                    userTags: body.selectedUserTagIndexes?.length
-                        ? { connect: body.selectedUserTagIndexes.map((id) => ({ id })) }
+                    userTags: body.selectedUserTagIds?.length
+                        ? { connect: body.selectedUserTagIds.map((id: number) => ({ id })) }
                         : undefined,
                 },
             });
