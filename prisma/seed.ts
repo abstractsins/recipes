@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
     /* ─────────── Seasons ─────────── */
     const [fall, winter, spring, summer] = await Promise.all(
-        ['Fall', 'Winter', 'Spring', 'Summer'].map(name =>
+        ['Fall', 'Winter', 'Spring', 'Summer'].map((name) =>
             prisma.season.create({ data: { name } })
         )
     );
@@ -18,8 +18,8 @@ async function main() {
             username: 'abstractsins',
             password: await bcrypt.hash('berlin', 10),
             nickname: 'superUser',
-            role: 'admin'
-        }
+            role: 'admin',
+        },
     });
 
     /* ─────────── Users ─────────── */
@@ -39,7 +39,7 @@ async function main() {
                 password: await bcrypt.hash('test', 10),
                 nickname: 'Test User 2',
             },
-        })
+        }),
     ]);
 
     /* ─────────── Default tags ─────────── */
@@ -73,8 +73,8 @@ async function main() {
             { name: 'canned', type: TagType.ingredient },
             { name: 'frozen', type: TagType.ingredient },
             { name: 'Kosher', type: TagType.ingredient },
-            { name: 'Halal', type: TagType.ingredient }
-        ].map(t => prisma.defaultTag.create({ data: t }))
+            { name: 'Halal', type: TagType.ingredient },
+        ].map((t) => prisma.defaultTag.create({ data: t }))
     );
 
     /* ─────────── User tags ─────────── */
@@ -107,10 +107,11 @@ async function main() {
             { name: 'get at WF', type: TagType.ingredient, createdBy: regUser.id },
             { name: 'better fresh', type: TagType.ingredient, createdBy: regUser2.id },
             { name: 'better canned', type: TagType.ingredient, createdBy: regUser2.id },
-        ].map(t => prisma.userTag.create({ data: t }))
+        ].map((t) => prisma.userTag.create({ data: t }))
     );
 
-    /* ─────────── Ingredients ─────────── */
+    /* ─────────── Ingredients (now EXPLICIT joins) ─────────── */
+    // 1) ground beef
     const beef = await prisma.ingredient.create({
         data: {
             name: 'ground beef 90/10',
@@ -120,15 +121,18 @@ async function main() {
             subcategory: 'beef',
             userId: adminUser.id,
 
+            // explicit M:N to DefaultTag
             defaultTags: {
-                connect: [{ id: meatTag.id }],
+                create: [{ tag: { connect: { id: meatTag.id } } }],
             },
+            // explicit M:N to UserTag
             userTags: {
-                connect: [{ id: getAtWFTag.id }],
+                create: [{ tag: { connect: { id: getAtWFTag.id } } }],
             },
         },
     });
 
+    // 2) beer mustard (no tags)
     const beerMustard = await prisma.ingredient.create({
         data: {
             name: 'beer mustard',
@@ -138,7 +142,7 @@ async function main() {
             subcategory: 'mustard',
             userId: adminUser.id,
             brand: 'Kosciusko',
-        }
+        },
     });
 
     /* remaining ingredients */
@@ -167,7 +171,7 @@ async function main() {
                 category: 'herb',
                 userId: adminUser.id,
                 defaultTags: {
-                    connect: [{ id: driedTag.id }],
+                    create: [{ tag: { connect: { id: driedTag.id } } }],
                 },
             },
         }),
@@ -197,7 +201,7 @@ async function main() {
                 category: 'dairy',
                 userId: adminUser.id,
                 defaultTags: {
-                    connect: [{ id: notVeganTag.id }],
+                    create: [{ tag: { connect: { id: notVeganTag.id } } }],
                 },
             },
         }),
@@ -226,7 +230,7 @@ async function main() {
                 subcategory: 'root',
                 userId: regUser2.id,
                 defaultTags: {
-                    connect: [{ id: veganTag.id }],
+                    create: [{ tag: { connect: { id: veganTag.id } } }],
                 },
             },
         }),
@@ -288,9 +292,7 @@ async function main() {
             name: 'Mac and Cheese',
             userId: adminUser.id,
             defaultTags: {
-                create: [
-                    { tag: { connect: { id: quickRecipeTag.id } } },
-                ],
+                create: [{ tag: { connect: { id: quickRecipeTag.id } } }],
             },
         },
     });
@@ -301,9 +303,7 @@ async function main() {
             name: 'Jambalaya',
             userId: adminUser.id,
             defaultTags: {
-                create: [
-                    { tag: { connect: { id: spicyRecipeTag.id } } },
-                ],
+                create: [{ tag: { connect: { id: spicyRecipeTag.id } } }],
             },
         },
     });
@@ -314,9 +314,7 @@ async function main() {
             name: 'Challah',
             userId: adminUser.id,
             userTags: {
-                create: [
-                    { tag: { connect: { id: jewishRecipeTag.id } } },
-                ],
+                create: [{ tag: { connect: { id: jewishRecipeTag.id } } }],
             },
         },
     });
@@ -325,7 +323,7 @@ async function main() {
 }
 
 main()
-    .catch(e => {
+    .catch((e) => {
         console.error(e);
         process.exit(1);
     })

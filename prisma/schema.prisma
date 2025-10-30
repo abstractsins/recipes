@@ -48,11 +48,12 @@ model User {
  */
 model DefaultTag {
   id   Int     @id @default(autoincrement())
-  name String 
+  name String
   type TagType
 
-  recipes     RecipeDefaultTag[]
-  ingredients Ingredient[]
+  recipes              RecipeDefaultTag[]
+  ingredients          Ingredient[]
+  IngredientDefaultTag IngredientDefaultTag[]
 
   @@unique([name, type])
 }
@@ -67,8 +68,9 @@ model UserTag {
   recipes     RecipeUserTag[]
   ingredients Ingredient[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now()) @updatedAt
+  IngredientUserTag IngredientUserTag[]
 
   @@unique([name, type, createdBy])
 }
@@ -94,6 +96,25 @@ model RecipeUserTag {
   @@id([recipeId, tagId])
 }
 
+model IngredientDefaultTag {
+  ingredientId Int
+  tagId        Int
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  tag        DefaultTag @relation(fields: [tagId], references: [id])
+
+  @@id([ingredientId, tagId])
+}
+
+model IngredientUserTag {
+  ingredientId Int
+  tagId        Int
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  tag        UserTag    @relation(fields: [tagId], references: [id])
+
+  @@id([ingredientId, tagId])
+}
 
 /**
  * ---------- DOMAIN MODELS ----------
@@ -131,13 +152,15 @@ model Ingredient {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 
-  /**
-   * relations
-   */
-  recipes     RecipeIngredient[]
-  defaultTags DefaultTag[]
-  userTags    UserTag[]
-  seasons     Season[]               @relation("IngredientSeasons")
+  // relations
+  recipes      RecipeIngredient[]
+  defaultTags  IngredientDefaultTag[]
+  userTags     IngredientUserTag[]
+  seasons      Season[]               @relation("IngredientSeasons")
+  DefaultTag   DefaultTag?            @relation(fields: [defaultTagId], references: [id])
+  defaultTagId Int?
+  UserTag      UserTag?               @relation(fields: [userTagId], references: [id])
+  userTagId    Int?
 
   @@unique([userId, name])
 }

@@ -16,6 +16,7 @@ import {
 import {
     Ingredient,
     IngredientFormState,
+    IngredientTag,
     SeasonOption,
     Tag,
     UserOption
@@ -32,6 +33,7 @@ import { useSyncUserTags } from "@/hooks/useSyncUserTags";
 
 //* CONTEXT
 import { useDashboard } from "@/context/DashboardContext";
+import { IngredientDefaultTag, IngredientUserTag } from "@prisma/client";
 
 
 
@@ -172,7 +174,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 subcategory: data.subcategory,
                 brand: data.brand,
                 notes: data.notes,
-                selectedSeasons: seasons,
+                selectedSeasons: seasons.map(t => t.label),
                 selectedDefaultTagIds: data.defaultTags?.map(t => t.id),
                 selectedUserTagIds: data.userTags?.map(t => t.id)
             }
@@ -283,7 +285,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     };
 
     const [userTagsWaiting, setUserTagsWaiting] = useState(false);
-    const [userIngredientTags, setUserIngredientTags] = useState<Tag[]>([]);
+    const [userIngredientTags, setUserIngredientTags] = useState<IngredientUserTag[]>([]);
     const selectedUserIngredientTagOptions = useMemo(() => tagsIntoOptions(userIngredientTags), [userIngredientTags]);
 
 
@@ -306,7 +308,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     useEffect(() => {
         if (ingredientInfo) {
-
+            console.log(ingredientInfo);
             const seasons: SeasonOption[] = ingredientInfo.seasons?.map(s => ({
                 id: s.id, label: s.name, value: s.name.toLowerCase()
             }))
@@ -321,8 +323,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 subcategory: ingredientInfo.subcategory ?? '',
                 brand: ingredientInfo.brand ?? '',
                 selectedSeasons: seasons.map((s: SeasonOption) => s.label) ?? [],
-                selectedDefaultTagIds: ingredientInfo.defaultTags.map((t: Tag) => t.id) ?? [],
-                selectedUserTagIds: ingredientInfo.userTags.map((t: Tag) => t.id) ?? []
+                selectedDefaultTagIds: ingredientInfo.defaultTags?.map((t: IngredientTag) => t.tagId) ?? [],
+                selectedUserTagIds: ingredientInfo.userTags?.map((t: IngredientTag) => t.tagId) ?? []
             });
         }
     }, [ingredientInfo]);

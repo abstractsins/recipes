@@ -1,6 +1,6 @@
 // app/api/ingredient/route.ts
 import { NextResponse, NextRequest } from 'next/server';
-import { PrismaClient, Prisma, DefaultTag, UserTag } from '@prisma/client';   // ← pull in Prisma types
+import { PrismaClient, Prisma } from '@prisma/client';   // ← pull in Prisma types
 import { IngredientDTO, SeasonOption, Tag } from '@/types/types';
 import { mapPrismaCodeToStatus, humanMessage } from '@/utils/utils';
 
@@ -52,10 +52,19 @@ export async function POST(req: NextRequest) {
                         ? { connect: body.selectedSeasons.map((name: string) => ({ name })) }
                         : undefined,
                     defaultTags: body.selectedDefaultTagIds?.length
-                        ? { connect: body.selectedDefaultTagIds.map((id: number) => ({ id })) }
+                        ? {
+                            create: body.selectedDefaultTagIds.map((tagId: number) => ({
+                                tag: { connect: { id: tagId } },
+                            })),
+                        }
                         : undefined,
+
                     userTags: body.selectedUserTagIds?.length
-                        ? { connect: body.selectedUserTagIds.map((id: number) => ({ id })) }
+                        ? {
+                            create: body.selectedUserTagIds.map((tagId: number) => ({
+                                tag: { connect: { id: tagId } },
+                            })),
+                        }
                         : undefined,
                 },
             });

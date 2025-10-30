@@ -40,44 +40,113 @@ export async function GET(
 //********** */
 //* PUT      */
 //********** */
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
         const { id } = await params;
-        const numericId = Number(id);
-        if (!Number.isInteger(numericId)) {
+        const recipeId = Number(id);
+        if (!Number.isInteger(recipeId)) {
             return new NextResponse('Invalid recipe ID.', { status: 400 });
         }
 
         const body: RecipeDTO = await req.json();
         const {
             name,
-            ingredients,
-            selectedSeasons
+            ingredients, // you’re not using this yet
+            userId,
+            selectedSeasons,         // <-- seasons by label
+            selectedDefaultTagIds,
+            selectedUserTagIds,
         } = body ?? {};
 
-
         const updated = await prisma.$transaction(async (tx) => {
-            // 1) Update name and seasons (replace set) if provided
             const updateData: any = {};
+
+            // 1) scalars
             if (typeof name === 'string' && name.trim()) {
                 updateData.name = name.trim();
             }
-            if (Array.isArray(selectedSeasons)) {
-                // caller provided seasons; replace the links (can be [] to clear)
-                updateData.seasons = { set: selectedSeasons.map((name) => ({ name })) };
+            if (typeof userId === 'number') {
+                updateData.userId = userId;
             }
 
+            // 2) seasons (implicit M2M, replace)
+            if (Array.isArray(selectedSeasons)) {
+                updateData.seasons = {
+                    set: selectedSeasons.map((name) => ({ name })), // must exist in Season
+                };
+            }
+
+            // if we have *any* scalar/seasons, flush them first
             if (Object.keys(updateData).length) {
                 await tx.recipe.update({
-                    where: { id: numericId },
+                    where: { id: recipeId },
                     data: updateData,
                 });
             }
 
+            // 3) default tags (explicit now)
+            if (Array.isArray(selectedDefaultTagIds)) {
+                // wipe existing joins
+                await tx.recipeDefaultTag.deleteMany({
+                    where: { recipeId },
+                });
 
-            // Return the full recipe with relations
+                const cleanIds = [
+                    ...new Set(
+                        selectedDefaultTagIds
+                            .map(Number)
+                            .filter((n) => Number.isInteger(n) && n > 0)
+                    ),
+                ];
+
+                if (cleanIds.length) {
+                    await tx.recipe.update({
+                        where: { id: recipeId },
+                        data: {
+                            defaultTags: {
+                                create: cleanIds.map((tagId) => ({
+                                    tag: { connect: { id: tagId } },
+                                })),
+                            },
+                        },
+                    });
+                }
+            }
+
+            // 4) user tags (explicit now)
+            if (Array.isArray(selectedUserTagIds)) {
+                await tx.recipeUserTag.deleteMany({
+                    where: { recipeId },
+                });
+
+                const cleanIds = [
+                    ...new Set(
+                        selectedUserTagIds
+                            .map(Number)
+                            .filter((n) => Number.isInteger(n) && n > 0)
+                    ),
+                ];
+
+                if (cleanIds.length) {
+                    await tx.recipe.update({
+                        where: { id: recipeId },
+                        data: {
+                            userTags: {
+                                create: cleanIds.map((tagId) => ({
+                                    tag: { connect: { id: tagId } },
+                                })),
+                            },
+                        },
+                    });
+                }
+            }
+
+            // 5) return fresh
             return tx.recipe.findUnique({
-                where: { id: numericId },
+                where: { id: recipeId },
                 include: {
                     seasons: true,
                     ingredients: {

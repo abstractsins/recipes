@@ -91,47 +91,64 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       }
 
 
-      // ---------- Default Tags (implicit M2M) ----------
-      const rawDefault =
-        Array.isArray(selectedDefaultTagIds) ? selectedDefaultTagIds
-          : undefined
-
-      if (Array.isArray(rawDefault)) {
-        const ids = [...new Set(rawDefault.map(Number).filter(n => Number.isInteger(n) && n > 0))]
-        updateData.defaultTags = { set: ids.map(id => ({ id })) }
-      }
-
-      // ---------- User Tags (implicit M2M) ----------
-      const rawUser =
-        Array.isArray(selectedUserTagIds) ? selectedUserTagIds
-          : undefined
-
-      if (Array.isArray(rawUser)) {
-        const ids = [...new Set(rawUser.map(Number).filter(n => Number.isInteger(n) && n > 0))]
-        updateData.userTags = { set: ids.map(id => ({ id })) }
-      }
-
-      // No-op guard: if nothing to update, return current record
-      if (Object.keys(updateData).length === 0) {
-        const current = await prisma.ingredient.findUnique({
-          where: { id: ingredientId },
-          include: {
-            seasons: true,
-            defaultTags: true,
-            userTags: true,
-            recipes: true,
-          },
-        })
-        return NextResponse.json(current, { status: 200 })
-      }
-
-
-      if (Object.keys(updateData).length) {
-        await tx.ingredient.update({
-          where: { id: ingredientId },
-          data: updateData,
+      // -------- default tags (explicit M2M now) --------
+      if (Array.isArray(selectedDefaultTagIds)) {
+        // wipe existing joins
+        await tx.ingredientDefaultTag.deleteMany({
+          where: { ingredientId },
         });
+
+        const cleanIds = [
+          ...new Set(
+            selectedDefaultTagIds
+              .map(Number)
+              .filter((n) => Number.isInteger(n) && n > 0)
+          ),
+        ];
+
+        if (cleanIds.length) {
+          await tx.ingredient.update({
+            where: { id: ingredientId },
+            data: {
+              defaultTags: {
+                create: cleanIds.map((tagId) => ({
+                  tag: { connect: { id: tagId } },
+                })),
+              },
+            },
+          });
+        }
       }
+
+      // -------- user tags (explicit M2M now) --------
+      if (Array.isArray(selectedUserTagIds)) {
+        // wipe existing joins
+        await tx.ingredientUserTag.deleteMany({
+          where: { ingredientId },
+        });
+
+        const cleanIds = [
+          ...new Set(
+            selectedUserTagIds
+              .map(Number)
+              .filter((n) => Number.isInteger(n) && n > 0)
+          ),
+        ];
+
+        if (cleanIds.length) {
+          await tx.ingredient.update({
+            where: { id: ingredientId },
+            data: {
+              userTags: {
+                create: cleanIds.map((tagId) => ({
+                  tag: { connect: { id: tagId } },
+                })),
+              },
+            },
+          });
+        }
+      }
+
 
       // Return the full recipe with relations
       return tx.ingredient.findUnique({
@@ -141,11 +158,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
           recipes: {
             include: { recipe: true },
           },
-          defaultTags: { include: { recipes: true } },
-          userTags: { include: { owner: true } },
+          // now that tags are explicit, include through the join to get the actual tag
+          defaultTags: { include: { tag: true } },
+          userTags: { include: { tag: true } },
         },
       });
-
     });
 
     return NextResponse.json(updated, { status: 200 })

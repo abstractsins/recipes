@@ -69,14 +69,25 @@ export async function POST(req: NextRequest) {
                 data: {
                     name,
                     userId: Number(userId),
+                    
                     seasons: selectedSeasons?.length
                         ? { connect: selectedSeasons.map((name: string) => ({ name })) }
                         : undefined,
-                    defaultTags: selectedDefaultTagIds.length
-                        ? { connect: selectedDefaultTagIds.map((id: number) => ({ id })) }
+
+                    defaultTags: body.selectedDefaultTagIds?.length
+                        ? {
+                            create: body.selectedDefaultTagIds.map((tagId: number) => ({
+                                tag: { connect: { id: tagId } },
+                            })),
+                        }
                         : undefined,
-                    userTags: selectedUserTagIds.length
-                        ? { connect: selectedUserTagIds.map((id: number) => ({ id })) }
+
+                    userTags: body.selectedUserTagIds?.length
+                        ? {
+                            create: body.selectedUserTagIds.map((tagId: number) => ({
+                                tag: { connect: { id: tagId } },
+                            })),
+                        }
                         : undefined,
                 },
                 include: { seasons: true }
