@@ -1,3 +1,9 @@
+// TODO
+//* 'updated' status message
+//* 'error' status message
+//* form compare for edits
+//* keep user showing in dropdown after recipe add/edit
+
 'use client';
 
 //* --------------------------------------- //
@@ -36,7 +42,7 @@ import IngredientAdd from '@/components/admin/formElements/addEditRecipe/Ingredi
 
 //* UTILS
 import {
-    seasonOptions,
+    recipeSeasonOptions,
     toTitleCase,
     handleModeSelectFactory,
     handleSeasonSelect,
@@ -117,11 +123,10 @@ export default function AddEditRecipe({
     } = useRecipeForm(mode);
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
-    const onSeasonChange = handleSeasonSelect(setFormState);
+    const onSeasonChange = handleSeasonSelect(setFormState, 'recipe');
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIds');
     const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIds');
 
-    console.log(formState);
 
     //* -----------------RETURN--------------- //
 
@@ -195,7 +200,7 @@ export default function AddEditRecipe({
                                         multiple
                                         className={`tag`}
                                         onChange={onSeasonChange}
-                                        options={seasonOptions}
+                                        options={recipeSeasonOptions}
                                     />
                                 </FieldModule>
                             </FormRow>

@@ -32,11 +32,8 @@ import AddEditHeader from "./AddEditHeader";
 
 //* UTILS
 import {
-    seasonOptions,
     toTitleCase,
     handleModeSelectFactory,
-    handleSeasonSelect,
-    handleTagSelectFactory
 } from "@/utils/utils";
 
 //* HOOKS

@@ -123,7 +123,6 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     setIngredientListWaiting(true);
     const res = await fetch(`/api/ingredient/user/${userId}`);
     const data = await res.json();
-    console.dir(data);
     setIngredientListWaiting(false);
     return data;
   }, []);

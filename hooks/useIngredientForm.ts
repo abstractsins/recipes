@@ -24,6 +24,7 @@ import {
 
 //* UTILS
 import {
+    arrayCompare,
     createInputHandler,
     tagsIntoOptions
 } from "@/utils/utils";
@@ -33,7 +34,6 @@ import { useSyncUserTags } from "@/hooks/useSyncUserTags";
 
 //* CONTEXT
 import { useDashboard } from "@/context/DashboardContext";
-import { IngredientDefaultTag, IngredientUserTag } from "@prisma/client";
 
 
 
@@ -68,9 +68,8 @@ export function useIngredientForm(mode: 'add' | 'edit') {
         selectedUserTagIds: []
     };
 
+    //* FORM STATE
     const [formState, setFormState] = useState<IngredientFormState>(emptyIngredientForm);
-
-    const [submitWaiting, setSubmitWaiting] = useState(false);
 
     //* STATUSES
     const [error, setError] = useState<string | null>(null);
@@ -79,6 +78,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const [instructionMsg, setInstructionMsg] = useState<string | null>(null);
 
     //* READINESS / WAITING / LOADING / VALIDITY
+    const [submitWaiting, setSubmitWaiting] = useState(false);
     const [userReady, setUserReady] = useState(false);
     const [ingredientReady, setIngredientReady] = useState(false);
     const [isAddFormValid, setIsAddFormValid] = useState(false);
@@ -97,6 +97,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     const [userIngredientListHasLoaded, setUserIngredientListHasLoaded] = useState<boolean>(false);
 
+    //* FORM STATE
     const [currentIngredientData, setCurrentIngredientData] = useState<IngredientFormState>();
 
 
@@ -159,11 +160,19 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     }
 
     const formalizeIngredient = (data: Ingredient | null): IngredientFormState | undefined => {
+        if (!data) return;
+
+        console.log(data);
+
         let formState: IngredientFormState | undefined;
         if (data) {
 
             const seasons: SeasonOption[] = data.seasons?.map(s => ({
-                id: s.id, name: s.name, label: s.name, value: s.name.toLowerCase()
+                id: s.id,
+                name: s.name,
+                label: s.name,
+                value: s.name.toLowerCase(),
+                type: 'ingredient'
             }))
 
             formState = {
@@ -175,12 +184,14 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 brand: data.brand,
                 notes: data.notes,
                 selectedSeasons: seasons.map(t => t.label),
-                selectedDefaultTagIds: data.defaultTags?.map(t => t.id),
-                selectedUserTagIds: data.userTags?.map(t => t.id)
+                selectedDefaultTagIds: data.defaultTags?.map(t => t.tagId),
+                selectedUserTagIds: data.userTags?.map(t => t.tagId)
             }
         }
         return formState;
     };
+
+    //* -----------------useCallback--------------- //
 
     const fetchUserIngredients = useCallback(
         async ({ quiet = false }: { quiet?: boolean } = {}) => {
@@ -240,6 +251,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     const handleIngredientSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSubmitWaiting(true);
+        console.log(formState);
         mode === 'add' ? setIsAddFormValid(false) : setIsEditFormValid(false);
         clearStatuses();
 
@@ -266,7 +278,6 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 console.error(error.message);
                 setError(error.message);
             } else {
-                const json = await res.json();
                 setSuccessMsg(mode === 'add' ? 'Ingredient Created!' : 'Ingredient Updated!');
                 if (mode === 'edit') fetchUserIngredients({ quiet: true });
                 refreshIngredientModule();
@@ -285,7 +296,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
     };
 
     const [userTagsWaiting, setUserTagsWaiting] = useState(false);
-    const [userIngredientTags, setUserIngredientTags] = useState<IngredientUserTag[]>([]);
+    const [userIngredientTags, setUserIngredientTags] = useState<Tag[]>([]);
     const selectedUserIngredientTagOptions = useMemo(() => tagsIntoOptions(userIngredientTags), [userIngredientTags]);
 
 
@@ -308,13 +319,11 @@ export function useIngredientForm(mode: 'add' | 'edit') {
 
     useEffect(() => {
         if (ingredientInfo) {
-            console.log(ingredientInfo);
-            const seasons: SeasonOption[] = ingredientInfo.seasons?.map(s => ({
-                id: s.id, label: s.name, value: s.name.toLowerCase()
-            }))
 
-            console.log(ingredientInfo.defaultTags);
-            console.log(ingredientInfo.userTags);
+            const seasons: SeasonOption[] = ingredientInfo.seasons?.map(s => ({
+                id: s.id, label: s.name, value: s.name.toLowerCase(), type: 'ingredient'
+            }));
+
             setFormState({
                 name: ingredientInfo.name ?? '',
                 main: ingredientInfo.main ?? '',
@@ -361,9 +370,9 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 || updatedIngredientData.category !== (currentIngredientData.category || "")
                 || updatedIngredientData.subcategory !== (currentIngredientData.subcategory || "")
                 || updatedIngredientData.brand !== (currentIngredientData.brand || "")
-                || JSON.stringify(updatedIngredientData.selectedDefaultTagIds) !== (JSON.stringify(currentIngredientData.selectedDefaultTagIds) || "[null]")
-                || JSON.stringify(updatedIngredientData.selectedUserTagIds) !== (JSON.stringify(currentIngredientData.selectedUserTagIds) || "[null]")
-                || JSON.stringify(updatedIngredientData.selectedSeasons) !== (JSON.stringify(currentIngredientData.selectedSeasons) || "[]")
+                || !arrayCompare(updatedIngredientData.selectedDefaultTagIds, ((currentIngredientData.selectedDefaultTagIds) || "[null]")).equal
+                || !arrayCompare(updatedIngredientData.selectedUserTagIds, ((currentIngredientData.selectedUserTagIds) || "[null]")).equal
+                || !arrayCompare(updatedIngredientData.selectedSeasons, ((currentIngredientData.selectedSeasons) || "[null]")).equal
             ) {
                 if (selectedIngredientId) {
                     clearStatuses();
@@ -377,7 +386,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
             }
         }
 
-        if (currentIngredientData && mode === 'edit' && selectedIngredientUserId) {
+        if (currentIngredientData && mode === 'edit' && selectedIngredientUserId && formState) {
             console.warn('comparing ingredient form states');
             handleCompareIngredientForm(formState, currentIngredientData);
         }

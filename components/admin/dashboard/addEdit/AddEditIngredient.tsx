@@ -33,7 +33,7 @@ import AddEditHeader from "./AddEditHeader";
 
 //* UTILS
 import {
-    seasonOptions,
+    ingredientSeasonOptions,
     toTitleCase,
     handleModeSelectFactory,
     handleSeasonSelect,
@@ -184,9 +184,7 @@ export default function AddEditIngredient({
                                         multiple
                                         className={`tag`}
                                         onChange={onSeasonChange}
-                                        options={seasonOptions}
-
-
+                                        options={ingredientSeasonOptions}
                                     />
                                 </FieldModule>
                             </FormRow>

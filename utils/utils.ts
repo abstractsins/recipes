@@ -9,6 +9,8 @@ import {
     TagOption,
     SeasonSelection,
     AdminOption,
+    seasonGeneralOption,
+    TagOptionType,
 } from "@/types/types";
 
 import { TagType } from "@prisma/client";
@@ -74,12 +76,28 @@ export const tagsIntoOptions = (tags: Tag[]) => {
 
 
 //* STANDARD DATA */
-export const seasonOptions: SeasonOption[] = [
-    { id: 1, name: 'fall', value: 'fall', label: 'Fall' },
-    { id: 2, name: 'winter', value: 'winter', label: 'Winter' },
-    { id: 3, name: 'spring', value: 'spring', label: 'Spring' },
-    { id: 4, name: 'summer', value: 'summer', label: 'Summer' }
-]
+
+
+// ------------- SEASONS ------------- //
+const seasons: Season[] = [
+    { id: 1, name: 'fall' },
+    { id: 2, name: 'winter' },
+    { id: 3, name: 'spring' },
+    { id: 4, name: 'summer' }
+];
+const seasonGeneralOptions: seasonGeneralOption[] = seasons.map(s => ({
+    ...s,
+    value: s.name,
+    label: toTitleCase(s.name)
+}));
+export const ingredientSeasonOptions: SeasonOption[] = seasonGeneralOptions.map(s => ({
+    ...s,
+    type: 'ingredient'
+}))
+export const recipeSeasonOptions: SeasonOption[] = seasonGeneralOptions.map(s => ({
+    ...s,
+    type: 'recipe'
+}))
 
 
 //* API */
@@ -179,15 +197,12 @@ export function handleTagSelectFactory(
     setFormState: (fn: (prev: any) => any) => void,
     key: 'selectedDefaultTagIds' | 'selectedUserTagIds'
 ) {
-    return (opt: AdminOption | null, checked: boolean) => {
-        if (!opt) return;
+    return (option: AdminOption | null, checked: boolean) => {
+        if (!option) return;
+        const type: TagOptionType = option.type;
 
         // Prefer `id`, else numeric `value`, else try to coerce value to number
-        const id: number = typeof opt.id === 'number'
-            ? opt.id
-            : typeof opt.value === 'number'
-                ? opt.value
-                : Number(opt.value);
+        const id: number = option.id;
 
         if (Number.isNaN(id)) return; // guard if value cannot be coerced
 
@@ -203,30 +218,53 @@ export function handleTagSelectFactory(
     };
 }
 
-// ✅ SEASONS — store labels from AdminOption
+// 🍁 SEASONS 
 export function handleSeasonSelect(
-    setFormState: (fn: (prev: any) => any) => void
+    setFormState: React.Dispatch<React.SetStateAction<any>>
 ) {
-    return (opt: AdminOption | null, checked: boolean) => {
-        if (!opt) return;
+    return (option: SeasonOption | null, checked: boolean) => {
+        if (!option) return;
+        const type: TagOptionType = option.type;
+        // AdminMultiSelect can pass null – bail out
 
-        const label = opt.label; // valueKey='label' in the select
+        const label = option.label;
 
-        setFormState(prev => {
-            console.log(prev.selectedSeasons);
+        setFormState((prev: any) => {
+            const current: string[] = prev.selectedSeasons ?? [];
 
-            console.log(prev.selectedSeasons);
-
-            const list: string[] = Array.isArray(prev.selectedSeasons)
-                ? prev.selectedSeasons.map((s: string) => s)
-                : [];
+            const next = checked
+                ? [...current, label]
+                : current.filter((s) => s !== label);
 
             return {
                 ...prev,
-                selectedSeasons: checked
-                    ? (list.includes(opt.label) ? list : [...list, opt.label])
-                    : list.filter(x => x !== opt.label),
+                selectedSeasons: next,
             };
         });
     };
+}
+
+
+//* arrayCompare
+export function arrayCompare(
+    arr1: (string | number)[],
+    arr2: (string | number)[]
+): { equal: boolean, reason?: string } {
+    if (arr1.length !== arr2.length) {
+        return { equal: false, reason: 'Arrays are of different lengths' };
+    }
+
+    arr1.sort();
+    arr2.sort();
+
+    if (typeof arr1[0] !== typeof arr2[0]) {
+        return { equal: false, reason: 'Arrays are of different data types' };
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+            return { equal: false, reason: `arr1[${i}] !== arr2[${i}] ... ${arr1[i]} !== ${arr2[i]}` }
+        }
+    }
+    return { equal: true }
 }

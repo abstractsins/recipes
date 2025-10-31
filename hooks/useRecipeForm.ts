@@ -75,6 +75,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const [warningMsg, setWarningMsg] = useState<string | null>(null);
     const [instructionMsg, setInstructionMsg] = useState<string | null>(null);
 
+    //* FORM STATE
     const [formState, setFormState] = useState<RecipeFormState>(emptyRecipeForm);
 
     const [userTagsWaiting, setUserTagsWaiting] = useState(false);
@@ -97,6 +98,13 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
 
     //* ---------------FUNCTIONS--------------- //
+
+    const clearStatuses = () => {
+        setError(null);
+        setSuccessMsg(null);
+        setWarningMsg(null);
+        setInstructionMsg(null);
+    }
 
     const handleRecipeSelect = (recipe: number | null) => {
         console.log('recipe id:', recipe);
@@ -127,8 +135,9 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const handleRecipeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSubmitWaiting(true);
-        setError(null);
-        setSuccessMsg(null);
+        // mode === 'add' ? setIsAddFormValid(false) : setIsEditFormValid(false);
+
+        clearStatuses();
 
         console.log(formState);
 
@@ -136,7 +145,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
             ...formState,
             userId: mode === 'add' ? new FormData(e.currentTarget).get('user') : selectedRecipeUserId,
             RecipeTag: [...formState.selectedDefaultTagIds, ...formState.selectedUserTagIds]
-        }
+        };
 
         try {
             const res = await fetch(
@@ -153,7 +162,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
                 setError(error.message);
             } else {
                 setSuccessMsg(mode === 'add' ? 'Recipe Created!' : 'Recipe Updated!');
-                if (mode === 'edit') fetchUserRecipes();
+                if (mode === 'edit') fetchUserRecipes({ quiet: true });
                 refreshRecipeModule();
             }
         } catch (err) {
@@ -202,32 +211,37 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
     //* -----------------useCallback--------------- //
 
-    const fetchUserRecipes = useCallback(async () => {
-        if (selectedRecipeUserId) {
-            const data = await contextFetchUserRecipes(selectedRecipeUserId);
-            setUserRecipeList(data);
-            if (mode === 'add') {
-                setIsIngredientModuleReady(true);
-                setRecipeReady(true);
+    const fetchUserRecipes = useCallback(
+        async ({ quiet = false }: { quiet?: boolean } = {}) => {
+            if (selectedRecipeUserId) {
+                if (!quiet) setWarningMsg(`User ${mode === 'edit' ? 'recipes' : 'ingredients'} loading...`);
+                const data = await contextFetchUserRecipes(selectedRecipeUserId);
+                setUserRecipeList(data);
+                if (mode === 'add') {
+                    setIsIngredientModuleReady(true);
+                    setRecipeReady(true);
+                } else {
+                    setRecipeReady(false);
+                    setIsRecipeSelectReady(true);
+                }
             } else {
+                setIsIngredientModuleReady(false);
                 setRecipeReady(false);
-                setIsRecipeSelectReady(true);
+                resetAll();
             }
-        } else {
-            setIsIngredientModuleReady(false);
-            setRecipeReady(false);
-            resetAll();
-        }
-    }, [selectedRecipeUserId, contextFetchUserRecipes]);
+            setWarningMsg(null);
+        }, [selectedRecipeUserId, contextFetchUserRecipes]);
 
     const fetchRecipeInfo = useCallback(async () => {
         if (selectedRecipeId) {
             setRecipeLoading(true);
+            setWarningMsg(`Loading recipe info...`);
             const data = await contextFetchRecipeInfo(selectedRecipeId);
             setRecipeInfo(data);
             setRecipeReady(true);
             setIsIngredientModuleReady(true);
             setRecipeLoading(false);
+            setWarningMsg(null);
             console.log(data);
         } else {
             setIsIngredientModuleReady(false);
@@ -265,8 +279,11 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
         if (recipeInfo) {
 
             const seasons: SeasonOption[] = recipeInfo.seasons.map(s => ({
-                id: s.id, label: s.name, value: s.name.toLowerCase()
-            }))
+                id: s.id, 
+                label: s.name, 
+                value: s.name.toLowerCase(), 
+                type: 'recipe'
+            }));
 
             setFormState({
                 name: recipeInfo.name ?? '',

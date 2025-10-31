@@ -136,7 +136,7 @@ export interface AdminReadoutModule {
 
 export interface AdminMultiSelectProps {
     name: string;
-    options?: TagOption[] | SeasonOption[] | UomOption[];
+    options?: TagOption[] | SeasonOption[];
     className?: string;
     required?: boolean;
     isLoading?: boolean;
@@ -144,7 +144,11 @@ export interface AdminMultiSelectProps {
     multiple?: boolean;
     disabled?: boolean;
     id?: string;
-    onChange: (tag: AdminOption | null, checked: boolean) => void;
+    onChange: (
+        tag: AdminOption | SeasonOption | null,
+        checked: boolean,
+        type?: string | 'recipe' | 'ingredient' | 'other'
+    ) => void;
 }
 
 export interface AdminDropDownSelectProps {
@@ -179,20 +183,29 @@ export interface AdminInputProps {
 
 export type Mode = 'add' | 'edit';
 
+//* ---------- OPTION INPUTS ---------- //
+export type TagOptionType = 'recipe' | 'ingredient' | 'other';
+
 export interface AdminOption {
     id: number;
     label: string;
     value?: string;
     name?: string;
+    type: TagOptionType;
 }
 
-export interface TagOption extends AdminOption {
-    type: string;
+export interface TagOption extends AdminOption { }
+
+export interface seasonGeneralOption extends Season {
+    value: string;
+    label: string;
 }
 
-export interface SeasonOption extends AdminOption { }
+export interface SeasonOption extends AdminOption {}
 
-export interface UomOption extends AdminOption {
+export interface UomOption {
+    id: number;
+    label: string;
     abbr: string;
     metric: boolean;
     type: 'mass' | 'volume' | 'count' | 'length' | 'other';
@@ -202,6 +215,9 @@ export interface UserOption {
     value: number;
     label: string;
 };
+
+
+
 
 export interface RecipeIngredientSelectorProps {
     userId: number;

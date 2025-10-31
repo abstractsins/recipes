@@ -90,6 +90,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         updateData.seasons = { set: selectedSeasons.map((name) => ({ name })) };
       }
 
+      await tx.ingredient.update({
+        where: { id: ingredientId },
+        data: updateData,
+      });
+
 
       // -------- default tags (explicit M2M now) --------
       if (Array.isArray(selectedDefaultTagIds)) {
