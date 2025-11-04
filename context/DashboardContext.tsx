@@ -14,7 +14,7 @@ import {
   useCallback
 } from 'react';
 
-//* COMPONENTS
+//* HOOKS
 import { useFetchTags } from '@/hooks/useFetchTags';
 import { useFetchRecipes } from '@/hooks/useFetchRecipes';
 import { useFetchUsers } from '@/hooks/useFetchUsers';
@@ -143,7 +143,6 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     const res = await fetch(`/api/recipe/user/${userId}`);
     const data = await res.json();
     setRecipeListWaiting(false);
-    console.warn('finished');
     return data;
   }, []);
 

@@ -15,7 +15,7 @@
   flex-wrap: wrap;
   padding: 5px 0 10px 0;
   justify-content: flex-start;
-  gap: 15px;
+  gap: 10px;
 }
 
 .season .field-container {

@@ -6,7 +6,13 @@ import { useState, useCallback, useEffect } from 'react';
 import { RecipeIngredientSelectorProps, RecipeIngredientOption, Ingredient } from '@/types/types';
 import { useDashboard } from '@/context/DashboardContext';
 
-export default function RecipeIngredientSelector({ userId, onIngredientChosen }: RecipeIngredientSelectorProps) {
+export default function RecipeIngredientSelector({
+    userId,
+    onIngredientChosen,
+    setSearchResLoading,
+    searchCleared
+}: RecipeIngredientSelectorProps) {
+
     const [inputValue, setInputValue] = useState('');
     const [options, setOptions] = useState<RecipeIngredientOption[]>([]);
 
@@ -15,11 +21,12 @@ export default function RecipeIngredientSelector({ userId, onIngredientChosen }:
     // Debounced DB fetch
     const fetchOptions = useCallback(
         debounce(async (value: string) => {
+            setSearchResLoading(true);
             const res = await fetch(`/api/ingredient/user/${userId}?query=${value}`);
             const data: Ingredient[] = await res.json();
-            setOptions(data.map(ing => ({ value: ing.id, label: ing.name })));
-        }, 300),
-        [userId]
+            setOptions(data.map(ing => ({ value: ing.id, label: `${ing.name}${ing.variety ? ', ' + ing.variety : ''}` })));
+            setSearchResLoading(false);
+        }, 300), [userId]
     );
 
     useEffect(() => {
@@ -31,9 +38,13 @@ export default function RecipeIngredientSelector({ userId, onIngredientChosen }:
     }, [inputValue, fetchOptions]);
 
     const handleChange = async (selected: RecipeIngredientOption | null) => {
-        if (!selected) return;
+        if (!selected) {
+            searchCleared();
+            return;
+        }
 
         if (selected.__isNew__) {
+            
             //! User typed a new ingredient — create it AFTER SUBMIT THO
             const res = await fetch('/api/ingredient', {
                 method: 'POST',
@@ -57,7 +68,7 @@ export default function RecipeIngredientSelector({ userId, onIngredientChosen }:
             onChange={handleChange}
             options={options}
             classNamePrefix={'recipe-ingredient-select'}
-            placeholder="Add ingredient..."
+            placeholder="Type to search..."
         />
     );
 }

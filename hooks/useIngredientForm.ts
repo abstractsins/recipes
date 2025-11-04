@@ -214,7 +214,7 @@ export function useIngredientForm(mode: 'add' | 'edit') {
                 setCurrentIngredientData(formalizeIngredient(data));
             }
             setWarningMsg(null);
-        }, [selectedIngredientId, fetchIngredientById]
+        }, [selectedIngredientId]
     );
 
     // ➕👤🏷️

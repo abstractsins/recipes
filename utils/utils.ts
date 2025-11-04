@@ -7,10 +7,10 @@ import {
     SeasonOption,
     Tag,
     TagOption,
-    SeasonSelection,
     AdminOption,
     seasonGeneralOption,
     TagOptionType,
+    UomOptionType,
 } from "@/types/types";
 
 import { TagType } from "@prisma/client";
@@ -76,8 +76,6 @@ export const tagsIntoOptions = (tags: Tag[]) => {
 
 
 //* STANDARD DATA */
-
-
 // ------------- SEASONS ------------- //
 const seasons: Season[] = [
     { id: 1, name: 'fall' },

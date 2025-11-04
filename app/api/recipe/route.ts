@@ -28,7 +28,7 @@ export async function GET() {
                     select: { tag: { select: { id: true, name: true } } }
                 },
                 ingredients: {
-                    include: { ingredient: true }
+                    include: { ingredient: false }
                 },
                 seasons: true
             }
@@ -52,11 +52,13 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
         const {
-            name,
             userId,
+            name,
+            translation,
+            altName,
             selectedSeasons,
             selectedDefaultTagIds,
-            selectedUserTagIds
+            selectedUserTagIds,
         } = body;
 
         console.log(body);
@@ -68,6 +70,8 @@ export async function POST(req: NextRequest) {
             const newRecipe = await tx.recipe.create({
                 data: {
                     name,
+                    translation,
+                    altName,
                     userId: Number(userId),
                     
                     seasons: selectedSeasons?.length

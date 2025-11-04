@@ -54,6 +54,8 @@ export async function PUT(
         const body: RecipeDTO = await req.json();
         const {
             name,
+            translation,
+            altName,
             ingredients, // you’re not using this yet
             userId,
             selectedSeasons,         // <-- seasons by label
@@ -71,6 +73,13 @@ export async function PUT(
             if (typeof userId === 'number') {
                 updateData.userId = userId;
             }
+            if (typeof translation === 'string') {
+                updateData.translation = translation;
+            }
+            if (typeof altName === 'string') {
+                updateData.altName = altName;
+            }
+
 
             // 2) seasons (implicit M2M, replace)
             if (Array.isArray(selectedSeasons)) {

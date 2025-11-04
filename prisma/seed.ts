@@ -111,12 +111,12 @@ async function main() {
     );
 
     /* ─────────── Ingredients (now EXPLICIT joins) ─────────── */
-    // 1) ground beef
+
     const beef = await prisma.ingredient.create({
         data: {
-            name: 'ground beef 90/10',
+            name: 'ground beef',
             main: 'beef',
-            variety: 'ground, 90/10',
+            variety: '90/10',
             category: 'meat',
             subcategory: 'beef',
             userId: adminUser.id,
@@ -132,7 +132,40 @@ async function main() {
         },
     });
 
-    // 2) beer mustard (no tags)
+
+    const onionWhite = await prisma.ingredient.create({
+        data: {
+            name: 'onion',
+            main: 'onion',
+            variety: 'white',
+            category: 'vegetable',
+            subcategory: 'root',
+            userId: adminUser.id,
+        }
+    });
+
+    const breadCrumbs = await prisma.ingredient.create({
+        data: {
+            name: 'bread crumbs',
+            main: 'bread crumbs',
+            variety: 'plain',
+            userId: adminUser.id,
+        }
+    })
+
+    const italianSeasoning = await prisma.ingredient.create({
+        data: {
+            name: 'Italian seasoning',
+            main: 'seasoning',
+            variety: 'Italian',
+            userId: adminUser.id,
+            category: 'Herb/Spice',
+            subcategory: 'Blend',
+            defaultTags: { create: [{ tag: { connect: { id: driedTag.id } } }] }
+        }
+    })
+
+
     const beerMustard = await prisma.ingredient.create({
         data: {
             name: 'beer mustard',
@@ -142,37 +175,36 @@ async function main() {
             subcategory: 'mustard',
             userId: adminUser.id,
             brand: 'Kosciusko',
-        },
-    });
+        }
+    })
+
+    const eggLarge = await prisma.ingredient.create({
+        data: {
+            name: 'large egg',
+            main: 'egg',
+            variety: 'large',
+            userId: adminUser.id,
+        }
+    })
+
+    const milk = await prisma.ingredient.create({
+        data: {
+            name: 'milk',
+            variety: 'whole',
+            category: 'dairy',
+            userId: adminUser.id,
+            defaultTags: { create: [{ tag: { connect: { id: notVeganTag.id } } }] }
+        }
+    })
 
     /* remaining ingredients */
     await Promise.all([
         prisma.ingredient.create({
             data: {
-                name: 'white onion',
-                main: 'onion',
-                variety: 'white',
-                category: 'vegetable',
-                subcategory: 'root',
-                userId: adminUser.id,
-            },
-        }),
-        prisma.ingredient.create({
-            data: {
-                name: 'large egg',
-                main: 'egg',
-                variety: 'large',
-                userId: adminUser.id,
-            },
-        }),
-        prisma.ingredient.create({
-            data: {
                 name: 'sage',
                 category: 'herb',
                 userId: adminUser.id,
-                defaultTags: {
-                    create: [{ tag: { connect: { id: driedTag.id } } }],
-                },
+                defaultTags: { create: [{ tag: { connect: { id: driedTag.id } } }] },
             },
         }),
         prisma.ingredient.create({
@@ -196,17 +228,6 @@ async function main() {
         }),
         prisma.ingredient.create({
             data: {
-                name: 'milk',
-                variety: 'whole',
-                category: 'dairy',
-                userId: adminUser.id,
-                defaultTags: {
-                    create: [{ tag: { connect: { id: notVeganTag.id } } }],
-                },
-            },
-        }),
-        prisma.ingredient.create({
-            data: {
                 name: 'carrot',
                 main: 'carrot',
                 category: 'vegetable',
@@ -229,9 +250,7 @@ async function main() {
                 category: 'vegetable',
                 subcategory: 'root',
                 userId: regUser2.id,
-                defaultTags: {
-                    create: [{ tag: { connect: { id: veganTag.id } } }],
-                },
+                defaultTags: { create: [{ tag: { connect: { id: veganTag.id } } }] },
             },
         }),
         prisma.ingredient.create({
@@ -247,14 +266,51 @@ async function main() {
     /* ─────────── Recipes ─────────── */
     const meatloaf1 = await prisma.recipe.create({
         data: {
-            name: 'meatloaf',
+            name: 'Meatloaf',
             userId: adminUser.id,
             ingredients: {
                 create: [
                     {
                         ingredient: { connect: { id: beef.id } },
-                        quantity: '1',
+                        ingredientName: beef.name,
+                        amount: '2-1/2',
                         unit: 'lb',
+                    },
+                    {
+                        ingredient: { connect: { id: onionWhite.id } },
+                        ingredientName: onionWhite.name,
+                        amount: '1/3',
+                        unit: 'cup',
+                    },
+                    {
+                        ingredient: { connect: { id: eggLarge.id } },
+                        ingredientName: eggLarge.name,
+                        amount: '1',
+                        unit: 'ea',
+                    },
+                    {
+                        ingredient: { connect: { id: italianSeasoning.id } },
+                        ingredientName: italianSeasoning.name,
+                        amount: '1/2',
+                        unit: 'tsp',
+                    },
+                    {
+                        ingredient: { connect: { id: beerMustard.id } },
+                        ingredientName: beerMustard.name,
+                        amount: '1',
+                        unit: 'tbsp',
+                    },
+                    {
+                        ingredient: { connect: { id: milk.id } },
+                        ingredientName: milk.name,
+                        amount: '1/2',
+                        unit: 'cup',
+                    },
+                    {
+                        ingredient: { connect: { id: breadCrumbs.id } },
+                        ingredientName: breadCrumbs.name,
+                        amount: '1/3',
+                        unit: 'cup',
                     },
                 ],
             },

@@ -28,15 +28,15 @@ export default function DashboardAddEdit({ activeIds, onClick, close }: Props) {
             Component: AddEditIngredient,
         },
         {
-            id: 'add-edit-recipe-module',
-            title: 'Recipe',
-            Component: AddEditRecipe,
-        },
-        {
             id: 'add-edit-tags-module',
             title: 'Tag',
             Component: AddEditTags,
-        }        
+        },        
+        {
+            id: 'add-edit-recipe-module',
+            title: 'Recipe',
+            Component: AddEditRecipe,
+        }
     ];
 
 

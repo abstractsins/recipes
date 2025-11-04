@@ -4,7 +4,7 @@ import styles from './InputSpinner.module.css'
 
 import { useEffect, useState } from "react";
 
-export default function InputSpinner() {
+export default function InputSpinner({ speed = 200 }: { speed?: number }) {
 
     const [spinnerText, setSpinnerText] = useState('');
 
@@ -27,7 +27,7 @@ export default function InputSpinner() {
             });
         };
 
-        const interval = setInterval(spinner, 200);
+        const interval = setInterval(spinner, speed);
         return () => clearInterval(interval);
     }, []);
 

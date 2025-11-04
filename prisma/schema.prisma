@@ -120,12 +120,14 @@ model IngredientUserTag {
  * ---------- DOMAIN MODELS ----------
  */
 model Recipe {
-  id        Int      @id @default(autoincrement())
-  name      String
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String
+  translation String?
+  altName     String?
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
   /**
    * relations
@@ -169,16 +171,17 @@ model Ingredient {
  * ---------- SUPPORTING MODELS ----------
  */
 model RecipeIngredient {
-  id           Int        @id @default(autoincrement())
-  recipeId     Int
-  ingredientId Int
-  recipe       Recipe     @relation(fields: [recipeId], references: [id])
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
-  quantity     String
-  unit         String
-  prepMethod   String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now())
+  id             Int        @id @default(autoincrement())
+  recipeId       Int
+  ingredientId   Int
+  ingredientName String
+  recipe         Recipe     @relation(fields: [recipeId], references: [id])
+  ingredient     Ingredient @relation(fields: [ingredientId], references: [id])
+  amount         String
+  unit           String
+  prep           String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @default(now())
 
   @@unique([recipeId, ingredientId])
 }

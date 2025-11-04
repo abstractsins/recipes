@@ -17,3 +17,15 @@ div.new-ingredient-info {
     flex-wrap: wrap;
     flex-direction: column;
 }
+
+input.recipe-ingredient-add {
+    padding: .5vh .5vw;
+    border-radius: 10px;
+    background-color: lightcyan;
+    transition: all 200ms;
+}
+
+input.recipe-ingredient-add:hover {
+    cursor: pointer;
+    background-color: lightgreen;
+}

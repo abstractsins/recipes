@@ -16,7 +16,9 @@ export default function AdminInput({
     min, max,
     onChange,
     onKeyDown,
-    autoComplete
+    autoComplete,
+    step = 1,
+    id = ''
 }: AdminInputProps) {
 
     return (
@@ -28,12 +30,14 @@ export default function AdminInput({
             required={required}
             disabled={disabled}
             className={`${styles['admin-input']} ${className}`}
-            value={value}
+            value={value ?? ''}
             min={min}
             max={max}
             autoComplete={autoComplete}
             onChange={onChange}
             onKeyDown={onKeyDown}
+            step={step}
+            id={id}
         />
     );
 }

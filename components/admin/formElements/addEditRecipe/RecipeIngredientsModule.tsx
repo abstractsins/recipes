@@ -4,6 +4,7 @@ import IngredientAdd from "./IngredientAdd"
 import { Mode } from "@/types/types"
 
 import { FiPlusCircle } from "react-icons/fi"
+import { useRecIng } from "@/context/RecipeIngredientContext"
 
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export default function RecipeIngredientsModule({ mode }: Props) {
+    
+
     return (
         <>
             <FormRow>

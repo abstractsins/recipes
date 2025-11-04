@@ -5,75 +5,77 @@
 import { Role, TagType } from "@prisma/client"
 
 export interface User {
-    id: number,
-    email: string | null,
-    nickname: string | null,
-    username: string | null,
-    lastLogin: Date,
-    createdAt: Date,
-    updatedAt: Date
+    id: number;
+    email: string | null;
+    nickname: string | null;
+    username: string | null;
+    lastLogin: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Recipe {
-    id: number,
-    name: string,
-    user?: User,
-    seasons: Season[],
-    defaultTags: RecipeTag[],
-    userTags: RecipeTag[],
-    createdAt?: Date,
-    updatedAt?: Date
+    id: number;
+    name: string;
+    translation: string;
+    altName: string;
+    user?: User;
+    seasons: Season[];
+    defaultTags: RecipeTag[];
+    userTags: RecipeTag[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface Ingredient {
-    id: number,
+    id: number;
     name: string
-    main?: string,
-    variety?: string,
-    category?: string,
-    subcategory?: string,
-    brand?: string,
-    notes?: string,
-    seasons: Season[],
-    userTags: IngredientTag[],
-    defaultTags: IngredientTag[],
-    user?: User,
-    recipes: Recipe[],
-    createdAt?: Date,
-    updatedAt?: Date
+    main?: string;
+    variety?: string;
+    category?: string;
+    subcategory?: string;
+    brand?: string;
+    notes?: string;
+    seasons: Season[];
+    userTags: IngredientTag[];
+    defaultTags: IngredientTag[];
+    user?: User;
+    recipes: Recipe[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface IngredientTag {
-    tagId: number,
-    ingredientId: number,
-    category: string
+    tagId: number;
+    ingredientId: number;
+    category: string;
 }
 
 export interface RecipeTag {
-    tagId: number,
-    recipeId: number,
-    category: string
+    tagId: number;
+    recipeId: number;
+    category: string;
 }
 
 export interface Tag {
-    id: number,
-    name: string,
-    type: TagType,
-    createdBy?: number,
-    owner?: TagOwner,
-    createdAt?: Date,
-    updatedAt?: Date
+    id: number;
+    name: string;
+    type: TagType;
+    createdBy?: number;
+    owner?: TagOwner;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export type TagOwner = {
-    id: number,
-    username: string
-}
+    id: number;
+    username: string;
+};
 
 export type Season = {
-    id: number,
-    name: string
-}
+    id: number;
+    name: string;
+};
 
 export interface IngredientDTO {
     name: string;
@@ -87,10 +89,12 @@ export interface IngredientDTO {
     selectedSeasons?: string[];
     selectedDefaultTagIds?: number[];
     selectedUserTagIds?: number[];
-};
+}
 
 export interface RecipeDTO {
     name: string;
+    translation: string | undefined;
+    altName: string | undefined;
     userId: number;
     ingredients?: Ingredient[];
     main?: string;
@@ -102,7 +106,7 @@ export interface RecipeDTO {
     selectedSeasons?: string[];
     selectedDefaultTagIds?: number[];
     selectedUserTagIds?: number[];
-};
+}
 
 export interface RecipeIngredientOption {
     value: number;
@@ -176,7 +180,9 @@ export interface AdminInputProps {
     min?: string;
     max?: string;
     value?: string | string[] | number;
+    step?: number;
     autoComplete?: string;
+    id?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
@@ -201,20 +207,27 @@ export interface seasonGeneralOption extends Season {
     label: string;
 }
 
-export interface SeasonOption extends AdminOption {}
+export interface SeasonOption extends AdminOption { }
+
+export type UomType = 'weight' | 'volume' | 'count' | 'length' | 'other';
+
+export interface UomOptionType {
+    id: number;
+    label: string;
+}
 
 export interface UomOption {
     id: number;
     label: string;
     abbr: string;
     metric: boolean;
-    type: 'mass' | 'volume' | 'count' | 'length' | 'other';
+    type: UomType;
 }
 
 export interface UserOption {
     value: number;
     label: string;
-};
+}
 
 
 
@@ -222,6 +235,8 @@ export interface UserOption {
 export interface RecipeIngredientSelectorProps {
     userId: number;
     onIngredientChosen: (ingredient: RecipeIngredientOption) => void;
+    setSearchResLoading: (b: boolean) => void;
+    searchCleared: () => void;
 }
 
 // ***************
@@ -256,7 +271,7 @@ export interface UserFormStateEdit {
 
 export interface UserFormEditRoute extends UserFormStateEdit {
     password?: string;
-    updatedAt: Date
+    updatedAt: Date;
 }
 
 export interface IngredientFormState {
@@ -270,14 +285,52 @@ export interface IngredientFormState {
     selectedSeasons: string[];
     selectedDefaultTagIds: number[];
     selectedUserTagIds: number[];
-};
+}
 
 export interface RecipeFormState {
     name: string;
+    translation: string | undefined;
+    altName: string | undefined;
     selectedSeasons: string[];
     selectedDefaultTagIds: number[];
     selectedUserTagIds: number[];
 }
+
+export interface RecipeIngredientsRecord {
+    ingredientId: number | null;
+    prep?: string;
+    amount?: string;
+    unitId?: number | null;
+    notes?: string;
+}
+
+export type IngredientAmountType =
+    {
+        format: 'fraction';
+        value: FractionValue;
+    }
+    | {
+        format: 'decimal';
+        value: DecimalValue;
+    };
+
+
+export interface FractionValue {
+    original?: string;
+    integer: number | null;
+    fraction: string | null;
+    numerator: number | null;
+    denominator: number | null;
+    decimalEq: number | null;
+}
+
+export interface DecimalValue {
+    original: string;
+    number: number;
+    integer: number;
+    remainder: number;
+}
+
 
 // ***************
 // * VALIDATIONS *
@@ -310,42 +363,42 @@ export interface DashboardContextValue {
     fetchIngredientById: (id: number) => Promise<Ingredient>;
     fetchRecipeById: (id: number) => Promise<Recipe>;
     fetchUserUserInfo: (id: number) => Promise<UserFormStateEdit>;
-    refreshIngredientModule: () => void,
-    refreshRecipeModule: () => void,
-    refreshUsersModule: () => void,
+    refreshIngredientModule: () => void;
+    refreshRecipeModule: () => void;
+    refreshUsersModule: () => void;
 
     /* default tags always available */
     defaultIngredientTags: Tag[];
     defaultRecipeTags: Tag[];
-    defaultIngredientTagOptions: TagOption[],
-    defaultRecipeTagOptions: TagOption[],
+    defaultIngredientTagOptions: TagOption[];
+    defaultRecipeTagOptions: TagOption[];
 
     /* Loader States */
     // add/edit loading states
-    // userTagsWaiting?: boolean,
-    ingredientListWaiting?: boolean,
-    recipeListWaiting?: boolean,
-    isUserUserInfoLoading?: boolean,
+    // userTagsWaiting?: boolean;
+    ingredientListWaiting?: boolean;
+    recipeListWaiting?: boolean;
+    isUserUserInfoLoading?: boolean;
     setIngredientInfoLoading?: (b: boolean) => void;
-    isIngredientInfoLoading?: boolean,
+    isIngredientInfoLoading?: boolean;
 
     // readout loading states
-    usersLoading: boolean,
-    ingredientsLoading: boolean,
-    recipesLoading: boolean,
-    ingredientTagsLoading: boolean,
-    recipeTagsLoading: boolean,
+    usersLoading: boolean;
+    ingredientsLoading: boolean;
+    recipesLoading: boolean;
+    ingredientTagsLoading: boolean;
+    recipeTagsLoading: boolean;
 
     /* Admin Access for all tags at once */
-    allUserIngredientTags: Tag[],
-    allUserRecipeTags: Tag[],
-    refreshAllTags: () => void,
+    allUserIngredientTags: Tag[];
+    allUserRecipeTags: Tag[];
+    refreshAllTags: () => void;
 
     /* user-specific tags */
-    // userIngredientTags: Tag[],
-    // userRecipeTags: Tag[],
-    selectedUserIngredientTagOptions?: TagOption[],
-    selectedUserRecipeTagOptions: TagOption[],
+    // userIngredientTags: Tag[];
+    // userRecipeTags: Tag[];
+    selectedUserIngredientTagOptions?: TagOption[];
+    selectedUserRecipeTagOptions: TagOption[];
     loadUserTags: (type: 'ingredient' | 'recipe', userId: number) => Promise<Tag[]>;
 
     /* UI state */
@@ -353,6 +406,12 @@ export interface DashboardContextValue {
     activeModuleIds: string[];
     activateModule: (e: React.MouseEvent<HTMLDivElement>) => void;
     deactivateModule: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+export interface RecIngContextValue {
+    recipeIngredients: RecipeIngredientsRecord[] | undefined;
+    handleRecipeIngredientAdd: (rec: RecipeIngredientsRecord) => void;
+    emptyRecipeIngredientRecord: RecipeIngredientsRecord;
 }
 
 interface loadUserTagOptions {

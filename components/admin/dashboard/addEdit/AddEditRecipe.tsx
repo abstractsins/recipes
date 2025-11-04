@@ -1,5 +1,4 @@
 // TODO
-//* 'updated' status message
 //* 'error' status message
 //* form compare for edits
 //* keep user showing in dropdown after recipe add/edit
@@ -40,6 +39,8 @@ import AddEditHeader from "./AddEditHeader";
 import RecipeSelect from '@/components/admin/formElements/RecipeSelect';
 import IngredientAdd from '@/components/admin/formElements/addEditRecipe/IngredientAdd';
 
+import InputSpinner from '@/components/general/InputSpinner';
+
 //* UTILS
 import {
     recipeSeasonOptions,
@@ -54,7 +55,8 @@ import useRecipeForm from '@/hooks/useRecipeForm';
 
 //* CONTEXT
 import { useDashboard } from '@/context/DashboardContext';
-import InputSpinner from '@/components/general/InputSpinner';
+import { RecIngProvider } from '@/context/RecipeIngredientContext';
+
 
 
 
@@ -106,7 +108,6 @@ export default function AddEditRecipe({
         addUserRecipeTag,
 
         selectedRecipeId,
-        selectedRecipeValue,
         selectedRecipeUserId,
         selectedRecipeUserValue,
         selectedUserRecipeTagOptions,
@@ -123,7 +124,7 @@ export default function AddEditRecipe({
     } = useRecipeForm(mode);
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
-    const onSeasonChange = handleSeasonSelect(setFormState, 'recipe');
+    const onSeasonChange = handleSeasonSelect(setFormState);
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIds');
     const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIds');
 
@@ -190,6 +191,32 @@ export default function AddEditRecipe({
                                 </FieldModule>
                             </FormRow>
 
+                            <FormRow id="row-1B">
+                                <FieldModule label="Translation">
+                                    <AdminInput
+                                        name='translation'
+                                        disabled={isDisabled}
+                                        className={`${isDisabled ? 'disabled' : ''} optional`}
+                                        placeholder={'optional...'}
+                                        value={formState.translation}
+                                        onChange={e => setFormState({ ...formState, translation: e.target.value })}
+
+                                    />
+                                </FieldModule>
+
+                                <FieldModule label="Alternate Name">
+                                    <AdminInput
+                                        name='alt-name'
+                                        disabled={isDisabled}
+                                        className={`${isDisabled ? 'disabled' : ''} optional`}
+                                        placeholder={'aka...'}
+                                        value={formState.altName}
+                                        onChange={e => setFormState({ ...formState, altName: e.target.value })}
+
+                                    />
+                                </FieldModule>
+                            </FormRow>
+
                             <FormRow className={styles['row-2']}>
                                 <FieldModule className={`tags`} label="Season">
                                     <AdminMultiSelect
@@ -207,9 +234,11 @@ export default function AddEditRecipe({
 
 
                             {!isDisabled && isIngredientModuleReady &&
-                                <div className={styles["ingredients-module"]}>
-                                    <RecipeIngredientsModule mode={mode} />
-                                </div>
+                                <RecIngProvider>
+                                    <div className={styles["ingredients-module"]}>
+                                        <RecipeIngredientsModule mode={mode} />
+                                    </div>
+                                </RecIngProvider>
                             }
 
                             <div className={styles["tags-module"]}>

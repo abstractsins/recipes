@@ -48,6 +48,8 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
 
     const emptyRecipeForm: RecipeFormState = {
         name: '',
+        translation: '',
+        altName: '',
         selectedSeasons: [],
         selectedDefaultTagIds: [],
         selectedUserTagIds: []
@@ -72,6 +74,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     //* STATUSES
     const [error, setError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
     const [warningMsg, setWarningMsg] = useState<string | null>(null);
     const [instructionMsg, setInstructionMsg] = useState<string | null>(null);
 
@@ -100,6 +103,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     //* ---------------FUNCTIONS--------------- //
 
     const clearStatuses = () => {
+        console.warn(`'clearStatuses' has been called`);
         setError(null);
         setSuccessMsg(null);
         setWarningMsg(null);
@@ -107,6 +111,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     }
 
     const handleRecipeSelect = (recipe: number | null) => {
+        console.warn(`'handleRecipeSelect' has been called`);
         console.log('recipe id:', recipe);
         if (recipe !== null) {
             setSelectedRecipeId(recipe);
@@ -117,6 +122,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     };
 
     const handleRecipeUserSelect = (user: UserOption | null) => {
+        console.warn(`'handleRecipeUserSelect' has been called`);
         if (user !== null) {
             if (user.value !== null) {
                 setSelectedRecipeUserId(user.value);
@@ -161,6 +167,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
                 console.log(error);
                 setError(error.message);
             } else {
+                console.warn(`setting SuccessMsg`);
                 setSuccessMsg(mode === 'add' ? 'Recipe Created!' : 'Recipe Updated!');
                 if (mode === 'edit') fetchUserRecipes({ quiet: true });
                 refreshRecipeModule();
@@ -168,11 +175,13 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
         } catch (err) {
             console.error(err);
         } finally {
-            setSubmitWaiting(false);
-            resetAll(['userReady', 'status', 'recipeList', 'error', 'authorId']);
+            setRecipeInfo(null);
+            setFormState(emptyRecipeForm);
             setSelectedRecipeUserId(selectedRecipeUserId);
-            setSelectedRecipeId(null);
             setSelectedRecipeValue('null');
+            if (mode === 'edit') setRecipeReady(false);
+            setSelectedRecipeId(null);
+            setSubmitWaiting(false);
             document.getElementById('add-edit-recipe-module')?.scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -214,7 +223,7 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     const fetchUserRecipes = useCallback(
         async ({ quiet = false }: { quiet?: boolean } = {}) => {
             if (selectedRecipeUserId) {
-                if (!quiet) setWarningMsg(`User ${mode === 'edit' ? 'recipes' : 'ingredients'} loading...`);
+                if (!quiet) setWarningMsg(`User ${mode === 'edit' ? 'recipes' : 'data'} loading...`);
                 const data = await contextFetchUserRecipes(selectedRecipeUserId);
                 setUserRecipeList(data);
                 if (mode === 'add') {
@@ -230,24 +239,27 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
                 resetAll();
             }
             setWarningMsg(null);
-        }, [selectedRecipeUserId, contextFetchUserRecipes]);
+        }, 
+        [selectedRecipeUserId]
+    );
 
-    const fetchRecipeInfo = useCallback(async () => {
-        if (selectedRecipeId) {
-            setRecipeLoading(true);
-            setWarningMsg(`Loading recipe info...`);
-            const data = await contextFetchRecipeInfo(selectedRecipeId);
-            setRecipeInfo(data);
-            setRecipeReady(true);
-            setIsIngredientModuleReady(true);
-            setRecipeLoading(false);
-            setWarningMsg(null);
-            console.log(data);
-        } else {
-            setIsIngredientModuleReady(false);
-            resetAll(['userId', 'recipeList', 'recipeSelect']);
-        }
-    }, [selectedRecipeId]);
+    const fetchRecipeInfo = useCallback(
+        async ({ quiet = false }: { quiet?: boolean } = {}) => {
+            if (selectedRecipeId) {
+                setRecipeLoading(true);
+                if (!quiet) setWarningMsg(`Loading recipe info...`);
+                const data = await contextFetchRecipeInfo(selectedRecipeId);
+                setRecipeInfo(data);
+                setRecipeReady(true);
+                setIsIngredientModuleReady(true);
+                setRecipeLoading(false);
+                setWarningMsg(null);
+                console.log(data);
+            } else {
+                setIsIngredientModuleReady(false);
+                // resetAll(['userId', 'recipeList', 'recipeSelect']);
+            }
+        }, [selectedRecipeId]);
 
     const resetAll = useCallback((exceptions?: string[]) => {
         !exceptions?.includes('error') && setError(null);
@@ -275,18 +287,19 @@ export default function useRecipeForm(mode: 'add' | 'edit') {
     useEffect(() => { fetchRecipeInfo() }, [selectedRecipeId, fetchRecipeInfo]);
 
     useEffect(() => {
-        console.log(recipeInfo);
         if (recipeInfo) {
 
             const seasons: SeasonOption[] = recipeInfo.seasons.map(s => ({
-                id: s.id, 
-                label: s.name, 
-                value: s.name.toLowerCase(), 
+                id: s.id,
+                label: s.name,
+                value: s.name.toLowerCase(),
                 type: 'recipe'
             }));
 
             setFormState({
                 name: recipeInfo.name ?? '',
+                translation: recipeInfo.translation ?? '',
+                altName: recipeInfo.altName ?? '',
                 selectedSeasons: seasons.map((s: SeasonOption) => s.label) ?? [],
                 selectedDefaultTagIds: recipeInfo.defaultTags?.map((t: RecipeTag) => t.tagId) ?? [],
                 selectedUserTagIds: recipeInfo.userTags?.map((t: RecipeTag) => t.tagId) ?? []
