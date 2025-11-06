@@ -165,7 +165,6 @@ async function main() {
         }
     })
 
-
     const beerMustard = await prisma.ingredient.create({
         data: {
             name: 'beer mustard',
