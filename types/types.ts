@@ -184,7 +184,7 @@ export interface AdminInputProps {
 export type Mode = 'add' | 'edit';
 
 //* ---------- OPTION INPUTS ---------- //
-export type TagOptionType = 'recipe' | 'ingredient' | 'other';
+export type TagOptionType = TagType | 'other';
 
 export interface AdminOption {
     id: number;

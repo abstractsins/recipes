@@ -7,7 +7,6 @@ import {
     SeasonOption,
     Tag,
     TagOption,
-    SeasonSelection,
     AdminOption,
     seasonGeneralOption,
     TagOptionType,

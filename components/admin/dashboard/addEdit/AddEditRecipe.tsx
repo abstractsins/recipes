@@ -123,7 +123,7 @@ export default function AddEditRecipe({
     } = useRecipeForm(mode);
 
     const handleModeSelect = handleModeSelectFactory(setMode, resetAll);
-    const onSeasonChange = handleSeasonSelect(setFormState, 'recipe');
+    const onSeasonChange = handleSeasonSelect(setFormState);
     const onDefaultTagChange = handleTagSelectFactory(setFormState, 'selectedDefaultTagIds');
     const onUserTagChange = handleTagSelectFactory(setFormState, 'selectedUserTagIds');
 
