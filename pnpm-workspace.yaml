@@ -4,3 +4,8 @@ onlyBuiltDependencies:
   - esbuild
   - prisma
   - sharp
+
+overrides:
+  deepmerge-ts@<8.0.0: '>=8.0.0'
+  jws@<3.2.3: '>=3.2.3'
+  next@>=15.5.0-canary.0 <15.5.7: '>=15.5.7'
