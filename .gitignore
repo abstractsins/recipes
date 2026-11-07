@@ -43,3 +43,5 @@ next-env.d.ts
 /app/generated/prisma
 
 *.dump
+prisma/seed-demo-data.ts
+scripts/seed-demo-user.ts

@@ -4,6 +4,19 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
+    if (
+        process.env.NODE_ENV === 'production' ||
+        process.env.VERCEL_ENV === 'production' ||
+        !['local', 'development'].includes(process.env.SEED_ENV ?? '')
+    ) {
+        throw new Error('Full sample seeding is restricted to local/development databases. Set SEED_ENV=local or SEED_ENV=development only after verifying DATABASE_URL targets that environment.');
+    }
+
+    const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+    if (!adminPassword || !adminPassword.trim()) {
+        throw new Error('SEED_ADMIN_PASSWORD is required; no default admin password is provided.');
+    }
+
     /* ─────────── Seasons ─────────── */
     const [fall, winter, spring, summer] = await Promise.all(
         ['Fall', 'Winter', 'Spring', 'Summer'].map((name) =>
@@ -16,8 +29,18 @@ async function main() {
         data: {
             email: 'dan',
             username: 'abstractsins',
-            password: await bcrypt.hash('berlin', 10),
+            password: await bcrypt.hash(adminPassword, 10),
             nickname: 'superUser',
+            role: 'admin',
+        },
+    });
+
+    await prisma.user.create({
+        data: {
+            email: 'demo@demo.com',
+            username: 'demo',
+            password: await bcrypt.hash('DanBerlin!1', 10),
+            nickname: 'Demo User',
             role: 'admin',
         },
     });
